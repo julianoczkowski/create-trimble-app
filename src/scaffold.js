@@ -1,0 +1,118 @@
+import prompts from "prompts";
+import ora from "ora";
+import chalk from "chalk";
+import { loadFrameworks, getFrameworkById } from "./frameworks.js";
+import { updatePackageJson, validateProjectName } from "./utils/file.js";
+import { installDependencies } from "./utils/install.js";
+import { cloneTemplate } from "./utils/git.js";
+import { logger } from "./utils/logger.js";
+
+export async function scaffold(options = {}) {
+  // Show welcome screen
+  logger.welcome();
+
+  const frameworks = loadFrameworks();
+
+  // 1. Framework Selection
+  let framework = options.framework;
+
+  if (!framework) {
+    const result = await prompts({
+      type: "select",
+      name: "framework",
+      message: "Select your framework:",
+      choices: frameworks.map((f) => ({
+        title: `${f.badge} ${f.name}`,
+        description: f.description + (f.note ? ` (${f.note})` : ""),
+        value: f.id,
+      })),
+    });
+    framework = result.framework;
+  }
+
+  if (!framework) {
+    console.log(chalk.yellow("👋 Cancelled"));
+    process.exit(0);
+  }
+
+  const config = getFrameworkById(frameworks, framework);
+
+  // 2. Project Name
+  let projectName = options.projectName;
+
+  if (!projectName) {
+    const result = await prompts({
+      type: "text",
+      name: "projectName",
+      message: "📝 Project name:",
+      initial: "my-modus-app",
+      validate: validateProjectName,
+    });
+    projectName = result.projectName;
+  } else {
+    // Validate provided project name
+    const validation = validateProjectName(projectName);
+    if (validation !== true) {
+      console.error(chalk.red(`Error: ${validation}`));
+      process.exit(1);
+    }
+  }
+
+  if (!projectName) {
+    console.log(chalk.yellow("👋 Cancelled"));
+    process.exit(0);
+  }
+
+  // 3. Clone Template
+  const spinner = ora(`📦 Downloading ${config.name} template...`).start();
+
+  try {
+    await cloneTemplate(config.repository, projectName);
+    spinner.succeed(chalk.green(`✓ Template downloaded successfully!`));
+  } catch (error) {
+    spinner.fail(chalk.red(`✗ Failed to download template`));
+    console.error(chalk.red(error.message));
+    process.exit(1);
+  }
+
+  // 4. Update package.json with project name
+  try {
+    await updatePackageJson(projectName, {
+      name: projectName,
+    });
+    logger.success("Updated project configuration");
+  } catch (error) {
+    logger.warning("Could not update package.json name");
+  }
+
+  // 5. Install Dependencies (optional)
+  let install = options.install;
+
+  if (install === undefined) {
+    const result = await prompts({
+      type: "confirm",
+      name: "install",
+      message: "📦 Install dependencies now?",
+      initial: true,
+    });
+    install = result.install;
+  }
+
+  if (install) {
+    const installSpinner = ora("Installing dependencies...").start();
+    try {
+      await installDependencies(projectName);
+      installSpinner.succeed(chalk.green("✓ Dependencies installed"));
+    } catch (error) {
+      installSpinner.fail(chalk.red("✗ Failed to install dependencies"));
+      console.error(chalk.red(error.message));
+      console.log(
+        chalk.yellow(`\n💡 You can install dependencies manually by running:`)
+      );
+      console.log(chalk.cyan(`   cd ${projectName} && npm install`));
+    }
+  }
+
+  // 6. Success Message
+  logger.nextSteps(projectName, config.name, install);
+}

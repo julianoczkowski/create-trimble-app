@@ -1,0 +1,36 @@
+{
+  "frameworks": {
+    "react": {
+      "name": "React",
+      "description": "Build with React",
+      "repository": "julianoczkowski/modus-react-app",
+      "supportsTypeScript": true,
+      "badge": "⚛️",
+      "note": "Beginner Friendly"
+    },
+    "vue": {
+      "name": "Vue",
+      "description": "Build with Vue 3",
+      "repository": "julianoczkowski/modus-vue-app",
+      "supportsTypeScript": true,
+      "badge": "💚",
+      "note": "Beginner Friendly"
+    },
+    "angular": {
+      "name": "Angular",
+      "description": "Build with Angular",
+      "repository": "julianoczkowski/modus-angular-app",
+      "supportsTypeScript": true,
+      "badge": "🅰️",
+      "note": "Beginner Friendly"
+    },
+    "html": {
+      "name": "HTML",
+      "description": "Vanilla JavaScript",
+      "repository": "julianoczkowski/modus-html-app",
+      "supportsTypeScript": false,
+      "badge": "🎓",
+      "note": "Beginner Friendly"
+    }
+  }
+}

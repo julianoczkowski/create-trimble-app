@@ -1,0 +1,140 @@
+name: Publish to NPM
+
+on:
+   push:
+      tags:
+         - "v*"
+   workflow_dispatch:
+
+permissions:
+   contents: write
+   packages: write
+
+jobs:
+   publish:
+      runs-on: ubuntu-latest
+
+      steps:
+         - uses: actions/checkout@v4
+
+         - uses: actions/setup-node@v4
+           with:
+              node-version: "18"
+              registry-url: "https://registry.npmjs.org"
+
+         - name: Install dependencies
+           run: npm ci
+
+         - name: Test CLI functionality
+           run: |
+              echo "Testing CLI help command..."
+              node bin/create-modus-app.js --help
+              echo "✓ Help command works"
+
+              echo "Testing CLI version command..."
+              node bin/create-modus-app.js --version
+              echo "✓ Version command works"
+
+         - name: Verify framework configurations
+           run: |
+              echo "Checking framework configurations..."
+              if [ ! -f "templates/config.json" ]; then
+                echo "Error: Framework config file not found"
+                exit 1
+              fi
+
+              FRAMEWORK_COUNT=$(node -p "Object.keys(require('./templates/config.json').frameworks).length")
+              echo "Found $FRAMEWORK_COUNT frameworks configured"
+              if [ "$FRAMEWORK_COUNT" -lt 4 ]; then
+                echo "Error: Expected 4 frameworks, found $FRAMEWORK_COUNT"
+                exit 1
+              fi
+              echo "✓ Framework configuration check passed"
+
+         - name: Test template cloning (Vue)
+           run: |
+              echo "Testing Vue template cloning..."
+              cd /tmp
+              npx degit julianoczkowski/modus-vue-app test-vue-clone
+              if [ ! -f "test-vue-clone/package.json" ]; then
+                echo "Error: Vue template clone failed"
+                exit 1
+              fi
+              echo "✓ Vue template cloning works"
+              rm -rf test-vue-clone
+
+         - name: Run tests
+           run: npm test --if-present
+
+         - name: Publish to NPM
+           run: npm publish --access public
+           env:
+              NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+         - name: Get version from package.json
+           id: get_version
+           run: |
+              VERSION=$(node -p "require('./package.json').version")
+              echo "VERSION=v$VERSION" >> $GITHUB_OUTPUT
+              echo "Package version: v$VERSION"
+
+         - name: Create Release
+           uses: softprops/action-gh-release@v1
+           env:
+              GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+           with:
+              tag_name: ${{ steps.get_version.outputs.VERSION }}
+              name: Release ${{ steps.get_version.outputs.VERSION }}
+              body: |
+                 ## Create Modus App ${{ steps.get_version.outputs.VERSION }}
+
+                 ### Features
+                 - 🎯 **Interactive CLI** - Beautiful welcome screen with framework selection
+                 - ⚛️ **React Support** - Build with React and Modus components
+                 - 💚 **Vue Support** - Build with Vue 3 and Modus components  
+                 - 🅰️ **Angular Support** - Build with Angular and Modus components
+                 - 🎓 **HTML Support** - Vanilla JavaScript with Modus components (Beginner Friendly)
+                 - 📦 **Smart Installation** - Automatic dependency installation with package manager detection
+                 - 🔧 **Template Cloning** - Complete pre-configured project templates
+
+                 ### Installation
+
+                 **NPX (Recommended):**
+                 ```bash
+                 npx @julianoczkowski/create-modus-app
+                 ```
+
+                 **With project name:**
+                 ```bash
+                 npx @julianoczkowski/create-modus-app my-awesome-app
+                 ```
+
+                 **Specify framework:**
+                 ```bash
+                 npx @julianoczkowski/create-modus-app my-app --framework vue
+                 ```
+
+                 ### What's New in ${{ steps.get_version.outputs.VERSION }}
+                 - ✨ **Interactive Framework Selection** - Choose from React, Vue, Angular, or HTML
+                 - 🎨 **Beautiful CLI Interface** - ASCII art welcome screen and intuitive prompts
+                 - 📋 **Project Name Validation** - Smart validation and conflict detection
+                 - 🔄 **Template Cloning** - Uses degit for fast, clean repository cloning
+                 - 📦 **Package Manager Detection** - Automatically detects npm, yarn, or pnpm
+                 - 🎯 **Command Line Options** - Support for non-interactive usage
+
+                 ### Supported Frameworks
+                 | Framework | Description | Repository |
+                 |-----------|-------------|------------|
+                 | ⚛️ React | Build with React and Modus components | `julianoczkowski/modus-react-app` |
+                 | 💚 Vue | Build with Vue 3 and Modus components | `julianoczkowski/modus-vue-app` |
+                 | 🅰️ Angular | Build with Angular and Modus components | `julianoczkowski/modus-angular-app` |
+                 | 🎓 HTML | Vanilla JavaScript with Modus components | `julianoczkowski/modus-html-app` |
+
+                 ### Package Contents
+                 - Interactive CLI with framework selection
+                 - Template cloning and project setup
+                 - Automatic dependency installation
+                 - Project name validation and customization
+                 - Comprehensive help and documentation
+              draft: false
+              prerelease: false

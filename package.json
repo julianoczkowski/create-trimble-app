@@ -1,0 +1,58 @@
+{
+  "name": "@julianoczkowski/create-modus-app",
+  "version": "1.0.0",
+  "description": "Interactive CLI to scaffold Modus 2.0 web component applications for React, Vue, Angular, and HTML frameworks",
+  "type": "module",
+  "main": "src/cli.js",
+  "bin": {
+    "create-modus-app": "bin/create-modus-app.js"
+  },
+  "files": [
+    "bin/",
+    "src/",
+    "templates/"
+  ],
+  "scripts": {
+    "test": "echo \"No tests specified\" && exit 0",
+    "dev": "node bin/create-modus-app.js",
+    "prepublishOnly": "echo \"Ready to publish create-modus-app CLI\""
+  },
+  "keywords": [
+    "modus",
+    "web-components",
+    "cli",
+    "scaffold",
+    "react",
+    "vue",
+    "angular",
+    "html",
+    "trimble",
+    "create-app",
+    "boilerplate"
+  ],
+  "author": "Julian Oczkowski",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/julianoczkowski/create-modus-app.git"
+  },
+  "bugs": {
+    "url": "https://github.com/julianoczkowski/create-modus-app/issues"
+  },
+  "homepage": "https://github.com/julianoczkowski/create-modus-app#readme",
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "prompts": "^2.4.2",
+    "chalk": "^5.3.0",
+    "ora": "^8.0.1",
+    "degit": "^2.8.4",
+    "fs-extra": "^11.2.0",
+    "execa": "^8.0.1"
+  },
+  "devDependencies": {
+    "@types/prompts": "^2.4.9",
+    "@types/fs-extra": "^11.0.4"
+  }
+}
