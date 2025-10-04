@@ -1,0 +1,106 @@
+name: ❓ Question
+description: Ask a question about using the Create Modus App CLI
+title: "[QUESTION] "
+labels: ["question", "needs-triage"]
+assignees: ["julianoczkowski"]
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Have a question about using Create Modus App? We're here to help! Please provide as much context as possible.
+
+  - type: checkboxes
+    id: prerequisites
+    attributes:
+      label: Prerequisites
+      description: Please confirm you have completed the following steps
+      options:
+        - label: I have searched existing issues and discussions
+          required: true
+        - label: I have checked the README and documentation
+          required: true
+        - label: I have tried the CLI help command (`--help`)
+          required: false
+
+  - type: dropdown
+    id: category
+    attributes:
+      label: Question Category
+      description: What category does your question fall into?
+      options:
+        - Getting Started
+        - CLI Usage
+        - Framework Selection
+        - Project Setup
+        - Template Customization
+        - Troubleshooting
+        - Best Practices
+        - Integration
+        - Performance
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: question
+    attributes:
+      label: Your Question
+      description: What would you like to know?
+      placeholder: Ask your question here...
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: Provide any relevant context about your situation
+      placeholder: |
+        - What are you trying to accomplish?
+        - What have you tried so far?
+        - Any specific requirements or constraints?
+
+  - type: dropdown
+    id: framework
+    attributes:
+      label: Framework (if applicable)
+      description: Which framework is your question related to?
+      options:
+        - React
+        - Vue
+        - Angular
+        - HTML
+        - All frameworks
+        - Not framework-specific
+
+  - type: textarea
+    id: attempted-solution
+    attributes:
+      label: What You've Tried
+      description: What solutions or approaches have you already attempted?
+      placeholder: Describe what you've tried...
+
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      description: Your development environment (OS, Node.js version, etc.)
+      placeholder: e.g., macOS, Node.js 18.17.0, npm 9.6.7
+
+  - type: textarea
+    id: expected-outcome
+    attributes:
+      label: Expected Outcome
+      description: What would you expect to happen or what are you trying to achieve?
+      placeholder: Describe your expected outcome...
+
+  - type: checkboxes
+    id: urgency
+    attributes:
+      label: Urgency
+      description: How urgent is this question for you?
+      options:
+        - label: Blocking my work - need help soon
+        - label: Important but not urgent
+        - label: Just curious - no rush

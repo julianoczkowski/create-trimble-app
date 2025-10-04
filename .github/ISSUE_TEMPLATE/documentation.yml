@@ -1,0 +1,122 @@
+name: 📚 Documentation Issue
+description: Report an issue with documentation or suggest documentation improvements
+title: "[DOCS] "
+labels: ["documentation", "needs-triage"]
+assignees: ["julianoczkowski"]
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for helping improve our documentation! Please provide details about the documentation issue or improvement.
+
+  - type: checkboxes
+    id: prerequisites
+    attributes:
+      label: Prerequisites
+      description: Please confirm you have completed the following steps
+      options:
+        - label: I have searched existing issues to avoid duplicates
+          required: true
+        - label: I have checked the latest version of the documentation
+          required: true
+
+  - type: dropdown
+    id: type
+    attributes:
+      label: Documentation Issue Type
+      description: What type of documentation issue is this?
+      options:
+        - Missing documentation
+        - Incorrect information
+        - Outdated information
+        - Unclear instructions
+        - Broken links
+        - Typos/grammar
+        - Code examples not working
+        - Missing code examples
+        - Improvement suggestion
+        - Other
+    validations:
+      required: true
+
+  - type: dropdown
+    id: location
+    attributes:
+      label: Documentation Location
+      description: Where is the documentation issue located?
+      options:
+        - README.md
+        - CONTRIBUTING.md
+        - SECURITY.md
+        - CLI help text (--help)
+        - Error messages
+        - Code comments
+        - Package.json descriptions
+        - GitHub templates
+        - Other (please specify)
+    validations:
+      required: true
+
+  - type: textarea
+    id: current-content
+    attributes:
+      label: Current Content
+      description: What does the current documentation say? (copy/paste the relevant section)
+      placeholder: Paste the current documentation content here...
+      render: markdown
+
+  - type: textarea
+    id: issue-description
+    attributes:
+      label: Issue Description
+      description: Describe the problem with the current documentation
+      placeholder: Explain what's wrong or missing...
+    validations:
+      required: true
+
+  - type: textarea
+    id: suggested-content
+    attributes:
+      label: Suggested Content
+      description: What should the documentation say instead?
+      placeholder: Provide your suggested improvement...
+      render: markdown
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional Context
+      description: Any additional context that would help improve the documentation
+      placeholder: Any additional information...
+
+  - type: checkboxes
+    id: areas
+    attributes:
+      label: Related Areas
+      description: Which areas does this documentation issue affect?
+      options:
+        - label: Installation/Setup
+        - label: CLI usage and commands
+        - label: Framework selection
+        - label: Project scaffolding
+        - label: Troubleshooting
+        - label: Contributing guidelines
+        - label: Security information
+        - label: Development workflow
+        - label: Template repositories
+        - label: Requirements and compatibility
+        - label: Examples and tutorials
+
+  - type: checkboxes
+    id: user-impact
+    attributes:
+      label: User Impact
+      description: Who would be affected by this documentation issue?
+      options:
+        - label: New users trying the CLI for the first time
+        - label: Experienced developers
+        - label: Contributors to the project
+        - label: Template maintainers
+        - label: Users troubleshooting issues
+        - label: Users looking for specific features

@@ -1,0 +1,42 @@
+# Global code owners
+* @julianoczkowski
+
+# Documentation
+*.md @julianoczkowski
+docs/ @julianoczkowski
+
+# Configuration files
+package.json @julianoczkowski
+package-lock.json @julianoczkowski
+.gitignore @julianoczkowski
+
+# Security and contribution guidelines
+SECURITY.md @julianoczkowski
+CONTRIBUTING.md @julianoczkowski
+
+# GitHub templates and workflows
+.github/ @julianoczkowski
+
+# Core CLI source code
+src/ @julianoczkowski
+bin/ @julianoczkowski
+
+# CLI entry point
+bin/create-modus-app.js @julianoczkowski
+
+# Core CLI logic
+src/cli.js @julianoczkowski
+src/frameworks.js @julianoczkowski
+src/scaffold.js @julianoczkowski
+
+# Utility functions
+src/utils/ @julianoczkowski
+
+# Template configurations
+templates/ @julianoczkowski
+templates/config.json @julianoczkowski
+
+# Test files (when added)
+test/ @julianoczkowski
+*.test.js @julianoczkowski
+*.spec.js @julianoczkowski

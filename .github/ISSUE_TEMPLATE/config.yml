@@ -1,0 +1,17 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 💬 GitHub Discussions
+    url: https://github.com/julianoczkowski/create-modus-app/discussions
+    about: Ask questions and discuss ideas with the community
+  - name: 🔒 Security Vulnerability
+    url: https://github.com/julianoczkowski/create-modus-app/security/advisories/new
+    about: Report security vulnerabilities privately via GitHub Security Advisories
+  - name: 📚 Modus Web Components Documentation
+    url: https://trimble-oss.github.io/modus-wc-2.0/main/
+    about: Official Modus Web Components documentation and examples
+  - name: 🎨 Modus Design System
+    url: https://modus.trimble.com/
+    about: Official Trimble Modus Design System documentation
+  - name: 🚀 Template Repositories
+    url: https://github.com/julianoczkowski?tab=repositories&q=modus-&type=&language=&sort=
+    about: Browse the source template repositories for each framework

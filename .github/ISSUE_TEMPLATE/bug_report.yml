@@ -1,0 +1,173 @@
+name: 🐛 Bug Report
+description: Report a bug or unexpected behavior in the Create Modus App CLI
+title: "[BUG] "
+labels: ["bug", "needs-triage"]
+assignees: ["julianoczkowski"]
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for taking the time to report a bug! Please fill out this form as completely as possible to help us understand and reproduce the issue.
+
+  - type: checkboxes
+    id: prerequisites
+    attributes:
+      label: Prerequisites
+      description: Please confirm you have completed the following steps
+      options:
+        - label: I have searched existing issues to avoid duplicates
+          required: true
+        - label: I have tested this with the latest version of create-modus-app
+          required: true
+        - label: I have verified my Node.js version meets requirements (18+)
+          required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Bug Description
+      description: A clear and concise description of what the bug is
+      placeholder: Describe the bug...
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to Reproduce
+      description: Detailed steps to reproduce the behavior
+      placeholder: |
+        1. Run 'npx @julianoczkowski/create-modus-app'
+        2. Select framework '...'
+        3. Enter project name '...'
+        4. See error
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Behavior
+      description: What you expected to happen
+      placeholder: Describe what should happen...
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual Behavior
+      description: What actually happened
+      placeholder: Describe what actually happened...
+    validations:
+      required: true
+
+  - type: textarea
+    id: cli-output
+    attributes:
+      label: CLI Output
+      description: Full output from the CLI command (including any error messages)
+      placeholder: Paste the complete CLI output here...
+      render: text
+    validations:
+      required: true
+
+  - type: dropdown
+    id: framework
+    attributes:
+      label: Target Framework
+      description: Which framework were you trying to scaffold?
+      options:
+        - React
+        - Vue
+        - Angular
+        - HTML
+        - Not applicable (error before framework selection)
+    validations:
+      required: true
+
+  - type: dropdown
+    id: os
+    attributes:
+      label: Operating System
+      description: Which operating system are you using?
+      options:
+        - Windows
+        - macOS
+        - Linux
+        - Other (please specify in additional context)
+    validations:
+      required: true
+
+  - type: input
+    id: node-version
+    attributes:
+      label: Node.js Version
+      description: What version of Node.js are you using?
+      placeholder: e.g., 18.17.0 (run `node --version`)
+    validations:
+      required: true
+
+  - type: input
+    id: npm-version
+    attributes:
+      label: npm/yarn/pnpm Version
+      description: What version of your package manager are you using?
+      placeholder: e.g., npm 9.6.7, yarn 1.22.19, or pnpm 8.6.0
+    validations:
+      required: true
+
+  - type: input
+    id: cli-version
+    attributes:
+      label: Create Modus App Version
+      description: What version of create-modus-app are you using?
+      placeholder: e.g., 1.0.0 (run `npx @julianoczkowski/create-modus-app --version`)
+
+  - type: textarea
+    id: project-details
+    attributes:
+      label: Project Details
+      description: Details about the project you were trying to create
+      placeholder: |
+        - Project name: my-app
+        - Directory: /path/to/project
+        - Git repository status: initialized/not initialized
+        - Any special characters in project name or path
+
+  - type: checkboxes
+    id: network-environment
+    attributes:
+      label: Network & Environment
+      description: Network and environment related information
+      options:
+        - label: Behind corporate firewall/proxy
+        - label: Using VPN
+        - label: Limited internet connectivity
+        - label: Corporate network restrictions
+        - label: Using custom npm registry
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional Context
+      description: Add any other context about the problem here
+      placeholder: |
+        - Any error logs from log files
+        - Screenshots if applicable
+        - Previous working versions
+        - Any workarounds you've tried
+
+  - type: checkboxes
+    id: cli-features
+    attributes:
+      label: CLI Features Used
+      description: Which CLI features were you using when the bug occurred?
+      options:
+        - label: Interactive mode (default)
+        - label: Command line arguments (--framework, etc.)
+        - label: Project name as argument
+        - label: --no-install flag
+        - label: --help or --version flags
+        - label: Custom project directory
