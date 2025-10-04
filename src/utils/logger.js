@@ -21,21 +21,21 @@ export const logger = {
   welcome: () => {
     console.log(
       chalk.cyan(`
-╔══════════════════════════════════════════════════════╗
-║                                                      ║
-║     ███╗   ███╗ ██████╗ ██████╗ ██╗   ██╗███████╗    ║
-║     ████╗ ████║██╔═══██╗██╔══██╗██║   ██║██╔════╝    ║
-║     ██╔████╔██║██║   ██║██║  ██║██║   ██║███████╗    ║
-║     ██║╚██╔╝██║██║   ██║██║  ██║██║   ██║╚════██║    ║
-║     ██║ ╚═╝ ██║╚██████╔╝██████╔╝╚██████╔╝███████║    ║
-║     ╚═╝     ╚═╝ ╚═════╝ ╚═════╝  ╚═════╝ ╚══════╝    ║
-║                                                      ║
-║           Create Your Modus 2.0 Application          ║
-║          Modus Icons 🞧 Theming 🞧 MCP 🞧 Rules         ║
-║                                                      ║
-║               by Julian Oczkowski 2025               ║
-║                                                      ║
-╚══════════════════════════════════════════════════════╝
++ ═════════════════════════════════════════════════════════╗
+║                                                          ║
+║       ███╗   ███╗ ██████╗ ██████╗ ██╗   ██╗███████╗      ║
+║       ████╗ ████║██╔═══██╗██╔══██╗██║   ██║██╔════╝      ║
+║       ██╔████╔██║██║   ██║██║  ██║██║   ██║███████╗      ║
+║       ██║╚██╔╝██║██║   ██║██║  ██║██║   ██║╚════██║      ║
+║       ██║ ╚═╝ ██║╚██████╔╝██████╔╝╚██████╔╝███████║      ║
+║       ╚═╝     ╚═╝ ╚═════╝ ╚═════╝  ╚═════╝ ╚══════╝      ║
+║                                                          ║
+║             Create Your Modus 2.0 Application            ║
+║            Modus Icons 🞧 Theming 🞧 MCP 🞧 Rules           ║
+║                                                          ║
+║            by Julian Oczkowski for Trimble Inc.          ║
+║                                                          ║
+╚═════════════════════════════════════════════════════════ 🞧
     `)
     );
   },
@@ -47,30 +47,33 @@ export const logger = {
 
 📁 Project created at: ${chalk.cyan(projectName)}
 
-🚀 Next steps:
-  ${chalk.cyan(`open: '${projectName}' in your code editor`)}
-  ${!shouldInstall ? chalk.cyan(`run: npm install`) + "\n  " : ""}${chalk.cyan(
+${chalk.gray("═".repeat(60))}
+${chalk.gray("Next steps:")}
+${chalk.cyan(`open: '${projectName}' in your code editor`)}
+${!shouldInstall ? chalk.cyan(`run: npm install`) + "\n  " : ""}${chalk.cyan(
         `run: npm run dev`
       )}
 
-📚 How to use this project: ${createClickableLink(
+${chalk.gray("═".repeat(60))}
+${chalk.gray("How to use this project:")} ${createClickableLink(
         "https://youtube.com",
         "Watch Tutorial on YouTube"
       )}
-
-Additional Links:
-Modus 2.0 Storybook: ${createClickableLink(
+${chalk.gray("═".repeat(60))}
+${chalk.gray("Additional Links:")}
+${chalk.gray("Modus 2.0 Storybook:")} ${createClickableLink(
         "https://trimble-oss.github.io/modus-wc-2.0/main/?path=/docs/documentation-getting-started--docs",
         "Modus 2.0 Storybook"
       )}
-Modus Icons: ${createClickableLink(
+${chalk.gray("Modus Icons:")} ${createClickableLink(
         "https://modus-icons.trimble.com/",
         "Modus Icons"
       )}
-Figma Modus MCP: ${createClickableLink(
+${chalk.gray("Figma Modus MCP:")} ${createClickableLink(
         "https://trimble-oss.github.io/modus-wc-2.0/main/?path=/docs/documentation-modus-figma-mcp-integration-guide--docs",
         "Figma Modus MCP"
       )}
+${chalk.gray("═".repeat(60))}
 
     `)
     );

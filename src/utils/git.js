@@ -12,7 +12,6 @@ export async function cloneTemplate(repository, projectName) {
     await emitter.clone(projectName);
     return true;
   } catch (error) {
-    logger.error(`Failed to install template from ${repository}`);
-    throw new Error(`Error: ${error.message}.`);
+    throw new Error(`Provide this error to the developer: ${error.message}.`);
   }
 }

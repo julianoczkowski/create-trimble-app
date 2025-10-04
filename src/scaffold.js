@@ -44,7 +44,7 @@ export async function scaffold(options = {}) {
     const result = await prompts({
       type: "text",
       name: "projectName",
-      message: "📝 Project name:",
+      message: "Project name:",
       initial: "my-modus-app",
       validate: validateProjectName,
     });
@@ -69,6 +69,16 @@ export async function scaffold(options = {}) {
   try {
     await cloneTemplate(config.repository, projectName);
     spinner.succeed(chalk.green(`Template installed successfully!`));
+
+    // 4. Update package.json with project name
+    try {
+      await updatePackageJson(projectName, {
+        name: projectName,
+      });
+      logger.success("Updated project configuration");
+    } catch (error) {
+      logger.warning("Could not update package.json name");
+    }
   } catch (error) {
     spinner.fail(
       chalk.red(
@@ -79,15 +89,8 @@ export async function scaffold(options = {}) {
     process.exit(1);
   }
 
-  // 4. Update package.json with project name
-  try {
-    await updatePackageJson(projectName, {
-      name: projectName,
-    });
-    logger.success("Updated project configuration");
-  } catch (error) {
-    logger.warning("Could not update package.json name");
-  }
+  // Visual separator before dependency installation
+  console.log(chalk.gray("═".repeat(60)));
 
   // 5. Install Dependencies (optional)
   let install = options.install;
@@ -116,6 +119,9 @@ export async function scaffold(options = {}) {
       console.log(chalk.cyan(`   cd ${projectName} && npm install`));
     }
   }
+
+  // Visual separator before final success message
+  console.log(chalk.gray("═".repeat(60)));
 
   // 6. Success Message
   logger.nextSteps(projectName, config.name, install);
