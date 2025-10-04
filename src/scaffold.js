@@ -31,7 +31,7 @@ export async function scaffold(options = {}) {
   }
 
   if (!framework) {
-    console.log(chalk.yellow("👋 Cancelled"));
+    console.log(chalk.yellow("X Cancelled"));
     process.exit(0);
   }
 
@@ -59,18 +59,22 @@ export async function scaffold(options = {}) {
   }
 
   if (!projectName) {
-    console.log(chalk.yellow("👋 Cancelled"));
+    console.log(chalk.yellow("X Cancelled"));
     process.exit(0);
   }
 
   // 3. Clone Template
-  const spinner = ora(`📦 Downloading ${config.name} template...`).start();
+  const spinner = ora(`📦 Installing ${config.name} template...`).start();
 
   try {
     await cloneTemplate(config.repository, projectName);
-    spinner.succeed(chalk.green(`✓ Template downloaded successfully!`));
+    spinner.succeed(chalk.green(`Template installed successfully!`));
   } catch (error) {
-    spinner.fail(chalk.red(`✗ Failed to download template`));
+    spinner.fail(
+      chalk.red(
+        `💀 Failed to install template. Contact julian_oczkowski@trimble.com`
+      )
+    );
     console.error(chalk.red(error.message));
     process.exit(1);
   }
@@ -92,7 +96,7 @@ export async function scaffold(options = {}) {
     const result = await prompts({
       type: "confirm",
       name: "install",
-      message: "📦 Install dependencies now?",
+      message: "📦 Install dependencies now (default: yes)?",
       initial: true,
     });
     install = result.install;
@@ -102,9 +106,9 @@ export async function scaffold(options = {}) {
     const installSpinner = ora("Installing dependencies...").start();
     try {
       await installDependencies(projectName);
-      installSpinner.succeed(chalk.green("✓ Dependencies installed"));
+      installSpinner.succeed(chalk.green("Dependencies installed"));
     } catch (error) {
-      installSpinner.fail(chalk.red("✗ Failed to install dependencies"));
+      installSpinner.fail(chalk.red("Failed to install dependencies"));
       console.error(chalk.red(error.message));
       console.log(
         chalk.yellow(`\n💡 You can install dependencies manually by running:`)

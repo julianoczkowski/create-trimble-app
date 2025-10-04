@@ -20,7 +20,9 @@ export async function updatePackageJson(projectPath, updates) {
       "utf-8"
     );
   } catch (error) {
-    throw new Error(`Failed to update package.json: ${error.message}`);
+    throw new Error(
+      `Failed to update package.json: ${error.message}. Contact julian_oczkowski@trimble.com`
+    );
   }
 }
 
@@ -28,7 +30,7 @@ export function validateProjectName(name) {
   if (!name) return "Project name is required";
 
   if (!/^[a-z0-9-_]+$/i.test(name)) {
-    return "Project name can only contain letters, numbers, dashes and underscores";
+    return "Project name can't contain spaces. It can only contain letters, numbers, dashes.";
   }
 
   if (existsSync(name)) {

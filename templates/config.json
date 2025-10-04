@@ -5,15 +5,15 @@
       "description": "Build with React",
       "repository": "julianoczkowski/modus-react-app",
       "supportsTypeScript": true,
-      "badge": "⚛️",
+      "badge": "●",
       "note": "Beginner Friendly"
     },
     "vue": {
-      "name": "Vue",
+      "name": "Vue 3",
       "description": "Build with Vue 3",
       "repository": "julianoczkowski/modus-vue-app",
       "supportsTypeScript": true,
-      "badge": "💚",
+      "badge": "▼",
       "note": "Beginner Friendly"
     },
     "angular": {
@@ -21,7 +21,7 @@
       "description": "Build with Angular",
       "repository": "julianoczkowski/modus-angular-app",
       "supportsTypeScript": true,
-      "badge": "🅰️",
+      "badge": "■",
       "note": "Beginner Friendly"
     },
     "html": {
@@ -29,7 +29,7 @@
       "description": "Vanilla JavaScript",
       "repository": "julianoczkowski/modus-html-app",
       "supportsTypeScript": false,
-      "badge": "🎓",
+      "badge": "◆",
       "note": "Beginner Friendly"
     }
   }

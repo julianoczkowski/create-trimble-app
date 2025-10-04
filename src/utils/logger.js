@@ -1,5 +1,11 @@
 import chalk from "chalk";
 
+// Helper function to create clickable terminal links
+function createClickableLink(url, text) {
+  // OSC 8 hyperlink format: \u001b]8;;URL\u0007TEXT\u001b]8;;\u0007
+  return `\u001b]8;;${url}\u0007${chalk.blue(text)}\u001b]8;;\u0007`;
+}
+
 export const logger = {
   info: (message) => console.log(chalk.blue("ℹ"), message),
   success: (message) => console.log(chalk.green("✓"), message),
@@ -42,18 +48,30 @@ export const logger = {
 📁 Project created at: ${chalk.cyan(projectName)}
 
 🚀 Next steps:
-  ${chalk.cyan(`cd ${projectName}`)}
-  ${!shouldInstall ? chalk.cyan(`npm install`) + "\n  " : ""}${chalk.cyan(
-        `npm run dev`
+  ${chalk.cyan(`open: '${projectName}' in your code editor`)}
+  ${!shouldInstall ? chalk.cyan(`run: npm install`) + "\n  " : ""}${chalk.cyan(
+        `run: npm run dev`
       )}
 
-📚 Documentation: ${chalk.blue("https://modus-web-components.trimble.com")}
+📚 How to use this project: ${createClickableLink(
+        "https://youtube.com",
+        "Watch Tutorial on YouTube"
+      )}
 
-🔗 Links:
-- Modus Icons: ${chalk.blue("https://modus-web-components.trimble.com/icons")}
-- Theming: ${chalk.blue("https://modus-web-components.trimble.com/theming")}
-- MCP: ${chalk.blue("https://modus-web-components.trimble.com/mcp")}
-- Rules: ${chalk.blue("https://modus-web-components.trimble.com/rules")}
+Additional Links:
+Modus 2.0 Storybook: ${createClickableLink(
+        "https://trimble-oss.github.io/modus-wc-2.0/main/?path=/docs/documentation-getting-started--docs",
+        "Modus 2.0 Storybook"
+      )}
+Modus Icons: ${createClickableLink(
+        "https://modus-icons.trimble.com/",
+        "Modus Icons"
+      )}
+Figma Modus MCP: ${createClickableLink(
+        "https://trimble-oss.github.io/modus-wc-2.0/main/?path=/docs/documentation-modus-figma-mcp-integration-guide--docs",
+        "Figma Modus MCP"
+      )}
+
     `)
     );
   },

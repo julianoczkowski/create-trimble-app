@@ -12,7 +12,7 @@ export async function cloneTemplate(repository, projectName) {
     await emitter.clone(projectName);
     return true;
   } catch (error) {
-    logger.error(`Failed to clone template from ${repository}`);
-    throw new Error(`Template cloning failed: ${error.message}`);
+    logger.error(`Failed to install template from ${repository}`);
+    throw new Error(`Error: ${error.message}.`);
   }
 }
