@@ -1,5 +1,6 @@
 import { readFileSync, writeFileSync, existsSync } from "fs";
-import { join } from "path";
+import { join, basename } from "path";
+import { cwd } from "process";
 
 export async function updatePackageJson(projectPath, updates) {
   const packageJsonPath = join(projectPath, "package.json");
@@ -26,14 +27,19 @@ export async function updatePackageJson(projectPath, updates) {
   }
 }
 
-export function validateProjectName(name) {
+export function getCurrentFolderName() {
+  return basename(cwd());
+}
+
+export function validateProjectName(name, isCurrentFolder = false) {
   if (!name) return "Project name is required";
 
   if (!/^[a-z0-9-_]+$/i.test(name)) {
     return "Project name can't contain spaces. It can only contain letters, numbers, dashes.";
   }
 
-  if (existsSync(name)) {
+  // Skip directory existence check if installing in current folder
+  if (!isCurrentFolder && existsSync(name)) {
     return `Directory "${name}" already exists`;
   }
 

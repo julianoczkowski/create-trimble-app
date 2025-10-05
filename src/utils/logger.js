@@ -40,16 +40,26 @@ export const logger = {
     );
   },
 
-  nextSteps: (projectName, framework, shouldInstall) => {
+  nextSteps: (
+    projectName,
+    framework,
+    shouldInstall,
+    isCurrentFolder = false
+  ) => {
+    const projectPath = isCurrentFolder ? "current directory" : projectName;
+    const openCommand = isCurrentFolder
+      ? "open current directory in your code editor"
+      : `open: '${projectName}' in your code editor`;
+
     console.log(
       chalk.green(`
 🎉 Success! Your ${framework} project is ready!
 
-📁 Project created at: ${chalk.cyan(projectName)}
+📁 Project created at: ${chalk.cyan(projectPath)}
 
 ${chalk.gray("═".repeat(60))}
 ${chalk.gray("Next steps:")}
-${chalk.cyan(`open: '${projectName}' in your code editor`)}
+${chalk.cyan(openCommand)}
 ${!shouldInstall ? chalk.cyan(`run: npm install`) + "\n  " : ""}${chalk.cyan(
         `run: npm run dev`
       )}

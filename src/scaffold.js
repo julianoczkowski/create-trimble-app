@@ -2,7 +2,11 @@ import prompts from "prompts";
 import ora from "ora";
 import chalk from "chalk";
 import { loadFrameworks, getFrameworkById } from "./frameworks.js";
-import { updatePackageJson, validateProjectName } from "./utils/file.js";
+import {
+  updatePackageJson,
+  validateProjectName,
+  getCurrentFolderName,
+} from "./utils/file.js";
 import { installDependencies } from "./utils/install.js";
 import { cloneTemplate } from "./utils/git.js";
 import { logger } from "./utils/logger.js";
@@ -39,19 +43,24 @@ export async function scaffold(options = {}) {
 
   // 2. Project Name
   let projectName = options.projectName;
+  const isCurrentFolder = options.currentFolder;
 
-  if (!projectName) {
+  if (isCurrentFolder) {
+    // Use current folder name when --current-folder is specified
+    projectName = getCurrentFolderName();
+    console.log(chalk.blue(`📁 Using current folder name: ${projectName}`));
+  } else if (!projectName) {
     const result = await prompts({
       type: "text",
       name: "projectName",
       message: "Project name:",
       initial: "my-modus-app",
-      validate: validateProjectName,
+      validate: (name) => validateProjectName(name, false),
     });
     projectName = result.projectName;
   } else {
     // Validate provided project name
-    const validation = validateProjectName(projectName);
+    const validation = validateProjectName(projectName, false);
     if (validation !== true) {
       console.error(chalk.red(`Error: ${validation}`));
       process.exit(1);
@@ -67,12 +76,13 @@ export async function scaffold(options = {}) {
   const spinner = ora(`📦 Installing ${config.name} template...`).start();
 
   try {
-    await cloneTemplate(config.repository, projectName);
+    await cloneTemplate(config.repository, projectName, isCurrentFolder);
     spinner.succeed(chalk.green(`Template installed successfully!`));
 
     // 4. Update package.json with project name
     try {
-      await updatePackageJson(projectName, {
+      const projectPath = isCurrentFolder ? "." : projectName;
+      await updatePackageJson(projectPath, {
         name: projectName,
       });
       logger.success("Updated project configuration");
@@ -108,7 +118,8 @@ export async function scaffold(options = {}) {
   if (install) {
     const installSpinner = ora("Installing dependencies...").start();
     try {
-      await installDependencies(projectName);
+      const installPath = isCurrentFolder ? "." : projectName;
+      await installDependencies(installPath);
       installSpinner.succeed(chalk.green("Dependencies installed"));
     } catch (error) {
       installSpinner.fail(chalk.red("Failed to install dependencies"));
@@ -116,7 +127,10 @@ export async function scaffold(options = {}) {
       console.log(
         chalk.yellow(`\n💡 You can install dependencies manually by running:`)
       );
-      console.log(chalk.cyan(`   cd ${projectName} && npm install`));
+      const installCommand = isCurrentFolder
+        ? "npm install"
+        : `cd ${projectName} && npm install`;
+      console.log(chalk.cyan(`   ${installCommand}`));
     }
   }
 
@@ -124,5 +138,5 @@ export async function scaffold(options = {}) {
   console.log(chalk.gray("═".repeat(60)));
 
   // 6. Success Message
-  logger.nextSteps(projectName, config.name, install);
+  logger.nextSteps(projectName, config.name, install, isCurrentFolder);
 }

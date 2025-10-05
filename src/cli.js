@@ -16,6 +16,7 @@ Usage:
 
 Options:
   --framework <name>    Specify framework (react, vue, angular, html)
+  --current-folder      Install in current folder and inherit folder name
   --help, -h           Show this help message
   --version, -v        Show version number
 
@@ -23,6 +24,7 @@ Examples:
   npx @julianoczkowski/create-modus-app                    # Interactive mode
   npx @julianoczkowski/create-modus-app my-app             # With your project name
   npx @julianoczkowski/create-modus-app my-app --framework vue
+  npx @julianoczkowski/create-modus-app --current-folder   # Install in current folder
 
 Frameworks:
   ⚛️ react    - Build with React and Modus 2 Web Components
@@ -63,6 +65,11 @@ if (frameworkIndex !== -1 && args[frameworkIndex + 1]) {
 // Parse install option
 if (args.includes("--no-install")) {
   options.install = false;
+}
+
+// Parse current folder option
+if (args.includes("--current-folder")) {
+  options.currentFolder = true;
 }
 
 export async function cli() {
