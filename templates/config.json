@@ -1,12 +1,12 @@
 {
   "frameworks": {
     "react": {
-      "name": "React",
-      "description": "Build with React",
+      "name": "React App",
+      "description": "Build with React App",
       "repository": "julianoczkowski/modus-react-app",
       "supportsTypeScript": true,
       "badge": "●",
-      "note": "Beginner Friendly"
+      "note": "Most Popular • Huge Ecosystem • Great for Complex UIs • AI Support: Very Strong"
     },
     "vue": {
       "name": "Vue 3",
@@ -14,7 +14,15 @@
       "repository": "julianoczkowski/modus-vue-app",
       "supportsTypeScript": true,
       "badge": "▼",
-      "note": "Beginner Friendly"
+      "note": "Easiest to Learn • Gentle Learning Curve • Great DX • AI Support: Strong"
+    },
+    "nextjs": {
+      "name": "Next.js",
+      "description": "Build with Next.js",
+      "repository": "julianoczkowski/modus-next-app",
+      "supportsTypeScript": true,
+      "badge": "▲",
+      "note": "Full Stack • SSR/SSG • Production Ready • Perfect for Bigger Prototypes • AI Support: Very Strong"
     },
     "angular": {
       "name": "Angular",
@@ -22,15 +30,15 @@
       "repository": "julianoczkowski/modus-angular-app",
       "supportsTypeScript": true,
       "badge": "■",
-      "note": "Beginner Friendly"
+      "note": "Enterprise Grade • TypeScript First • Complete Framework • AI Support: Moderate"
     },
     "html": {
-      "name": "HTML",
-      "description": "Vanilla JavaScript",
+      "name": "Vanilla JS",
+      "description": "Build with Vanilla JS",
       "repository": "julianoczkowski/modus-html-app",
       "supportsTypeScript": false,
       "badge": "◆",
-      "note": "Beginner Friendly"
+      "note": "Fastest Start • Perfect for Basic Prototypes • AI Support: Moderate"
     }
   }
 }

@@ -15,7 +15,7 @@ Usage:
   npx @julianoczkowski/create-modus-app [project-name] [options]
 
 Options:
-  --framework <name>    Specify framework (react, vue, angular, html)
+  --framework <name>    Specify framework (react, nextjs, vue, angular, html)
   --current-folder      Install in current folder and inherit folder name
   --help, -h           Show this help message
   --version, -v        Show version number
@@ -28,9 +28,11 @@ Examples:
 
 Frameworks:
   ⚛️ react    - Build with React and Modus 2 Web Components
+  ▲ nextjs    - Build with Next.js and Modus 2 Web Components
   💚 vue      - Build with Vue 3 and Modus 2 Web Components  
   🅰️ angular  - Build with Angular and Modus 2 Web Components
   🎓 html     - Vanilla JavaScript with Modus 2 Web Components
+ 
 
 For more information, visit: https://github.com/julianoczkowski/create-modus-app
 `);
