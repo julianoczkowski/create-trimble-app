@@ -21,7 +21,7 @@ Options:
   --version, -v        Show version number
 
 Examples:
-  npx @julianoczkowski/create-modus-app                    # Interactive mode
+  npx @julianoczkowski/create-modus-app                    # Interactive mode (choose framework, location, and name)
   npx @julianoczkowski/create-modus-app my-app             # With your project name
   npx @julianoczkowski/create-modus-app my-app --framework vue
   npx @julianoczkowski/create-modus-app --current-folder   # Install in current folder

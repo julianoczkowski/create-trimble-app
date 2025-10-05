@@ -60,7 +60,7 @@ export const logger = {
 ${chalk.gray("═".repeat(60))}
 ${chalk.gray("Next steps:")}
 ${chalk.cyan(openCommand)}
-${!shouldInstall ? chalk.cyan(`run: npm install`) + "\n  " : ""}${chalk.cyan(
+${!shouldInstall ? chalk.cyan(`run: npm install`) + "\n" : ""}${chalk.cyan(
         `run: npm run dev`
       )}
 
