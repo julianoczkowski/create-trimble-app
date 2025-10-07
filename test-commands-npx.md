@@ -4,7 +4,7 @@
 
 ### 1. Help and Version Tests
 
-```bash
+````bash
 # Test help shows new option (from project root)
 npx . --help
 
@@ -13,7 +13,8 @@ npx . --version
 
 # Test help from any directory
 npx /home/julian/Documents/Development/create-modus-app --help
-```
+
+npx /Users/julianoczkowski/Desktop/Development/create-modus-app
 
 ## Full Integration Tests (With Template Installation)
 
@@ -35,7 +36,7 @@ cat package.json | grep '"name"'
 # Clean up
 cd ..
 rm -rf test-current-folder
-```
+````
 
 #### Test with different frameworks:
 
