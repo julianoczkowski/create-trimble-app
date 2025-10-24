@@ -8,7 +8,7 @@ import {
   getCurrentFolderName,
 } from "./utils/file.js";
 import { installDependencies } from "./utils/install.js";
-import { cloneTemplate } from "./utils/git.js";
+import { cloneTemplate, cloneDemoContent } from "./utils/git.js";
 import { logger } from "./utils/logger.js";
 
 export async function scaffold(options = {}) {
@@ -130,10 +130,37 @@ export async function scaffold(options = {}) {
     process.exit(1);
   }
 
+  // 5. Demo Content (Next.js only)
+  if (framework === "nextjs") {
+    const demoResult = await prompts({
+      type: "confirm",
+      name: "includeDemos",
+      message: "🎨 Would you like to include demo pages?",
+      initial: false,
+    });
+
+    if (demoResult.includeDemos) {
+      const demoSpinner = ora("📥 Downloading demo content...").start();
+      try {
+        const projectPath = installInCurrentFolder ? "." : projectName;
+        await cloneDemoContent(projectPath);
+        demoSpinner.succeed(chalk.green("Demo content added successfully!"));
+      } catch (error) {
+        demoSpinner.fail(chalk.yellow("Failed to download demo content"));
+        console.log(
+          chalk.yellow(
+            `\n💡 You can manually add demo content later if needed.`
+          )
+        );
+        console.log(chalk.gray(`   Error: ${error.message}`));
+      }
+    }
+  }
+
   // Visual separator before dependency installation
   console.log(chalk.gray("═".repeat(60)));
 
-  // 5. Install Dependencies (optional)
+  // 6. Install Dependencies (optional)
   let install = options.install;
 
   if (install === undefined) {
@@ -168,6 +195,6 @@ export async function scaffold(options = {}) {
   // Visual separator before final success message
   console.log(chalk.gray("═".repeat(60)));
 
-  // 6. Success Message
+  // 7. Success Message
   logger.nextSteps(projectName, config.name, install, installInCurrentFolder);
 }

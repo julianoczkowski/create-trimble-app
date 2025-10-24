@@ -179,3 +179,6 @@ npx /home/julian/Documents/Development/create-modus-app dhh --framework vue
 | Traditional Vue          | `npx . test-app --framework vue`                                           | Works                  | ✅ PASS |
 | From different directory | `npx /home/julian/Documents/Development/create-modus-app --current-folder` | Works                  | ✅ PASS |
 | Package.json naming      | Check package.json name                                                    | Matches folder         | ✅ PASS |
+
+On mac
+node /Users/julianoczkowski/Desktop/Development/create-modus-app/bin/create-modus-app.js
