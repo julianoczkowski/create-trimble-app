@@ -3,7 +3,7 @@
     "react": {
       "name": "React App",
       "description": "Build with React App",
-      "repository": "julianoczkowski/modus-react-app",
+      "repository": "https://github.com/julianoczkowski/modus-react-app",
       "supportsTypeScript": true,
       "badge": "●",
       "note": "Most Popular • Huge Ecosystem • Great for Complex UIs • AI Support: Very Strong"
