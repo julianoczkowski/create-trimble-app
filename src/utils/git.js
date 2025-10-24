@@ -57,6 +57,38 @@ export async function cloneDemoContent(projectPath) {
   }
 }
 
+export async function cloneReactDemoContent(projectPath) {
+  try {
+    // Download demos directly to a subfolder first, then we'll move the contents
+    const demosPath = join(projectPath, "demos-temp");
+    const emitter = degit(
+      "https://github.com/julianoczkowski/modus-react-demo",
+      {
+        cache: false,
+        force: true,
+        verbose: false,
+      }
+    );
+
+    await emitter.clone(demosPath);
+
+    // Now copy the contents to the src/demos folder using Node.js built-in modules
+    const fs = await import("fs/promises");
+    const path = await import("path");
+    const targetPath = join(projectPath, "src", "demos");
+
+    // Recursively copy files from demos-temp to src/demos folder
+    await copyDirectory(demosPath, targetPath);
+
+    // Clean up the temporary demos folder
+    await fs.rm(demosPath, { recursive: true, force: true });
+
+    return true;
+  } catch (error) {
+    throw new Error(`Failed to download React demo content: ${error.message}`);
+  }
+}
+
 async function copyDirectory(src, dest) {
   const fs = await import("fs/promises");
   const path = await import("path");

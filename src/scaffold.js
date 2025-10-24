@@ -8,7 +8,11 @@ import {
   getCurrentFolderName,
 } from "./utils/file.js";
 import { installDependencies } from "./utils/install.js";
-import { cloneTemplate, cloneDemoContent } from "./utils/git.js";
+import {
+  cloneTemplate,
+  cloneDemoContent,
+  cloneReactDemoContent,
+} from "./utils/git.js";
 import { logger } from "./utils/logger.js";
 
 export async function scaffold(options = {}) {
@@ -130,8 +134,8 @@ export async function scaffold(options = {}) {
     process.exit(1);
   }
 
-  // 5. Demo Content (Next.js only)
-  if (framework === "nextjs") {
+  // 5. Demo Content (Next.js and React)
+  if (framework === "nextjs" || framework === "react") {
     const demoResult = await prompts({
       type: "confirm",
       name: "includeDemos",
@@ -143,7 +147,13 @@ export async function scaffold(options = {}) {
       const demoSpinner = ora("📥 Downloading demo content...").start();
       try {
         const projectPath = installInCurrentFolder ? "." : projectName;
-        await cloneDemoContent(projectPath);
+
+        if (framework === "nextjs") {
+          await cloneDemoContent(projectPath);
+        } else if (framework === "react") {
+          await cloneReactDemoContent(projectPath);
+        }
+
         demoSpinner.succeed(chalk.green("Demo content added successfully!"));
       } catch (error) {
         demoSpinner.fail(chalk.yellow("Failed to download demo content"));
