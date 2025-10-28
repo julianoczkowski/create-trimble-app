@@ -14,7 +14,8 @@
       "repository": "julianoczkowski/modus-vue-app",
       "supportsTypeScript": true,
       "badge": "▼",
-      "note": "Easiest to Learn • Gentle Learning Curve • Great DX • AI Support: Strong"
+      "note": "Easiest to Learn • Gentle Learning Curve • Great DX • AI Support: Strong",
+      "disabled": true
     },
     "nextjs": {
       "name": "Next.js",
@@ -22,7 +23,8 @@
       "repository": "julianoczkowski/modus-next-app",
       "supportsTypeScript": true,
       "badge": "▲",
-      "note": "Full Stack • SSR/SSG • Production Ready • Perfect for Bigger Prototypes • AI Support: Very Strong"
+      "note": "Full Stack • SSR/SSG • Production Ready • Perfect for Bigger Prototypes • AI Support: Very Strong",
+      "disabled": true
     },
     "angular": {
       "name": "Angular",
@@ -38,7 +40,8 @@
       "repository": "julianoczkowski/modus-html-app",
       "supportsTypeScript": false,
       "badge": "◆",
-      "note": "Fastest Start • Perfect for Basic Prototypes • AI Support: Moderate"
+      "note": "Fastest Start • Perfect for Basic Prototypes • AI Support: Moderate",
+      "disabled": true
     }
   }
 }

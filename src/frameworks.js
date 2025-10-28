@@ -10,10 +10,12 @@ export function loadFrameworks() {
     const configPath = join(__dirname, "../templates/config.json");
     const config = JSON.parse(readFileSync(configPath, "utf-8"));
 
-    return Object.entries(config.frameworks).map(([id, framework]) => ({
-      id,
-      ...framework,
-    }));
+    return Object.entries(config.frameworks)
+      .filter(([id, framework]) => !framework.disabled)
+      .map(([id, framework]) => ({
+        id,
+        ...framework,
+      }));
   } catch (error) {
     throw new Error(
       `Failed to load framework configurations: ${error.message}`
