@@ -135,7 +135,7 @@ export async function scaffold(options = {}) {
   }
 
   // 5. Demo Content (Next.js and React)
-  if (framework === "nextjs" || framework === "react") {
+  if (framework === "nextjs") {
     const demoResult = await prompts({
       type: "confirm",
       name: "includeDemos",
