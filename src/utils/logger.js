@@ -34,7 +34,7 @@ export const logger = {
 ║                     Modus 2 Web Components                  ║
 ║                 Icons + Theming + MCP + Rules               ║
 ║                                                             ║
-║                     by AI Innovation Team                   ║
+║                         by Julian                           ║
 ║                                                             ║
 ╚════════════════════════════════════════════════════════════ +
     `)
