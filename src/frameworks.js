@@ -11,14 +11,14 @@ export function loadFrameworks() {
     const config = JSON.parse(readFileSync(configPath, "utf-8"));
 
     return Object.entries(config.frameworks)
-      .filter(([id, framework]) => !framework.disabled)
+      .filter(([_id, framework]) => !framework.disabled)
       .map(([id, framework]) => ({
         id,
         ...framework,
       }));
   } catch (error) {
     throw new Error(
-      `Failed to load framework configurations: ${error.message}`
+      `Failed to load framework configurations: ${error.message}`,
     );
   }
 }
