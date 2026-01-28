@@ -1,140 +1,156 @@
 name: Publish to NPM
 
 on:
-   push:
-      tags:
-         - "v*"
-   workflow_dispatch:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
 
 permissions:
-   contents: write
-   packages: write
+  contents: write
+  packages: write
+  id-token: write # Required for npm provenance
 
 jobs:
-   publish:
-      runs-on: ubuntu-latest
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [18, 20, 22]
 
-      steps:
-         - uses: actions/checkout@v4
+    steps:
+      - uses: actions/checkout@v4
 
-         - uses: actions/setup-node@v4
-           with:
-              node-version: "18"
-              registry-url: "https://registry.npmjs.org"
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "npm"
 
-         - name: Install dependencies
-           run: npm ci
+      - name: Install dependencies
+        run: npm ci
 
-         - name: Test CLI functionality
-           run: |
-              echo "Testing CLI help command..."
-              node bin/create-modus-app.js --help
-              echo "✓ Help command works"
+      - name: Run tests
+        run: npm test
 
-              echo "Testing CLI version command..."
-              node bin/create-modus-app.js --version
-              echo "✓ Version command works"
+      - name: Run security audit
+        run: npm audit --audit-level=high
+        continue-on-error: true
 
-         - name: Verify framework configurations
-           run: |
-              echo "Checking framework configurations..."
-              if [ ! -f "templates/config.json" ]; then
-                echo "Error: Framework config file not found"
-                exit 1
-              fi
+  publish:
+    needs: test
+    runs-on: ubuntu-latest
 
-              FRAMEWORK_COUNT=$(node -p "Object.keys(require('./templates/config.json').frameworks).length")
-              echo "Found $FRAMEWORK_COUNT frameworks configured"
-              if [ "$FRAMEWORK_COUNT" -lt 4 ]; then
-                echo "Error: Expected 4 frameworks, found $FRAMEWORK_COUNT"
-                exit 1
-              fi
-              echo "✓ Framework configuration check passed"
+    steps:
+      - uses: actions/checkout@v4
 
-         - name: Test template cloning (Vue)
-           run: |
-              echo "Testing Vue template cloning..."
-              cd /tmp
-              npx degit julianoczkowski/modus-vue-app test-vue-clone
-              if [ ! -f "test-vue-clone/package.json" ]; then
-                echo "Error: Vue template clone failed"
-                exit 1
-              fi
-              echo "✓ Vue template cloning works"
-              rm -rf test-vue-clone
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          registry-url: "https://registry.npmjs.org"
 
-         - name: Run tests
-           run: npm test --if-present
+      - name: Install dependencies
+        run: npm ci
 
-         - name: Publish to NPM
-           run: npm publish --access public
-           env:
-              NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - name: Test CLI functionality
+        run: |
+          echo "Testing CLI help command..."
+          node bin/create-modus-app.js --help
+          echo "✓ Help command works"
 
-         - name: Get version from package.json
-           id: get_version
-           run: |
-              VERSION=$(node -p "require('./package.json').version")
-              echo "VERSION=v$VERSION" >> $GITHUB_OUTPUT
-              echo "Package version: v$VERSION"
+          echo "Testing CLI version command..."
+          node bin/create-modus-app.js --version
+          echo "✓ Version command works"
 
-         - name: Create Release
-           uses: softprops/action-gh-release@v1
-           env:
-              GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-           with:
-              tag_name: ${{ steps.get_version.outputs.VERSION }}
-              name: Release ${{ steps.get_version.outputs.VERSION }}
-              body: |
-                 ## Create Modus App ${{ steps.get_version.outputs.VERSION }}
+          echo "Testing CLI info command..."
+          node bin/create-modus-app.js --info
+          echo "✓ Info command works"
 
-                 ### Features
-                 - 🎯 **Interactive CLI** - Beautiful welcome screen with framework selection
-                 - ⚛️ **React Support** - Build with React and Modus components
-                 - 💚 **Vue Support** - Build with Vue 3 and Modus components  
-                 - 🅰️ **Angular Support** - Build with Angular and Modus components
-                 - 🎓 **HTML Support** - Vanilla JavaScript with Modus components (Beginner Friendly)
-                 - 📦 **Smart Installation** - Automatic dependency installation with package manager detection
-                 - 🔧 **Template Cloning** - Complete pre-configured project templates
+          echo "Testing CLI dry-run..."
+          node bin/create-modus-app.js test-app --framework react --dry-run
+          echo "✓ Dry-run command works"
 
-                 ### Installation
+      - name: Verify bundled templates
+        run: |
+          echo "Checking bundled templates..."
 
-                 **NPX (Recommended):**
-                 ```bash
-                 npx @julianoczkowski/create-modus-app
-                 ```
+          # Check React template
+          if [ ! -f "templates/react/package.json" ]; then
+            echo "Error: React bundled template not found"
+            exit 1
+          fi
+          echo "✓ React bundled template exists"
 
-                 **With project name:**
-                 ```bash
-                 npx @julianoczkowski/create-modus-app my-awesome-app
-                 ```
+          # Check Angular template
+          if [ ! -f "templates/angular/package.json" ]; then
+            echo "Error: Angular bundled template not found"
+            exit 1
+          fi
+          echo "✓ Angular bundled template exists"
 
-                 **Specify framework:**
-                 ```bash
-                 npx @julianoczkowski/create-modus-app my-app --framework vue
-                 ```
+      - name: Run security audit
+        run: npm audit --audit-level=high
 
-                 ### What's New in ${{ steps.get_version.outputs.VERSION }}
-                 - ✨ **Interactive Framework Selection** - Choose from React, Vue, Angular, or HTML
-                 - 🎨 **Beautiful CLI Interface** - ASCII art welcome screen and intuitive prompts
-                 - 📋 **Project Name Validation** - Smart validation and conflict detection
-                 - 🔄 **Template Cloning** - Uses degit for fast, clean repository cloning
-                 - 📦 **Package Manager Detection** - Automatically detects npm, yarn, or pnpm
-                 - 🎯 **Command Line Options** - Support for non-interactive usage
+      - name: Publish to NPM with provenance
+        run: npm publish --provenance --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-                 ### Supported Frameworks
-                 | Framework | Description | Repository |
-                 |-----------|-------------|------------|
-                 | ⚛️ React | Build with React and Modus components | `julianoczkowski/modus-react-app` |
-                 | 💚 Vue | Build with Vue 3 and Modus components | `julianoczkowski/modus-vue-app` |
-                 | 🅰️ Angular | Build with Angular and Modus components | `julianoczkowski/modus-angular-app` |
-                 | 🎓 HTML | Vanilla JavaScript with Modus components | `julianoczkowski/modus-html-app` |
+      - name: Get version from package.json
+        id: get_version
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          echo "VERSION=v$VERSION" >> $GITHUB_OUTPUT
+          echo "Package version: v$VERSION"
 
-                 ### Package Contents
-                 - Interactive CLI with framework selection
-                 - Template cloning and project setup
-                 - Automatic dependency installation
-                 - Project name validation and customization
-                 - Comprehensive help and documentation
-              draft: false
-              prerelease: false
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.get_version.outputs.VERSION }}
+          name: Release ${{ steps.get_version.outputs.VERSION }}
+          body: |
+            ## Create Modus App ${{ steps.get_version.outputs.VERSION }}
+
+            ### Bundled Templates - No External Downloads
+            Templates are included directly in this npm package:
+            - 📦 Works completely offline
+            - ⚡ Faster project creation
+            - 🔒 No supply chain risks
+
+            ### Features
+            - 🎯 **Interactive CLI** - Beautiful interface with framework selection
+            - ⚛️ **React** - React + Vite + Modus 2.0 Components
+            - 🅰️ **Angular** - Angular + Modus 2.0 Web Components
+            - 📦 **Smart Installation** - Package manager detection
+            - 🔐 **Secure** - Published with npm provenance
+
+            ### Installation
+
+            **Interactive mode:**
+            ```bash
+            npx @julianoczkowski/create-modus-app
+            ```
+
+            **With project name and framework:**
+            ```bash
+            npx @julianoczkowski/create-modus-app my-app --framework react
+            ```
+
+            **Preview without creating files:**
+            ```bash
+            npx @julianoczkowski/create-modus-app my-app --dry-run
+            ```
+
+            ### CLI Options
+            | Option | Description |
+            |--------|-------------|
+            | `--framework <name>` | Specify framework (react, angular) |
+            | `--current-folder` | Install in current directory |
+            | `--dry-run` | Preview without making changes |
+            | `--verbose` | Enable verbose output |
+            | `--info` | Show CLI information |
+            | `--no-install` | Skip dependency installation |
+          draft: false
+          prerelease: false

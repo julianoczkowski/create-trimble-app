@@ -1,0 +1,21 @@
+---
+alwaysApply: true
+---
+
+# Modus Select vs Dropdown Menu - Short
+
+Use ModusDropdownMenu instead of ModusSelect for reliable event handling.
+
+## Key Rules
+
+- **Use ModusDropdownMenu, not ModusSelect** - ModusSelect has unreliable event handling in React
+- **Reliable itemSelect events** - ModusDropdownMenu provides consistent event handling
+- **Proper state management** - Use React state to track selected values and visibility
+- **Programmatic control** - Use refs to control dropdown visibility
+- **Event handling patterns** - Handle `itemSelect` events for selection changes
+- **Test thoroughly** - Verify dropdown behavior and event handling
+- **Use established patterns** - Follow ModusDropdownMenu component patterns
+
+## Reference
+
+For detailed component comparison, implementation patterns, and advanced usage, fetch the full rule: `modus-select-vs-dropdown-menu-react`

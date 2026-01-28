@@ -1,0 +1,21 @@
+---
+alwaysApply: true
+---
+
+# Development Workflow - Short
+
+Essential linting and quality checks for React + Vite development.
+
+## Key Rules
+
+- **Run linting commands during development** - `npm run lint:all` before commits
+- **Fix violations before committing** - No violations in committed code
+- **Check inline styles** - `npm run lint:styles` to catch inline style violations
+- **Verify design system colors** - `npm run lint:colors` for color compliance
+- **Validate Modus icons** - `npm run lint:icons` for icon usage
+- **Check semantic HTML** - `npm run lint:semantic` for HTML compliance
+- **Verify border usage** - `npm run lint:borders` for border compliance
+
+## Reference
+
+For detailed linting commands, quality gates, and development workflow patterns, fetch the full rule: `development-workflow-react`

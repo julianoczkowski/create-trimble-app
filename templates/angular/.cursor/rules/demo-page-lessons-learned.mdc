@@ -1,0 +1,613 @@
+---
+description: Lessons learned from creating demo pages - what to do and what NOT to do. Covers event handling, signals, component usage patterns, and common pitfalls.
+globs: ["**/demos/**/*.ts", "**/demos/**/*.html"]
+---
+
+# Demo Page Development - Lessons Learned
+
+Critical lessons learned from creating multiple demo pages. **What works, what doesn't, and why.**
+
+---
+
+## ⚠️ CRITICAL: Event Handling Patterns
+
+### ✅ DO: Use `$event` Directly for Output Events
+
+**Angular automatically unwraps `CustomEvent` for output events.** In the template, use `$event` directly:
+
+```typescript
+// ✅ CORRECT: Template uses $event directly
+<modus-text-input
+  [value]="textValue()"
+  (inputChange)="handleTextChange($event)"
+/>
+
+// ✅ CORRECT: Handler receives unwrapped InputEvent
+handleTextChange(event: InputEvent): void {
+  const target = event.target as HTMLInputElement;
+  this.textValue.set(target.value);
+}
+```
+
+### ❌ DON'T: Use `$event.detail` in Templates
+
+**This will cause TypeScript compilation errors:**
+
+```typescript
+// ❌ WRONG: TypeScript error - $event.detail is not needed
+<modus-text-input
+  [value]="textValue()"
+  (inputChange)="handleTextChange($event.detail)"  // ❌ Compilation error
+/>
+```
+
+**Why**: Angular's output events automatically unwrap `CustomEvent<T>` to `T` before passing to your handler.
+
+### ✅ DO: Check Component Wrapper for Event Types
+
+**Different components emit different event types.** Always check the component wrapper:
+
+```typescript
+// From modus-text-input.component.ts
+readonly inputChange = output<InputEvent>();
+
+// From modus-time-input.component.ts  
+readonly inputChange = output<Event>();  // Different type!
+
+// From modus-rating.component.ts
+readonly ratingChange = output<IRatingChange>();  // Custom interface!
+```
+
+**Rule**: **Always check the component wrapper's `output<T>()` type before writing handlers.**
+
+### ✅ DO: Match Handler Parameter Type to Component Output
+
+```typescript
+// ✅ CORRECT: Text input emits InputEvent
+handleTextChange(event: InputEvent): void {
+  const target = event.target as HTMLInputElement;
+  // ...
+}
+
+// ✅ CORRECT: Time input emits Event
+handleTimeChange(event: Event): void {
+  const target = event.target as HTMLInputElement;
+  // ...
+}
+
+// ✅ CORRECT: Rating emits custom interface
+handleRatingChange(event: IRatingChange): void {
+  this.ratingValue.set(event.value);
+  // ...
+}
+```
+
+### ❌ DON'T: Assume All Components Use InputEvent
+
+```typescript
+// ❌ WRONG: Time input uses Event, not InputEvent
+handleTimeChange(event: InputEvent): void {  // ❌ Type mismatch!
+  // ...
+}
+
+// ❌ WRONG: Rating uses IRatingChange, not InputEvent
+handleRatingChange(event: InputEvent): void {  // ❌ Type mismatch!
+  // ...
+}
+```
+
+---
+
+## ⚠️ CRITICAL: Signal Usage in Templates
+
+### ✅ DO: Call Signals as Functions in Templates
+
+**Signals are functions and must be called with `()` in templates:**
+
+```typescript
+// ✅ CORRECT: Signal called as function
+export class DemoComponent {
+  readonly value = signal<string>('');
+  
+  // In template:
+  [value]="value()"  // ✅ Must call with ()
+  @if (value()) {    // ✅ Must call with ()
+    <div>{{ value() }}</div>  // ✅ Must call with ()
+  }
+}
+```
+
+### ❌ DON'T: Access Signal Properties Directly
+
+```typescript
+// ❌ WRONG: Signal is a function, not an object
+export class DemoComponent {
+  readonly value = signal<string>('');
+  
+  // In template:
+  [value]="value"     // ❌ WRONG: Missing ()
+  @if (value) {       // ❌ WRONG: Missing ()
+    <div>{{ value }}</div>  // ❌ WRONG: Missing ()
+  }
+}
+```
+
+### ✅ DO: Use Signals for Reactive State
+
+```typescript
+// ✅ CORRECT: Use signals for two-way binding
+export class InteractiveDemo {
+  readonly sliderValue = signal<number>(50);
+  
+  handleSliderChange(event: InputEvent): void {
+    const target = event.target as HTMLInputElement;
+    this.sliderValue.set(parseInt(target.value, 10));
+  }
+}
+
+// In template:
+<modus-slider
+  [value]="sliderValue()"
+  (inputChange)="handleSliderChange($event)"
+/>
+<div>Value: {{ sliderValue() }}</div>
+```
+
+### ❌ DON'T: Use Class Properties for Reactive State
+
+```typescript
+// ❌ WRONG: Not reactive, won't update template
+export class InteractiveDemo {
+  sliderValue: number = 50;  // ❌ Not reactive
+  
+  handleSliderChange(event: InputEvent): void {
+    const target = event.target as HTMLInputElement;
+    this.sliderValue = parseInt(target.value, 10);  // ❌ Template won't update
+  }
+}
+```
+
+---
+
+## ⚠️ CRITICAL: Signal Object Access
+
+### ✅ DO: Call Signal Function for Object Properties
+
+**When a signal contains an object, access properties AFTER calling the signal:**
+
+```typescript
+// ✅ CORRECT: Signal contains object
+export class PaginationDemo {
+  readonly paginationState = signal<{ page: number; count: number }>({
+    page: 2,
+    count: 8,
+  });
+  
+  // In template:
+  [page]="paginationState().page"      // ✅ Call signal, then access property
+  [count]="paginationState().count"    // ✅ Call signal, then access property
+  <div>{{ paginationState().page }} / {{ paginationState().count }}</div>
+}
+```
+
+### ❌ DON'T: Access Signal Object Properties Directly
+
+```typescript
+// ❌ WRONG: Can't access properties without calling signal first
+export class PaginationDemo {
+  readonly paginationState = signal<{ page: number; count: number }>({
+    page: 2,
+    count: 8,
+  });
+  
+  // In template:
+  [page]="paginationState.page"       // ❌ WRONG: paginationState is a function
+  [count]="paginationState.count"      // ❌ WRONG: Must call signal first
+  <div>{{ paginationState.page }}</div>  // ❌ WRONG: TypeScript error
+}
+```
+
+**Error you'll see**: `Property 'page' does not exist on type 'WritableSignal<{ page: number; count: number }>'.`
+
+---
+
+## ⚠️ Component-Specific Patterns
+
+### ✅ DO: Check Component Documentation
+
+**Each component has unique patterns. Check the wrapper component:**
+
+```typescript
+// ✅ CORRECT: Check modus-rating.component.ts
+// Shows it emits IRatingChange, not InputEvent
+handleRatingChange(event: IRatingChange): void {
+  this.ratingValue.set(event.value);
+}
+```
+
+### ✅ DO: Check Component Output Types
+
+**Before writing event handlers, check the component wrapper:**
+
+```bash
+# ✅ DO: Read component wrapper to understand event types
+cat src/app/components/modus-[component].component.ts | grep "output<"
+```
+
+### ❌ DON'T: Assume All Components Use Same Event Pattern
+
+```typescript
+// ❌ WRONG: Assuming all use InputEvent
+handleChange(event: InputEvent): void {  // ❌ Wrong for rating, time-input, etc.
+  // ...
+}
+```
+
+---
+
+## ⚠️ Icon Name Validation
+
+### ✅ DO: Always Validate Icon Names
+
+**Before using any icon, validate it exists:**
+
+```bash
+# ✅ DO: Run icon validation
+npm run lint:icon-names
+```
+
+### ❌ DON'T: Use Non-Existent Icon Names
+
+```typescript
+// ❌ WRONG: 'print' doesn't exist
+<modus-button icon="print" />  // ❌ Error: Did you mean 'printer'?
+
+// ✅ CORRECT: Use 'printer'
+<modus-button icon="printer" />
+```
+
+**Common replacements**:
+- `print` → `printer`
+- `error` → `alert`
+- `edit` → `file_edit`
+- `user` → `user_account`
+
+### ✅ DO: Check Icon Suggestions from Linter
+
+**When linter fails, it provides suggestions:**
+
+```
+Invalid Modus icon name: print
+Did you mean: printer, pin
+Similar icons: printer, footprints
+```
+
+**Always use the suggestions provided by the linter.**
+
+---
+
+## ⚠️ Component Color Types
+
+### ✅ DO: Check Component-Specific Color Types
+
+**Each component has different valid colors. Check the component wrapper:**
+
+```typescript
+// From modus-button.component.ts
+type ButtonColor = 'primary' | 'secondary' | 'tertiary' | 'warning' | 'danger';
+
+// From modus-loader.component.ts  
+type LoaderColor = 'primary' | 'success' | 'warning' | 'error' | undefined;
+```
+
+**Note**: Button uses `'danger'`, but Loader uses `'error'`. **They're different!**
+
+### ❌ DON'T: Assume Colors Are Universal
+
+```typescript
+// ❌ WRONG: 'danger' doesn't exist for loader
+<modus-loader color="danger" />  // ❌ TypeScript error
+
+// ✅ CORRECT: Use 'error' for loader
+<modus-loader color="error" />
+```
+
+### ✅ DO: Read Component Wrapper Type Definitions
+
+```typescript
+// ✅ DO: Check component wrapper for valid colors
+// File: src/app/components/modus-[component].component.ts
+// Look for: readonly color = input<[Component]Color | undefined>();
+```
+
+---
+
+## ⚠️ Import Management
+
+### ✅ DO: Only Import Used Components
+
+**Remove unused imports to avoid build warnings:**
+
+```typescript
+// ✅ CORRECT: Only import what's used
+@Component({
+  imports: [
+    CommonModule,
+    DemoPageComponent,
+    DemoExampleComponent,
+    ModusTextInputComponent,  // ✅ Actually used in template
+    ModusInputLabelComponent, // ✅ Actually used in template
+  ],
+})
+```
+
+### ❌ DON'T: Leave Unused Imports
+
+```typescript
+// ❌ WRONG: Unused imports cause build warnings
+@Component({
+  imports: [
+    CommonModule,
+    ModusButtonComponent,  // ❌ Not used anywhere - remove it
+    ModusCardComponent,   // ❌ Not used anywhere - remove it
+  ],
+})
+```
+
+### ✅ DO: Run Build to Catch Unused Imports
+
+```bash
+# ✅ DO: Run build to find unused imports
+npm run build
+```
+
+---
+
+## ⚠️ Registration Requirements
+
+### ✅ DO: Register in Three Places
+
+**Every demo page must be registered in three locations:**
+
+1. **Route registration** (`app.routes.ts`):
+```typescript
+{
+  path: 'demos/select',
+  loadComponent: () =>
+    import('./components/demos/select-demo-page.component').then(
+      (m) => m.SelectDemoPageComponent
+    ),
+}
+```
+
+2. **Export registration** (`demos/index.ts`):
+```typescript
+export * from './select-demo-page.component';
+```
+
+3. **Demo link registration** (`demos-page.component.ts`):
+```html
+<a
+  routerLink="/demos/select"
+  class="p-4 rounded-lg bg-card border-default hover:bg-muted transition-colors"
+>
+  <div class="text-lg font-medium text-card-foreground mb-1">Select</div>
+  <div class="text-sm text-muted-foreground">
+    Dropdown menu for choosing from a list of options
+  </div>
+</a>
+```
+
+### ❌ DON'T: Skip Any Registration Step
+
+**Missing any step will cause:**
+- Route not accessible (missing route)
+- Import errors (missing export)
+- Demo not discoverable (missing link)
+
+---
+
+## ⚠️ Template Patterns
+
+### ✅ DO: Use Modus Button for Actions
+
+**Use Modus components, not native HTML:**
+
+```html
+<!-- ✅ CORRECT: Use Modus button -->
+<modus-button color="primary" size="sm" (buttonClick)="handleClick()">
+  Click Me
+</modus-button>
+```
+
+### ❌ DON'T: Use Native HTML Elements
+
+```html
+<!-- ❌ WRONG: Use native button -->
+<button class="px-4 py-2 rounded-lg bg-primary" (click)="handleClick()">
+  Click Me
+</button>
+```
+
+**Rule**: **Always prefer Modus components over native HTML elements.**
+
+---
+
+## ⚠️ Validation Checklist
+
+### ✅ DO: Run Full Validation Before Completion
+
+**Before completing any demo page, verify ALL of these:**
+
+- [ ] **Event handlers**: Use `$event` directly, check component output type
+- [ ] **Signals**: Call with `()` in templates, use `.set()` for updates
+- [ ] **Signal objects**: Call signal function before accessing properties
+- [ ] **Icon names**: Run `npm run lint:icon-names` - all pass
+- [ ] **Component colors**: Check component's TypeScript definition
+- [ ] **Imports**: Run `npm run build` - no unused import warnings
+- [ ] **Routes**: Added to `app.routes.ts`
+- [ ] **Exports**: Added to `demos/index.ts`
+- [ ] **Links**: Added to `demos-page.component.ts` in correct category
+- [ ] **Linting**: Run `npm run lint:all` - all checks pass
+- [ ] **Build**: Run `npm run build` - no errors
+
+---
+
+## 🔍 Debugging Event Handling Issues
+
+### Issue: TypeScript Error "Argument of type 'X' is not assignable"
+
+**Symptom**:
+```
+TS2345: Argument of type 'number' is not assignable to parameter of type 'InputEvent'.
+```
+
+**Solution**:
+1. Check component wrapper's `output<T>()` type
+2. Use `$event` directly (not `$event.detail`)
+3. Match handler parameter type to component output type
+
+**Example**:
+```typescript
+// Component emits: output<InputEvent>()
+// ✅ CORRECT:
+<inputChange)="handleChange($event)"
+handleChange(event: InputEvent): void { ... }
+
+// ❌ WRONG:
+<inputChange)="handleChange($event.detail)"
+```
+
+### Issue: Signal Not Updating Template
+
+**Symptom**: Template doesn't update when signal changes.
+
+**Solution**:
+1. Ensure signal is called with `()` in template
+2. Use `.set()` or `.update()` to modify signal value
+3. Don't reassign signal (signals are immutable)
+
+**Example**:
+```typescript
+// ✅ CORRECT:
+readonly value = signal<string>('');
+this.value.set('new value');  // Updates template
+
+// ❌ WRONG:
+readonly value = signal<string>('');
+this.value = signal('new value');  // Doesn't work - signals are immutable
+```
+
+### Issue: "Property does not exist on type WritableSignal"
+
+**Symptom**:
+```
+TS2339: Property 'page' does not exist on type 'WritableSignal<{ page: number; count: number }>'.
+```
+
+**Solution**: Call signal function before accessing properties:
+
+```typescript
+// ✅ CORRECT:
+paginationState().page  // Call signal first, then access property
+
+// ❌ WRONG:
+paginationState.page    // Can't access property of function
+```
+
+---
+
+## 📚 Reference Patterns
+
+### ✅ Working Event Handler Pattern
+
+```typescript
+// 1. Check component wrapper output type
+// modus-text-input.component.ts: output<InputEvent>()
+
+// 2. Use $event directly in template
+<modus-text-input
+  [value]="textValue()"
+  (inputChange)="handleTextChange($event)"
+/>
+
+// 3. Handler receives unwrapped event type
+handleTextChange(event: InputEvent): void {
+  const target = event.target as HTMLInputElement;
+  this.textValue.set(target.value);
+}
+```
+
+### ✅ Working Signal Pattern
+
+```typescript
+// 1. Define signal with type
+readonly value = signal<string>('');
+
+// 2. Use in template with () call
+<input [value]="value()" />
+@if (value()) {
+  <div>{{ value() }}</div>
+}
+
+// 3. Update with .set() or .update()
+handleChange(event: InputEvent): void {
+  const target = event.target as HTMLInputElement;
+  this.value.set(target.value);  // Updates template automatically
+}
+```
+
+### ✅ Working Signal Object Pattern
+
+```typescript
+// 1. Define signal with object type
+readonly state = signal<{ page: number; count: number }>({
+  page: 2,
+  count: 8,
+});
+
+// 2. Access properties AFTER calling signal
+<div>Page: {{ state().page }} / {{ state().count }}</div>
+<modus-pagination
+  [page]="state().page"
+  [count]="state().count"
+/>
+
+// 3. Update with .update() for object mutation
+handlePageChange(change: IPageChange): void {
+  this.state.update((current) => ({
+    ...current,
+    page: change.newPage,
+  }));
+}
+```
+
+---
+
+## 🎯 Key Takeaways
+
+1. **Event Handling**: Use `$event` directly, not `$event.detail`. Check component output type.
+2. **Signals**: Always call with `()` in templates. Use `.set()` or `.update()` for changes.
+3. **Signal Objects**: Call signal function before accessing properties: `signal().property`
+4. **Icons**: Always validate with `npm run lint:icon-names`
+5. **Colors**: Check component-specific color types, not universal
+6. **Imports**: Remove unused imports to avoid build warnings
+7. **Registration**: Always register in three places: routes, exports, demo links
+8. **Validation**: Run `npm run lint:all` and `npm run build` before completion
+
+---
+
+## 🚨 Common Mistakes to Avoid
+
+1. ❌ Using `$event.detail` in templates → Use `$event` directly
+2. ❌ Forgetting `()` when calling signals → Always use `value()`
+3. ❌ Accessing signal object properties without calling function → Use `signal().property`
+4. ❌ Assuming all components use `InputEvent` → Check component output type
+5. ❌ Using invalid icon names → Always validate with linter
+6. ❌ Assuming colors are universal → Check component-specific types
+7. ❌ Leaving unused imports → Remove to avoid build warnings
+8. ❌ Skipping registration steps → Register in all three places
+
+---
+
+**Remember**: When in doubt, check existing working demo pages in `src/app/components/demos/` for reference patterns!

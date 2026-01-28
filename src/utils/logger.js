@@ -17,6 +17,38 @@ export const logger = {
   subtitle: (message) => console.log(chalk.gray(message)),
   highlight: (message) => console.log(chalk.magenta(message)),
 
+  // Security notice
+  securityNotice: () => {
+    console.log(
+      chalk.cyan(`
+╔════════════════════════════════════════════════════════════╗
+║              CREATE MODUS APP - INFORMATION                ║
+╠════════════════════════════════════════════════════════════╣
+║                                                            ║
+║  Templates are bundled directly in this npm package.       ║
+║  No external downloads required - works fully offline.     ║
+║                                                            ║
+║  Available Templates:                                      ║
+║  • React - React + Vite + Modus 2.0 Components             ║
+║  • Angular - Angular + Modus 2.0 Web Components            ║
+║                                                            ║
+║  Security:                                                 ║
+║  • No runtime network dependencies                         ║
+║  • Templates verified at publish time                      ║
+║  • Published with npm provenance                           ║
+║                                                            ║
+║  Source repositories:                                      ║
+║  • github.com/julianoczkowski/modus-react-app              ║
+║  • github.com/julianoczkowski/modus-angular-app            ║
+║                                                            ║
+║  Report issues:                                            ║
+║  https://github.com/julianoczkowski/create-modus-app       ║
+║                                                            ║
+╚════════════════════════════════════════════════════════════╝
+    `),
+    );
+  },
+
   // Special formatting
   welcome: () => {
     console.log(
@@ -37,7 +69,7 @@ export const logger = {
 ║                         by Julian                           ║
 ║                                                             ║
 ╚════════════════════════════════════════════════════════════ +
-    `)
+    `),
     );
   },
 
@@ -45,7 +77,7 @@ export const logger = {
     projectName,
     framework,
     shouldInstall,
-    isCurrentFolder = false
+    isCurrentFolder = false,
   ) => {
     const projectPath = isCurrentFolder ? "current directory" : projectName;
     const openCommand = isCurrentFolder
@@ -62,31 +94,31 @@ ${chalk.gray("═".repeat(60))}
 ${chalk.gray("Next steps:")}
 ${chalk.cyan(openCommand)}
 ${!shouldInstall ? chalk.cyan(`run: npm install`) + "\n" : ""}${chalk.cyan(
-        `run: npm run dev`
+        `run: npm run dev`,
       )}
 
 ${chalk.gray("═".repeat(60))}
 ${chalk.gray("How to use this project:")} ${createClickableLink(
         "https://youtube.com",
-        "Watch Tutorial on YouTube"
+        "Watch Tutorial on YouTube",
       )}
 ${chalk.gray("═".repeat(60))}
 ${chalk.gray("Additional Links:")}
 ${chalk.gray("Modus 2.0 Storybook:")} ${createClickableLink(
         "https://trimble-oss.github.io/modus-wc-2.0/main/?path=/docs/documentation-getting-started--docs",
-        "Modus 2.0 Storybook"
+        "Modus 2.0 Storybook",
       )}
 ${chalk.gray("Modus Icons:")} ${createClickableLink(
         "https://modus-icons.trimble.com/",
-        "Modus Icons"
+        "Modus Icons",
       )}
 ${chalk.gray("Figma Modus MCP:")} ${createClickableLink(
         "https://trimble-oss.github.io/modus-wc-2.0/main/?path=/docs/documentation-modus-figma-mcp-integration-guide--docs",
-        "Figma Modus MCP"
+        "Figma Modus MCP",
       )}
 ${chalk.gray("═".repeat(60))}
 
-    `)
+    `),
     );
   },
 };

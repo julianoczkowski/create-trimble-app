@@ -1,0 +1,21 @@
+---
+alwaysApply: true
+---
+
+# Modus Color Usage - Short
+
+Essential color usage rules for Modus Design System integration.
+
+## Key Rules
+
+- **Use design system colors only** - `bg-background`, `text-foreground`, `bg-primary`, etc.
+- **Never use generic Tailwind colors** - No `bg-blue-500`, `text-gray-600`, etc.
+- **Never use hardcoded values** - No hex colors, RGB values, or CSS variables
+- **Use semantic color names** - `bg-destructive`, `text-warning`, `bg-success`
+- **Follow color hierarchy** - Background → Card → Primary → Secondary → Muted → Accent
+- **Use hover states** - `hover:bg-primary/90` for interactive elements
+- **Test in all themes** - Ensure colors work in light and dark modes
+
+## Reference
+
+For detailed color system mapping, advanced usage patterns, and theme integration, fetch the full rule: `modus-color-usage-react`

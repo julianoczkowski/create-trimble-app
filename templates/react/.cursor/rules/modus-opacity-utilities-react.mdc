@@ -1,0 +1,202 @@
+# Modus Opacity Utilities - React
+
+Essential opacity utilities for Modus Design System colors in React + Vite.
+
+## Key Rules
+
+- **Use custom opacity utilities, not Tailwind /80 syntax** - `text-foreground-80` not `text-foreground/80`
+- **CSS variables don't work with Tailwind opacity modifiers** - Tailwind needs actual color values
+- **Use color-mix() for opacity variants** - Modern CSS function for proper opacity calculation
+- **All utilities defined in index.css** - No Tailwind config changes needed
+- **Respects theme switching** - Works in all 6 Modus themes
+- **Use semantic color names** - `foreground`, `primary`, `destructive`, etc.
+
+## Available Opacity Levels
+
+- **80%** - `text-foreground-80`, `bg-primary-80`, `border-destructive-80`
+- **60%** - `text-foreground-60`, `bg-primary-60`, `border-destructive-60`
+- **40%** - `text-foreground-40`, `bg-primary-40`, `border-destructive-40`
+- **20%** - `text-foreground-20`, `bg-primary-20`, `border-destructive-20`
+
+## Available Colors
+
+- **foreground** - `text-foreground-80`, `bg-foreground-80`, `border-foreground-80`
+- **muted-foreground** - `text-muted-foreground-80`, `bg-muted-foreground-80`
+- **primary** - `text-primary-80`, `bg-primary-80`, `border-primary-80`
+- **secondary** - `text-secondary-80`, `bg-secondary-80`
+- **destructive** - `text-destructive-80`, `bg-destructive-80`, `border-destructive-80`
+- **warning** - `text-warning-80`, `bg-warning-80`, `border-warning-80`
+- **success** - `text-success-80`, `bg-success-80`, `border-success-80`
+
+## Usage Examples
+
+### Text Opacity
+
+```tsx
+// ❌ This doesn't work with CSS variables
+<div className="text-foreground/80">Text with 80% opacity</div>
+
+// ✅ Use custom opacity utilities
+<div className="text-foreground-80">Text with 80% opacity</div>
+<div className="text-primary-60">Primary text with 60% opacity</div>
+<div className="text-muted-foreground-40">Muted text with 40% opacity</div>
+```
+
+### Background Opacity
+
+```tsx
+// ✅ Background opacity utilities
+<div className="bg-primary-80">Primary background with 80% opacity</div>
+<div className="bg-destructive-60">Destructive background with 60% opacity</div>
+<div className="bg-warning-40">Warning background with 40% opacity</div>
+```
+
+### Border Opacity
+
+```tsx
+// ✅ Border opacity utilities
+<div className="border border-primary-80">Primary border with 80% opacity</div>
+<div className="border border-destructive-60">Destructive border with 60% opacity</div>
+<div className="border border-success-40">Success border with 40% opacity</div>
+```
+
+### Combined Usage
+
+```tsx
+// ✅ Mix opacity utilities with other classes
+<div className="p-4 bg-card border border-primary-40 rounded-lg">
+  <div className="text-foreground-80 mb-2">Title with 80% opacity</div>
+  <div className="text-muted-foreground-60">Description with 60% opacity</div>
+</div>
+```
+
+## Implementation Details
+
+### CSS Custom Properties
+
+```css
+/* Opacity variants for design system colors */
+--foreground-80: color-mix(in srgb, var(--foreground) 80%, transparent);
+--foreground-60: color-mix(in srgb, var(--foreground) 60%, transparent);
+--foreground-40: color-mix(in srgb, var(--foreground) 40%, transparent);
+--foreground-20: color-mix(in srgb, var(--foreground) 20%, transparent);
+```
+
+### Tailwind Utilities
+
+```css
+.text-foreground-80 {
+  color: var(--foreground-80);
+}
+.text-foreground-60 {
+  color: var(--foreground-60);
+}
+.text-foreground-40 {
+  color: var(--foreground-40);
+}
+.text-foreground-20 {
+  color: var(--foreground-20);
+}
+```
+
+## Common Patterns
+
+### Subtle Text Hierarchy
+
+```tsx
+<div className="space-y-2">
+  <div className="text-foreground">Main heading (100%)</div>
+  <div className="text-foreground-80">Subheading (80%)</div>
+  <div className="text-muted-foreground-60">Description (60%)</div>
+  <div className="text-muted-foreground-40">Caption (40%)</div>
+</div>
+```
+
+### Interactive States
+
+```tsx
+<button className="bg-primary hover:bg-primary-80 transition-colors">
+  Hover with opacity
+</button>
+```
+
+### Overlay Effects
+
+```tsx
+<div className="relative">
+  <div className="bg-foreground-20 absolute inset-0 rounded-lg"></div>
+  <div className="relative z-10 p-4">Content with overlay</div>
+</div>
+```
+
+## Browser Support
+
+- **color-mix()** - Supported in all modern browsers (Chrome 111+, Firefox 113+, Safari 16.2+)
+- **Fallback** - Gracefully degrades to full opacity in older browsers
+- **Progressive enhancement** - Works without JavaScript
+
+## Performance
+
+- **CSS-only solution** - No JavaScript overhead
+- **Efficient rendering** - Uses native CSS color-mix() function
+- **Theme-aware** - Automatically updates with theme changes
+- **No runtime calculations** - Pre-computed opacity values
+
+## Migration Guide
+
+### From Tailwind /80 syntax
+
+```tsx
+// ❌ Old (doesn't work with CSS variables)
+<div className="text-foreground/80">Text</div>
+<div className="bg-primary/60">Background</div>
+<div className="border-destructive/40">Border</div>
+
+// ✅ New (works with design system)
+<div className="text-foreground-80">Text</div>
+<div className="bg-primary-60">Background</div>
+<div className="border-destructive-40">Border</div>
+```
+
+### From inline styles
+
+```tsx
+// ❌ Old (not theme-aware)
+<div style={{ color: 'rgba(0, 0, 0, 0.8)' }}>Text</div>
+
+// ✅ New (theme-aware)
+<div className="text-foreground-80">Text</div>
+```
+
+## Best Practices
+
+- **Use semantic colors** - `foreground`, `primary`, `destructive` instead of generic colors
+- **Maintain contrast ratios** - Ensure accessibility with opacity levels
+- **Test in all themes** - Verify opacity works in light and dark modes
+- **Use consistent opacity levels** - Stick to 80%, 60%, 40%, 20% for consistency
+- **Combine with other utilities** - Mix with spacing, sizing, and layout classes
+- **Document opacity choices** - Explain why specific opacity levels are used
+
+## Troubleshooting
+
+### Opacity not working
+
+- Check if using custom utilities (`text-foreground-80`) not Tailwind syntax (`text-foreground/80`)
+- Verify CSS custom properties are defined in `index.css`
+- Ensure browser supports `color-mix()` function
+
+### Theme switching issues
+
+- Opacity utilities automatically respect theme changes
+- No additional configuration needed for theme switching
+- Test in both light and dark modes
+
+### Performance concerns
+
+- Opacity utilities are CSS-only and highly performant
+- No JavaScript calculations or runtime overhead
+- Uses native browser color-mix() function
+
+## Reference
+
+This rule provides comprehensive opacity utilities for Modus Design System colors, ensuring consistent and theme-aware opacity effects throughout the React application.

@@ -2,46 +2,22 @@
   "frameworks": {
     "react": {
       "name": "React App",
-      "description": "Build with React App",
-      "repository": "https://github.com/julianoczkowski/modus-react-app",
+      "description": "Build with React, Vite and Modus 2.0 Components",
       "supportsTypeScript": true,
       "badge": "●",
       "note": "Most Popular • Huge Ecosystem • Great for Complex UIs • AI Support: Very Strong"
     },
-    "vue": {
-      "name": "Vue 3",
-      "description": "Build with Vue 3",
-      "repository": "julianoczkowski/modus-vue-app",
-      "supportsTypeScript": true,
-      "badge": "▼",
-      "note": "Easiest to Learn • Gentle Learning Curve • Great DX • AI Support: Strong",
-      "disabled": true
-    },
-    "nextjs": {
-      "name": "Next.js",
-      "description": "Build with Next.js",
-      "repository": "julianoczkowski/modus-next-app",
-      "supportsTypeScript": true,
-      "badge": "▲",
-      "note": "Full Stack • SSR/SSG • Production Ready • Perfect for Bigger Prototypes • AI Support: Very Strong",
-      "disabled": true
-    },
     "angular": {
       "name": "Angular",
-      "description": "Build with Angular",
-      "repository": "julianoczkowski/modus-angular-app",
+      "description": "Build with Angular and Modus 2.0 Web Components",
       "supportsTypeScript": true,
       "badge": "■",
       "note": "Enterprise Grade • TypeScript First • Complete Framework • AI Support: Moderate"
-    },
-    "html": {
-      "name": "Vanilla JS",
-      "description": "Build with Vanilla JS",
-      "repository": "julianoczkowski/modus-html-app",
-      "supportsTypeScript": false,
-      "badge": "◆",
-      "note": "Fastest Start • Perfect for Basic Prototypes • AI Support: Moderate",
-      "disabled": true
     }
+  },
+  "meta": {
+    "configVersion": "2.0.0",
+    "templatesIncluded": true,
+    "lastUpdated": "2026-01-28"
   }
 }

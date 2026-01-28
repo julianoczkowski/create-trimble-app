@@ -1,0 +1,695 @@
+---
+description: Comprehensive rules for implementing forms and validation in Angular with Modus Web Components. Covers Reactive Forms patterns, validation feedback integration, touched state management, and best practices.
+globs: ['**/*.ts', '**/*.html']
+---
+
+# Forms and Validation Rules
+
+Comprehensive guide for implementing forms and validation in Angular applications with Modus Web Components.
+
+---
+
+## Core Principles
+
+### ✅ ALWAYS Use Reactive Forms
+
+**Reactive Forms are the preferred approach** for all form implementations in this Angular application.
+
+**✅ CORRECT: Use Reactive Forms**
+
+```typescript
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+
+@Component({
+  imports: [ReactiveFormsModule],
+})
+export class MyFormComponent {
+  private readonly fb = new FormBuilder();
+
+  readonly form = this.fb.group({
+    email: ['', [Validators.required, Validators.email]],
+    password: ['', [Validators.required, Validators.minLength(8)]],
+  });
+}
+```
+
+**❌ WRONG: Template-driven forms**
+
+```typescript
+// ❌ Don't use template-driven forms for complex validation
+@Component({
+  template: ` <input [(ngModel)]="email" required email /> `,
+})
+export class MyFormComponent {
+  email = '';
+}
+```
+
+**Rationale**: Reactive Forms provide:
+
+- Explicit validation logic in TypeScript
+- Better type safety
+- Easier testing
+- More predictable behavior
+- Better integration with Modus feedback components
+
+---
+
+## Form Setup Pattern
+
+### Required Imports
+
+```typescript
+import { Component, computed, signal } from '@angular/core';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import type { IInputFeedbackProp } from '@trimble-oss/moduswebcomponents';
+```
+
+### Basic Form Structure
+
+```typescript
+@Component({
+  imports: [ReactiveFormsModule],
+})
+export class FormComponent {
+  private readonly fb = new FormBuilder();
+
+  readonly form = this.fb.group({
+    firstName: ['', [Validators.required, Validators.minLength(2)]],
+    lastName: ['', [Validators.required, Validators.minLength(2)]],
+    email: ['', [Validators.required, Validators.email]],
+    agreement: [false, Validators.requiredTrue],
+  });
+}
+```
+
+---
+
+## Touched State Management
+
+### ✅ CRITICAL: Track Touched State Manually
+
+**Modus Web Components don't automatically track Angular form touched state.** You must manually track which fields have been touched.
+
+**✅ CORRECT: Manual touched state tracking**
+
+```typescript
+export class FormComponent {
+  // Track touched state for each field
+  readonly touchedFields = signal<Set<string>>(new Set());
+
+  handleFieldChange(event: InputEvent, fieldName: string): void {
+    const target = event.target as HTMLInputElement;
+    const control = this.form.controls[fieldName];
+    control.setValue(target.value);
+    this.markFieldTouched(fieldName);
+  }
+
+  handleFieldBlur(fieldName: string): void {
+    this.markFieldTouched(fieldName);
+  }
+
+  private markFieldTouched(fieldName: string): void {
+    this.touchedFields.update((fields) => {
+      const newFields = new Set(fields);
+      newFields.add(fieldName);
+      return newFields;
+    });
+  }
+}
+```
+
+**❌ WRONG: Relying on Angular's touched state directly**
+
+```typescript
+// ❌ WRONG: This won't work because Modus components don't integrate with Angular's touched state
+readonly emailFeedback = computed(() => {
+  const control = this.form.controls.email;
+  if (!control.touched || !control.errors) return undefined;
+  // This will never show errors because Modus components don't mark controls as touched
+});
+```
+
+**Why**: Modus Web Components are web components, not Angular components. They don't automatically integrate with Angular's form state (`touched`, `dirty`, etc.). You must manually track user interaction.
+
+---
+
+## Validation Feedback Pattern
+
+### ✅ Use Computed Signals for Validation Feedback
+
+**Always use `computed()` signals** to derive validation feedback from form state.
+
+**✅ CORRECT: Computed validation feedback**
+
+```typescript
+export class FormComponent {
+  readonly emailFeedback = computed<IInputFeedbackProp | undefined>(() => {
+    const control = this.form.controls.email;
+    const isTouched = this.touchedFields().has('email');
+
+    // Only show errors if field is touched
+    if (!isTouched || !control.errors) return undefined;
+
+    if (control.errors['required']) {
+      return { level: 'error', message: 'Email address is required.' };
+    }
+    if (control.errors['email']) {
+      return { level: 'error', message: 'Please enter a valid email address.' };
+    }
+    return undefined;
+  });
+}
+```
+
+**Key Rules**:
+
+1. **Always check `isTouched` first** - Don't show errors before user interaction
+2. **Return `undefined` when valid** - Only return feedback when there are errors
+3. **Use specific error messages** - Each validation rule should have a clear message
+4. **Check errors in priority order** - Most specific errors first (e.g., email format before required)
+
+**❌ WRONG: Showing errors immediately**
+
+```typescript
+// ❌ WRONG: Shows errors before user touches the field
+readonly emailFeedback = computed(() => {
+  const control = this.form.controls.email;
+  if (control.errors?.['required']) {
+    return { level: 'error', message: 'Required' };
+  }
+  return undefined;
+});
+```
+
+---
+
+## Connecting Modus Components to Forms
+
+### Text Inputs
+
+**✅ CORRECT: Two-way binding pattern**
+
+```typescript
+// Component
+export class FormComponent {
+  readonly form = this.fb.group({
+    firstName: ['', Validators.required],
+  });
+
+  readonly firstNameFeedback = computed<IInputFeedbackProp | undefined>(() => {
+    const control = this.form.controls.firstName;
+    const isTouched = this.touchedFields().has('firstName');
+    if (!isTouched || !control.errors) return undefined;
+    if (control.errors['required']) {
+      return { level: 'error', message: 'First name is required.' };
+    }
+    return undefined;
+  });
+
+  handleFirstNameChange(event: InputEvent): void {
+    const target = event.target as HTMLInputElement;
+    this.form.controls.firstName.setValue(target.value);
+    this.markFieldTouched('firstName');
+  }
+
+  handleFirstNameBlur(): void {
+    this.markFieldTouched('firstName');
+  }
+}
+```
+
+```html
+<!-- Template -->
+<modus-text-input
+  inputId="firstName"
+  placeholder="Enter first name"
+  [required]="true"
+  [value]="form.controls.firstName.value ?? ''"
+  [feedback]="firstNameFeedback()"
+  (inputChange)="handleFirstNameChange($event.detail)"
+  (inputBlur)="handleFirstNameBlur()"
+/>
+```
+
+**Key Points**:
+
+- Use `[value]` binding with null coalescing: `form.controls.field.value ?? ''`
+- Pass computed feedback: `[feedback]="fieldFeedback()"`
+- Handle both `inputChange` and `inputBlur` events
+- Extract event detail: `$event.detail` gives you the `InputEvent`
+
+### Checkbox Components
+
+**✅ CORRECT: Checkbox validation pattern**
+
+```typescript
+export class FormComponent {
+  readonly form = this.fb.group({
+    agreement: [false, Validators.requiredTrue],
+  });
+
+  readonly agreementFeedback = computed<IInputFeedbackProp | undefined>(() => {
+    const control = this.form.controls.agreement;
+    const isTouched = this.touchedFields().has('agreement');
+    if (!isTouched || !control.errors) return undefined;
+    if (control.errors['required']) {
+      return { level: 'error', message: 'You must agree to the terms and conditions.' };
+    }
+    return undefined;
+  });
+
+  handleAgreementChange(event: InputEvent): void {
+    const target = event.target as HTMLInputElement;
+    const checked = target.type === 'checkbox' ? target.checked : Boolean(target.value);
+    this.form.controls.agreement.setValue(checked);
+    this.markFieldTouched('agreement');
+  }
+}
+```
+
+```html
+<!-- Template -->
+<modus-checkbox
+  inputId="agreement"
+  label="I agree to the terms"
+  [required]="true"
+  [value]="form.controls.agreement.value ?? false"
+  (inputChange)="handleAgreementChange($event.detail)"
+/>
+@if (agreementFeedback()) {
+<modus-input-feedback
+  [level]="agreementFeedback()!.level"
+  [message]="agreementFeedback()!.message"
+/>
+}
+```
+
+**Note**: Checkboxes don't support the `feedback` prop directly. Use `<modus-input-feedback>` component separately.
+
+### Other Input Types
+
+**Same pattern applies to**:
+
+- `<modus-number-input>`
+- `<modus-textarea>`
+- `<modus-date>`
+- `<modus-time-input>`
+- `<modus-select>`
+
+All support the `feedback` prop and use the same event handling pattern.
+
+---
+
+## Event Handling
+
+### ✅ CORRECT: Event Handler Pattern
+
+```typescript
+handleFieldChange(event: InputEvent): void {
+  const target = event.target as HTMLInputElement;
+  this.form.controls.fieldName.setValue(target.value);
+  this.markFieldTouched('fieldName');
+}
+
+handleFieldBlur(): void {
+  this.markFieldTouched('fieldName');
+}
+```
+
+```html
+(modus-text-input (inputChange)="handleFieldChange($event.detail)" (inputBlur)="handleFieldBlur()"
+/>
+```
+
+**Key Points**:
+
+- Modus components emit `CustomEvent<InputEvent>`
+- Template accesses `$event.detail` to get the `InputEvent`
+- Handler receives `InputEvent` directly
+- Use `event.target as HTMLInputElement` to access value
+
+**❌ WRONG: Incorrect event extraction**
+
+```typescript
+// ❌ WRONG: Trying to access value from CustomEvent
+handleFieldChange(event: CustomEvent<InputEvent>): void {
+  // event.detail is the InputEvent, not the value
+  this.form.controls.fieldName.setValue(event.detail.value); // ❌ Wrong!
+}
+
+// ❌ WRONG: Not extracting event detail
+(modus-text-input
+  (inputChange)="handleFieldChange($event)" // ❌ Missing .detail
+/>
+```
+
+---
+
+## Validation Rules
+
+### ✅ Built-in Validators
+
+**Use Angular's built-in validators** from `@angular/forms`:
+
+```typescript
+import { Validators } from '@angular/forms';
+
+readonly form = this.fb.group({
+  // Required field
+  name: ['', Validators.required],
+
+  // Email format
+  email: ['', [Validators.required, Validators.email]],
+
+  // Minimum length
+  password: ['', [Validators.required, Validators.minLength(8)]],
+
+  // Maximum length
+  username: ['', [Validators.required, Validators.maxLength(20)]],
+
+  // Pattern matching (regex)
+  phone: ['', [Validators.required, Validators.pattern(/^\d{10}$/)]],
+
+  // Checkbox required
+  terms: [false, Validators.requiredTrue],
+
+  // Multiple validators (array)
+  complex: ['', [
+    Validators.required,
+    Validators.minLength(2),
+    Validators.maxLength(50),
+    Validators.pattern(/^[a-zA-Z\s]+$/)
+  ]],
+});
+```
+
+### ✅ Custom Validators
+
+**Create custom validators when needed**:
+
+```typescript
+import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
+
+function passwordStrengthValidator(): ValidatorFn {
+  return (control: AbstractControl): ValidationErrors | null => {
+    const value = control.value;
+    if (!value) return null;
+
+    const hasUpperCase = /[A-Z]/.test(value);
+    const hasLowerCase = /[a-z]/.test(value);
+    const hasNumeric = /[0-9]/.test(value);
+    const hasSpecialChar = /[!@#$%^&*]/.test(value);
+
+    const valid = hasUpperCase && hasLowerCase && hasNumeric && hasSpecialChar;
+    return valid ? null : { passwordStrength: true };
+  };
+}
+
+// Usage
+readonly form = this.fb.group({
+  password: ['', [Validators.required, passwordStrengthValidator()]],
+});
+```
+
+---
+
+## Error Message Patterns
+
+### ✅ CORRECT: Specific, Helpful Messages
+
+```typescript
+readonly emailFeedback = computed<IInputFeedbackProp | undefined>(() => {
+  const control = this.form.controls.email;
+  const isTouched = this.touchedFields().has('email');
+  if (!isTouched || !control.errors) return undefined;
+
+  // Check errors in priority order (most specific first)
+  if (control.errors['email']) {
+    return { level: 'error', message: 'Please enter a valid email address.' };
+  }
+  if (control.errors['required']) {
+    return { level: 'error', message: 'Email address is required.' };
+  }
+  return undefined;
+});
+```
+
+**Message Guidelines**:
+
+- ✅ **Be specific**: "Email address is required" not "Required"
+- ✅ **Be helpful**: "Password must be at least 8 characters" not "Invalid"
+- ✅ **Use consistent tone**: Professional, clear, concise
+- ✅ **Check priority**: Most specific errors first (format before required)
+
+**❌ WRONG: Generic error messages**
+
+```typescript
+// ❌ WRONG: Too generic
+if (control.errors) {
+  return { level: 'error', message: 'Invalid' };
+}
+
+// ❌ WRONG: Unhelpful
+if (control.errors?.['required']) {
+  return { level: 'error', message: 'Error' };
+}
+```
+
+---
+
+## Complete Example
+
+### ✅ Full Form Implementation
+
+```typescript
+import { Component, computed, signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ModusTextInputComponent } from '../modus-text-input.component';
+import { ModusCheckboxComponent } from '../modus-checkbox.component';
+import { ModusInputFeedbackComponent } from '../modus-input-feedback.component';
+import type { IInputFeedbackProp } from '@trimble-oss/moduswebcomponents';
+
+@Component({
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    ModusTextInputComponent,
+    ModusCheckboxComponent,
+    ModusInputFeedbackComponent,
+  ],
+  template: `
+    <form [formGroup]="form" class="flex flex-col gap-6">
+      <!-- First Name -->
+      <div class="flex flex-col gap-2">
+        <modus-text-input
+          inputId="firstName"
+          placeholder="Enter first name"
+          [required]="true"
+          [value]="form.controls.firstName.value ?? ''"
+          [feedback]="firstNameFeedback()"
+          (inputChange)="handleFirstNameChange($event.detail)"
+          (inputBlur)="handleFirstNameBlur()"
+        />
+      </div>
+
+      <!-- Email -->
+      <div class="flex flex-col gap-2">
+        <modus-text-input
+          inputId="email"
+          type="email"
+          placeholder="user@example.com"
+          [required]="true"
+          [value]="form.controls.email.value ?? ''"
+          [feedback]="emailFeedback()"
+          (inputChange)="handleEmailChange($event.detail)"
+          (inputBlur)="handleEmailBlur()"
+        />
+      </div>
+
+      <!-- Agreement -->
+      <div class="flex flex-col gap-2">
+        <modus-checkbox
+          inputId="agreement"
+          label="I agree to the terms"
+          [required]="true"
+          [value]="form.controls.agreement.value ?? false"
+          (inputChange)="handleAgreementChange($event.detail)"
+          (inputBlur)="handleAgreementBlur()"
+        />
+        @if (agreementFeedback()) {
+        <modus-input-feedback
+          [level]="agreementFeedback()!.level"
+          [message]="agreementFeedback()!.message"
+        />
+        }
+      </div>
+    </form>
+  `,
+})
+export class RegistrationFormComponent {
+  private readonly fb = new FormBuilder();
+
+  readonly form = this.fb.group({
+    firstName: ['', [Validators.required, Validators.minLength(2)]],
+    email: ['', [Validators.required, Validators.email]],
+    agreement: [false, Validators.requiredTrue],
+  });
+
+  readonly touchedFields = signal<Set<string>>(new Set());
+
+  readonly firstNameFeedback = computed<IInputFeedbackProp | undefined>(() => {
+    const control = this.form.controls.firstName;
+    const isTouched = this.touchedFields().has('firstName');
+    if (!isTouched || !control.errors) return undefined;
+
+    if (control.errors['minlength']) {
+      return { level: 'error', message: 'First name must be at least 2 characters.' };
+    }
+    if (control.errors['required']) {
+      return { level: 'error', message: 'First name is required.' };
+    }
+    return undefined;
+  });
+
+  readonly emailFeedback = computed<IInputFeedbackProp | undefined>(() => {
+    const control = this.form.controls.email;
+    const isTouched = this.touchedFields().has('email');
+    if (!isTouched || !control.errors) return undefined;
+
+    if (control.errors['email']) {
+      return { level: 'error', message: 'Please enter a valid email address.' };
+    }
+    if (control.errors['required']) {
+      return { level: 'error', message: 'Email address is required.' };
+    }
+    return undefined;
+  });
+
+  readonly agreementFeedback = computed<IInputFeedbackProp | undefined>(() => {
+    const control = this.form.controls.agreement;
+    const isTouched = this.touchedFields().has('agreement');
+    if (!isTouched || !control.errors) return undefined;
+
+    if (control.errors['required']) {
+      return { level: 'error', message: 'You must agree to the terms and conditions.' };
+    }
+    return undefined;
+  });
+
+  handleFirstNameChange(event: InputEvent): void {
+    const target = event.target as HTMLInputElement;
+    this.form.controls.firstName.setValue(target.value);
+    this.markFieldTouched('firstName');
+  }
+
+  handleFirstNameBlur(): void {
+    this.markFieldTouched('firstName');
+  }
+
+  handleEmailChange(event: InputEvent): void {
+    const target = event.target as HTMLInputElement;
+    this.form.controls.email.setValue(target.value);
+    this.markFieldTouched('email');
+  }
+
+  handleEmailBlur(): void {
+    this.markFieldTouched('email');
+  }
+
+  handleAgreementChange(event: InputEvent): void {
+    const target = event.target as HTMLInputElement;
+    const checked = target.type === 'checkbox' ? target.checked : Boolean(target.value);
+    this.form.controls.agreement.setValue(checked);
+    this.markFieldTouched('agreement');
+  }
+
+  handleAgreementBlur(): void {
+    this.markFieldTouched('agreement');
+  }
+
+  private markFieldTouched(fieldName: string): void {
+    this.touchedFields.update((fields) => {
+      const newFields = new Set(fields);
+      newFields.add(fieldName);
+      return newFields;
+    });
+  }
+}
+```
+
+---
+
+## Common Pitfalls
+
+### ❌ Don't Show Errors Before User Interaction
+
+```typescript
+// ❌ WRONG: Shows errors immediately on load
+readonly emailFeedback = computed(() => {
+  const control = this.form.controls.email;
+  if (control.errors?.['required']) {
+    return { level: 'error', message: 'Required' };
+  }
+  return undefined;
+});
+
+// ✅ CORRECT: Only show after touch
+readonly emailFeedback = computed(() => {
+  const control = this.form.controls.email;
+  const isTouched = this.touchedFields().has('email');
+  if (!isTouched || !control.errors) return undefined;
+  // ... rest of validation
+});
+```
+
+### ❌ Don't Skip Touched State Tracking
+
+```typescript
+// ❌ WRONG: Not tracking touched state
+(modus-text-input
+  [value]="form.controls.email.value"
+  [feedback]="emailFeedback()"
+  (inputChange)="form.controls.email.setValue($event.detail.target.value)"
+/>
+
+// ✅ CORRECT: Track touched state
+(modus-text-input
+  [value]="form.controls.email.value ?? ''"
+  [feedback]="emailFeedback()"
+  (inputChange)="handleEmailChange($event.detail)"
+  (inputBlur)="handleEmailBlur()"
+/>
+```
+
+### ❌ Don't Use Template-Driven Forms
+
+```typescript
+// ❌ WRONG: Template-driven forms don't integrate well with Modus feedback
+@Component({
+  template: `
+    <input [(ngModel)]="email" required email #emailRef="ngModel" />
+    @if (emailRef.errors) { <div>Error</div> }
+  `,
+})
+```
+
+---
+
+## Best Practices Summary
+
+1. **✅ ALWAYS use Reactive Forms** - Don't use template-driven forms
+2. **✅ ALWAYS track touched state manually** - Modus components don't integrate automatically
+3. **✅ ALWAYS use computed signals for feedback** - Reactive, efficient validation
+4. **✅ ALWAYS check touched state before showing errors** - Better UX
+5. **✅ ALWAYS use specific error messages** - Helpful, clear feedback
+6. **✅ ALWAYS handle both inputChange and inputBlur** - Complete interaction tracking
+7. **✅ ALWAYS extract event.detail** - Correct event handling
+8. **✅ ALWAYS use null coalescing for value bindings** - `form.controls.field.value ?? ''`
+
+---
+
+## Reference Implementation
+
+See `src/app/components/demos/input-label-demo-page.component.ts` for a complete working example of form validation with Modus components.

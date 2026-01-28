@@ -1,0 +1,463 @@
+---
+description: Rule to help adhere to proper UI and UX rules
+alwaysApply: false
+---
+
+---
+
+Title: Gestalt Laws in UI Design - Detailed Implementation Guide
+
+Scope: **Comprehensive Gestalt Laws with Real-World Examples and Modus Design System Integration**
+
+---
+
+# Gestalt Laws in UI Design
+
+The Gestalt Laws are fundamental principles of visual perception that explain how humans naturally organize visual elements. When applied to UI design, these laws create intuitive, user-friendly interfaces that feel natural and reduce cognitive load.
+
+---
+
+## 1. Law of Proximity
+
+**Definition:** Elements that are close together are perceived as related or grouped together.
+
+**Real-World Example:** In a contact list, the name, phone number, and email address for each person are grouped closely together with small gaps (`gap-2`), while each contact is separated by larger gaps (`gap-6` to `gap-8`) from other contacts.
+
+**Implementation:**
+
+```tsx
+// Contact list example
+<div className="space-y-6">
+  {contacts.map((contact) => (
+    <div
+      key={contact.id}
+      className="flex items-center gap-2 p-4 bg-card border border-border rounded-lg"
+    >
+      <ModusAvatar name={contact.name} size="md" />
+      <div className="flex flex-col gap-1">
+        <div className="text-foreground font-medium">{contact.name}</div>
+        <div className="text-muted-foreground text-sm">{contact.email}</div>
+        <div className="text-muted-foreground text-sm">{contact.phone}</div>
+      </div>
+    </div>
+  ))}
+</div>
+```
+
+**Key Rules:**
+
+- Use `gap-2` for related elements within a group
+- Use `gap-6` to `gap-8` for separation between different groups
+- Group form labels with their inputs using `gap-2`
+- Separate different sections with `gap-6` or larger
+
+---
+
+## 2. Law of Similarity
+
+**Definition:** Elements that look similar (same color, shape, size, or style) are perceived as related or belonging to the same category.
+
+**Real-World Example:** In a dashboard, all primary action buttons use the same `variant="primary"` style, all secondary actions use `variant="secondary"`, and all destructive actions use `variant="danger"`. This creates visual consistency that users can quickly understand.
+
+**Implementation:**
+
+```tsx
+// Dashboard action buttons
+<div className="flex gap-4">
+  <ModusButton variant="primary" size="medium">Save Changes</ModusButton>
+  <ModusButton variant="secondary" size="medium">Cancel</ModusButton>
+  <ModusButton variant="danger" size="medium">Delete</ModusButton>
+</div>
+
+// Status indicators
+<div className="flex gap-2">
+  <ModusBadge variant="success">Active</ModusBadge>
+  <ModusBadge variant="warning">Pending</ModusBadge>
+  <ModusBadge variant="destructive">Error</ModusBadge>
+</div>
+```
+
+**Key Rules:**
+
+- Same purpose = same variant, same size
+- Use consistent color coding for status indicators
+- Maintain visual hierarchy through consistent styling
+- Group similar interactive elements together
+
+---
+
+## 3. Law of Common Region
+
+**Definition:** Elements that are enclosed within the same boundary are perceived as related or grouped together.
+
+**Real-World Example:** In an e-commerce product page, all product details (name, price, description, specifications) are contained within a single card, while customer reviews are in a separate card below. This creates clear visual separation between different types of information.
+
+**Implementation:**
+
+```tsx
+// Product details card
+<ModusCard className="p-6 bg-card border border-border rounded-lg">
+  <div className="space-y-4">
+    <div className="flex items-start justify-between">
+      <h1 className="text-2xl font-bold text-foreground">Product Name</h1>
+      <div className="text-3xl font-bold text-primary">$99.99</div>
+    </div>
+    <p className="text-muted-foreground">Product description goes here...</p>
+    <div className="flex gap-4">
+      <ModusButton variant="primary">Add to Cart</ModusButton>
+      <ModusButton variant="secondary">Add to Wishlist</ModusButton>
+    </div>
+  </div>
+</ModusCard>
+
+// Separate reviews card
+<ModusCard className="p-6 bg-card border border-border rounded-lg mt-6">
+  <h2 className="text-xl font-semibold text-foreground mb-4">Customer Reviews</h2>
+  {/* Reviews content */}
+</ModusCard>
+```
+
+**Key Rules:**
+
+- Use `ModusCard` with `bg-card` and `border-border` for grouping
+- Apply consistent padding (`p-6`) within cards
+- Use `rounded-lg` for visual containment
+- Separate different content types into different cards
+
+---
+
+## 4. Law of Figure/Ground
+
+**Definition:** The visual system automatically separates elements into foreground (figure) and background (ground). The figure appears to stand out from the background.
+
+**Real-World Example:** In a modal dialog, the modal content (figure) stands out clearly against the darkened background overlay (ground). The modal appears to "float" above the page content, making it the clear focus of attention.
+
+**Implementation:**
+
+```tsx
+// Modal with figure/ground separation
+<ModusModal isOpen={isOpen} onClose={onClose}>
+  <div className="bg-card border border-border rounded-lg p-6 shadow-lg">
+    <div className="text-xl font-semibold text-foreground mb-4">Confirm Action</div>
+    <div className="text-muted-foreground mb-6">Are you sure you want to delete this item?</div>
+    <div className="flex gap-4 justify-end">
+      <ModusButton variant="secondary" onClick={onClose}>Cancel</ModusButton>
+      <ModusButton variant="danger" onClick={handleDelete}>Delete</ModusButton>
+    </div>
+  </div>
+</ModusModal>
+
+// Card on background
+<div className="bg-background min-h-screen p-6">
+  <ModusCard className="p-6 bg-card border border-border rounded-lg shadow-sm">
+    {/* Card content stands out from background */}
+  </ModusCard>
+</div>
+```
+
+**Key Rules:**
+
+- Use `bg-card` over `bg-background` for figure/ground separation
+- Apply shadows (`shadow-sm`, `shadow-lg`) to enhance separation
+- Use borders (`border-border`) to define boundaries
+- Ensure sufficient contrast between figure and ground
+
+---
+
+## 5. Law of Continuity
+
+**Definition:** The eye tends to follow continuous lines, curves, or patterns, creating a sense of flow and direction.
+
+**Real-World Example:** In a horizontal navigation menu, the eye naturally follows the line of menu items from left to right. In a form, the eye follows the vertical flow from label to input to the next label-input pair.
+
+**Implementation:**
+
+```tsx
+// Horizontal navigation with continuity
+<div className="flex items-center gap-8 border-b border-border pb-4">
+  <ModusButton variant="tertiary">Home</ModusButton>
+  <ModusButton variant="tertiary">Products</ModusButton>
+  <ModusButton variant="tertiary">About</ModusButton>
+  <ModusButton variant="tertiary">Contact</ModusButton>
+</div>
+
+// Form with vertical continuity
+<form className="space-y-6">
+  <div className="flex flex-col gap-2">
+    <label className="text-sm font-medium text-foreground">First Name</label>
+    <ModusTextInput placeholder="Enter first name" />
+  </div>
+  <div className="flex flex-col gap-2">
+    <label className="text-sm font-medium text-foreground">Last Name</label>
+    <ModusTextInput placeholder="Enter last name" />
+  </div>
+  <div className="flex flex-col gap-2">
+    <label className="text-sm font-medium text-foreground">Email</label>
+    <ModusTextInput type="email" placeholder="Enter email" />
+  </div>
+</form>
+```
+
+**Key Rules:**
+
+- Maintain alignment using `flex`, `items-start`, `justify-between`
+- Use consistent spacing (`space-y-6`, `gap-2`) for flow
+- Align related elements along common axes
+- Create clear visual paths for the eye to follow
+
+---
+
+## 6. Hick's Law
+
+**Definition:** The time it takes to make a decision increases with the number and complexity of choices available.
+
+**Real-World Example:** A toolbar with 15 different buttons creates decision paralysis. Instead, show only the 3 most important actions (Save, Cancel, Delete) and move secondary actions to a dropdown menu or secondary toolbar.
+
+**Implementation:**
+
+```tsx
+// Good: Limited primary actions
+<div className="flex items-center justify-between gap-4">
+  <div className="flex items-center gap-2">
+    <ModusIcon name="filter-list" size="md" decorative />
+    <ModusSelect placeholder="Filter by" options={filterOptions} />
+  </div>
+  <div className="flex gap-2">
+    <ModusButton variant="primary">Save</ModusButton>
+    <ModusButton variant="secondary">Cancel</ModusButton>
+    <ModusDropdownMenu>
+      <ModusButton variant="tertiary">More Actions</ModusButton>
+      {/* Additional actions in dropdown */}
+    </ModusDropdownMenu>
+  </div>
+</div>
+
+// Bad: Too many choices
+<div className="flex gap-2">
+  <ModusButton variant="primary">Save</ModusButton>
+  <ModusButton variant="secondary">Cancel</ModusButton>
+  <ModusButton variant="tertiary">Edit</ModusButton>
+  <ModusButton variant="tertiary">Copy</ModusButton>
+  <ModusButton variant="tertiary">Move</ModusButton>
+  <ModusButton variant="tertiary">Share</ModusButton>
+  <ModusButton variant="tertiary">Archive</ModusButton>
+  <ModusButton variant="danger">Delete</ModusButton>
+</div>
+```
+
+**Key Rules:**
+
+- Maximum 3 visible CTAs per context
+- Move secondary actions to dropdown menus
+- Use progressive disclosure for complex interfaces
+- Prioritize actions by frequency of use
+
+---
+
+## 7. Fitts's Law
+
+**Definition:** The time required to move to a target is a function of the distance to the target and the size of the target.
+
+**Real-World Example:** In a text editor, the "Save" button should be large and positioned near the text area where users are working. A small "Save" button in the top-right corner requires more precision and time to click.
+
+**Implementation:**
+
+```tsx
+// Good: Large, accessible buttons near content
+<div className="flex flex-col gap-4">
+  <ModusTextarea
+    placeholder="Write your content here..."
+    className="min-h-32"
+  />
+  <div className="flex gap-2">
+    <ModusButton variant="primary" size="large">Save</ModusButton>
+    <ModusButton variant="secondary" size="large">Cancel</ModusButton>
+  </div>
+</div>
+
+// Good: Floating action button for primary action
+<div className="fixed bottom-6 right-6">
+  <ModusButton
+    variant="primary"
+    size="large"
+    className="w-14 h-14 rounded-full shadow-lg"
+  >
+    <ModusIcon name="plus" size="lg" decorative />
+  </ModusButton>
+</div>
+```
+
+**Key Rules:**
+
+- Keep primary CTAs near edited content
+- Minimum 44×44px touch targets
+- Use `size="large"` for important actions
+- Position frequently used controls within easy reach
+
+---
+
+## 8. Serial Position Effect
+
+**Definition:** Users best remember the first and last items in a series, with the first item having the strongest recall (primacy effect) and the last item having good recall (recency effect).
+
+**Real-World Example:** In a navigation menu, place the most important item (like "Dashboard") first, and the least important item (like "Settings") last. In a form, put the most critical field first and the submit button last.
+
+**Implementation:**
+
+```tsx
+// Navigation with serial position consideration
+<div className="flex flex-col gap-1">
+  <ModusButton variant="primary" className="justify-start">Dashboard</ModusButton>
+  <ModusButton variant="tertiary" className="justify-start">Projects</ModusButton>
+  <ModusButton variant="tertiary" className="justify-start">Tasks</ModusButton>
+  <ModusButton variant="tertiary" className="justify-start">Reports</ModusButton>
+  <ModusButton variant="tertiary" className="justify-start">Settings</ModusButton>
+</div>
+
+// Form with serial position
+<form className="space-y-6">
+  <div className="flex flex-col gap-2">
+    <label className="text-sm font-medium text-foreground">Email *</label>
+    <ModusTextInput type="email" required />
+  </div>
+  <div className="flex flex-col gap-2">
+    <label className="text-sm font-medium text-foreground">Password *</label>
+    <ModusTextInput type="password" required />
+  </div>
+  <div className="flex flex-col gap-2">
+    <label className="text-sm font-medium text-foreground">Confirm Password *</label>
+    <ModusTextInput type="password" required />
+  </div>
+  <div className="flex gap-4 pt-4">
+    <ModusButton variant="primary" type="submit">Create Account</ModusButton>
+    <ModusButton variant="secondary" type="button">Cancel</ModusButton>
+  </div>
+</form>
+```
+
+**Key Rules:**
+
+- Place primary actions at start or end of flow
+- Put most important information first
+- Position secondary actions in the middle
+- Use visual hierarchy to reinforce importance
+
+---
+
+## 9. Law of Prägnanz (Simplicity)
+
+**Definition:** People tend to perceive the simplest, most stable interpretation of visual elements. The mind prefers simplicity over complexity.
+
+**Real-World Example:** A clean, minimal interface with plenty of white space is easier to understand than a cluttered interface with many borders, colors, and decorative elements. Users can focus on the content rather than being distracted by visual noise.
+
+**Implementation:**
+
+```tsx
+// Good: Clean, simple design
+<div className="bg-background min-h-screen p-6">
+  <div className="max-w-4xl mx-auto space-y-8">
+    <div className="text-center space-y-4">
+      <div className="text-4xl font-bold text-foreground">Welcome</div>
+      <div className="text-xl text-muted-foreground">Get started with your project</div>
+    </div>
+
+    <ModusCard className="p-8 bg-card border border-border rounded-lg">
+      <div className="space-y-6">
+        <div className="text-2xl font-semibold text-foreground">Create New Project</div>
+        <div className="space-y-4">
+          <ModusTextInput placeholder="Project name" />
+          <ModusTextarea placeholder="Project description" />
+        </div>
+        <div className="flex gap-4">
+          <ModusButton variant="primary">Create Project</ModusButton>
+          <ModusButton variant="secondary">Cancel</ModusButton>
+        </div>
+      </div>
+    </ModusCard>
+  </div>
+</div>
+
+// Bad: Cluttered, complex design
+<div className="bg-background min-h-screen p-6">
+  <div className="max-w-4xl mx-auto space-y-8">
+    <div className="text-center space-y-4 border-2 border-primary rounded-lg p-6 bg-primary/10">
+      <div className="text-4xl font-bold text-foreground">Welcome</div>
+      <div className="text-xl text-muted-foreground">Get started with your project</div>
+    </div>
+
+    <ModusCard className="p-8 bg-card border-2 border-border rounded-lg shadow-lg">
+      <div className="space-y-6 border-t border-b border-border py-4">
+        <div className="text-2xl font-semibold text-foreground">Create New Project</div>
+        <div className="space-y-4">
+          <div className="border border-border rounded p-2">
+            <ModusTextInput placeholder="Project name" />
+          </div>
+          <div className="border border-border rounded p-2">
+            <ModusTextarea placeholder="Project description" />
+          </div>
+        </div>
+        <div className="flex gap-4 border-t border-border pt-4">
+          <ModusButton variant="primary">Create Project</ModusButton>
+          <ModusButton variant="secondary">Cancel</ModusButton>
+        </div>
+      </div>
+    </ModusCard>
+  </div>
+</div>
+```
+
+**Key Rules:**
+
+- Remove unnecessary divs, borders, or text
+- Prefer whitespace over visual elements
+- Use consistent spacing and alignment
+- Focus on content hierarchy over decoration
+- Apply the "less is more" principle
+
+---
+
+## Implementation Checklist
+
+When applying Gestalt Laws to your UI design:
+
+- [ ] **Proximity**: Group related elements with `gap-2`, separate groups with `gap-6`+
+- [ ] **Similarity**: Use consistent variants and sizes for similar purposes
+- [ ] **Common Region**: Use `ModusCard` with `bg-card` and `border-border` for grouping
+- [ ] **Figure/Ground**: Create clear separation with `bg-card` over `bg-background`
+- [ ] **Continuity**: Maintain alignment and flow with consistent spacing
+- [ ] **Hick's Law**: Limit to 3 visible CTAs, use dropdowns for secondary actions
+- [ ] **Fitts's Law**: Keep primary actions near content, use 44×44px minimum targets
+- [ ] **Serial Position**: Place important items first and last
+- [ ] **Prägnanz**: Remove unnecessary elements, prefer whitespace
+
+---
+
+## Real-World Application Examples
+
+### E-commerce Product Page
+
+- **Proximity**: Product details grouped in one card, reviews in another
+- **Similarity**: All "Add to Cart" buttons use same variant
+- **Common Region**: Product info contained within card boundaries
+- **Figure/Ground**: Product card stands out from page background
+- **Continuity**: Eye flows from image to title to price to buttons
+- **Hick's Law**: Primary action (Add to Cart) prominent, secondary actions in dropdown
+- **Fitts's Law**: Large, accessible "Add to Cart" button
+- **Serial Position**: Product name first, price last in header
+- **Prägnanz**: Clean layout with minimal visual noise
+
+### Dashboard Interface
+
+- **Proximity**: Related metrics grouped together
+- **Similarity**: All status indicators use consistent badge variants
+- **Common Region**: Each widget contained in its own card
+- **Figure/Ground**: Widgets stand out from dashboard background
+- **Continuity**: Consistent grid layout creates visual flow
+- **Hick's Law**: Main actions in toolbar, secondary in menus
+- **Fitts's Law**: Important controls large and accessible
+- **Serial Position**: Most important widget in top-left
+- **Prägnanz**: Clean, uncluttered dashboard design
+
+---
+
+This comprehensive guide provides the foundation for creating intuitive, user-friendly interfaces that follow established principles of visual perception and human-computer interaction.

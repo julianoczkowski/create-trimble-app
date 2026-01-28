@@ -1,0 +1,508 @@
+---
+description: Integration patterns for Modus Web Components with React + Vite
+alwaysApply: false
+---
+
+# Modus Web Components Integration with React + Vite
+
+## 🏗️ **Architecture Overview**
+
+**CRITICAL**: This React + Vite application integrates Modus Web Components using the React wrapper package with proper provider setup and event handling patterns.
+
+**Integration**: `@trimble-oss/moduswebcomponents-react` v1.0.0-react19 with React 19 compatibility
+
+## 📦 **Package Dependencies**
+
+### ✅ **Required Dependencies**
+
+```json
+{
+  "dependencies": {
+    "@trimble-oss/moduswebcomponents-react": "^1.0.0-react19",
+    "@trimble-oss/modus-icons": "^1.18.0",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
+    "react-router-dom": "^7.9.4",
+    "tailwindcss": "^3.4.18"
+  }
+}
+```
+
+### ✅ **CSS Import Order**
+
+```css
+/* ✅ CORRECT: CSS import order in src/index.css */
+@import url("https://cdn.jsdelivr.net/npm/@trimble-oss/modus-icons@1.17.0/dist/field-systems/fonts/modus-icons.css");
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&display=swap");
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+```
+
+## 🎯 **Provider Setup**
+
+### ✅ **ModusProvider Integration**
+
+```tsx
+// ✅ CORRECT: ModusProvider setup in App.tsx
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { Suspense } from "react";
+import ModusProvider from "./components/ModusProvider";
+import { ThemeProvider } from "./contexts/ThemeContext";
+
+function App() {
+  return (
+    <ThemeProvider>
+      <ModusProvider>
+        <Router>
+          <div className="min-h-screen flex flex-col">
+            <AppHeader />
+            <div className="flex-1">
+              <Suspense
+                fallback={
+                  <div className="flex items-center justify-center min-h-screen">
+                    Loading...
+                  </div>
+                }
+              >
+                <Routes>
+                  <Route path="/" element={<></>} />
+                  <Route path="/components" element={<ComponentsDemo />} />
+                  {/* Dynamic routes */}
+                </Routes>
+              </Suspense>
+            </div>
+            <AppFooter />
+          </div>
+        </Router>
+      </ModusProvider>
+    </ThemeProvider>
+  );
+}
+```
+
+### ✅ **ModusProvider Component**
+
+```tsx
+// ✅ CORRECT: ModusProvider component
+import { ReactNode } from "react";
+
+interface ModusProviderProps {
+  children: ReactNode;
+}
+
+export default function ModusProvider({ children }: ModusProviderProps) {
+  return <>{children}</>;
+}
+```
+
+## 🎨 **Component Integration Patterns**
+
+### ✅ **Basic Component Usage**
+
+```tsx
+// ✅ CORRECT: Basic Modus component usage
+import {
+  ModusWcButton,
+  ModusWcTextInput,
+  ModusWcCard,
+} from "@trimble-oss/moduswebcomponents-react";
+
+function BasicComponents() {
+  return (
+    <div className="space-y-4">
+      <ModusWcButton className="bg-primary text-primary-foreground">
+        Click me
+      </ModusWcButton>
+
+      <ModusWcTextInput
+        placeholder="Enter text"
+        className="w-full border border-input rounded"
+      />
+
+      <ModusWcCard className="p-4">
+        <div slot="header">Card Header</div>
+        <div>Card content</div>
+      </ModusWcCard>
+    </div>
+  );
+}
+```
+
+### ✅ **Event Handling Patterns**
+
+```tsx
+// ✅ CORRECT: Event handling with refs
+import { useRef, useEffect } from "react";
+import {
+  ModusWcButton,
+  ModusWcTextInput,
+} from "@trimble-oss/moduswebcomponents-react";
+
+function EventHandlingComponent() {
+  const buttonRef = useRef<ModusWcButton>(null);
+  const inputRef = useRef<ModusWcTextInput>(null);
+
+  useEffect(() => {
+    const button = buttonRef.current;
+    const input = inputRef.current;
+
+    if (!button || !input) return;
+
+    const handleButtonClick = (event: CustomEvent) => {
+      console.log("Button clicked:", event.detail);
+    };
+
+    const handleInputChange = (event: CustomEvent) => {
+      console.log("Input changed:", event.detail);
+    };
+
+    button.addEventListener("buttonClick", handleButtonClick);
+    input.addEventListener("inputChange", handleInputChange);
+
+    return () => {
+      button.removeEventListener("buttonClick", handleButtonClick);
+      input.removeEventListener("inputChange", handleInputChange);
+    };
+  }, []);
+
+  return (
+    <div className="space-y-4">
+      <ModusWcButton ref={buttonRef}>Click me</ModusWcButton>
+
+      <ModusWcTextInput
+        ref={inputRef}
+        placeholder="Type something"
+        className="w-full"
+      />
+    </div>
+  );
+}
+```
+
+### ✅ **State Management Integration**
+
+```tsx
+// ✅ CORRECT: State management with Modus components
+import { useState, useRef, useEffect } from "react";
+import {
+  ModusWcModal,
+  ModusWcButton,
+} from "@trimble-oss/moduswebcomponents-react";
+
+function StatefulComponent() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const modalRef = useRef<ModusWcModal>(null);
+
+  const openModal = () => {
+    if (modalRef.current) {
+      const dialog = modalRef.current.querySelector(
+        "dialog"
+      ) as HTMLDialogElement;
+      if (dialog) {
+        dialog.showModal();
+        setIsModalOpen(true);
+      }
+    }
+  };
+
+  const closeModal = () => {
+    if (modalRef.current) {
+      const dialog = modalRef.current.querySelector(
+        "dialog"
+      ) as HTMLDialogElement;
+      if (dialog) {
+        dialog.close();
+        setIsModalOpen(false);
+      }
+    }
+  };
+
+  return (
+    <div>
+      <ModusWcButton onClick={openModal}>Open Modal</ModusWcButton>
+
+      <ModusWcModal ref={modalRef}>
+        <div slot="header">Modal Title</div>
+        <div slot="body">Modal content</div>
+        <div slot="footer">
+          <ModusWcButton onClick={closeModal}>Close</ModusWcButton>
+        </div>
+      </ModusWcModal>
+    </div>
+  );
+}
+```
+
+## 🎨 **Styling Integration**
+
+### ✅ **Design System Integration**
+
+```tsx
+// ✅ CORRECT: Design system integration
+import {
+  ModusWcButton,
+  ModusWcCard,
+} from "@trimble-oss/moduswebcomponents-react";
+
+function StyledComponents() {
+  return (
+    <div className="space-y-4">
+      <ModusWcButton
+        className="
+        bg-primary text-primary-foreground
+        hover:bg-primary/90
+        focus:ring-2 focus:ring-ring
+        transition-colors
+        px-4 py-2 rounded
+      "
+      >
+        Primary Button
+      </ModusWcButton>
+
+      <ModusWcCard
+        className="
+        bg-card text-card-foreground
+        border border-border
+        rounded-lg p-4
+      "
+      >
+        <div slot="header">Card Header</div>
+        <div>Card content</div>
+      </ModusWcCard>
+    </div>
+  );
+}
+```
+
+### ✅ **Theme Integration**
+
+```tsx
+// ✅ CORRECT: Theme integration with Modus components
+import { useTheme } from "../hooks/useTheme";
+import { ModusWcButton } from "@trimble-oss/moduswebcomponents-react";
+
+function ThemedComponent() {
+  const { theme, isDark } = useTheme();
+
+  return (
+    <div className="bg-background text-foreground p-4">
+      <div className="text-lg font-semibold mb-4">Current theme: {theme}</div>
+
+      <ModusWcButton
+        className={`
+        ${
+          isDark
+            ? "bg-primary text-primary-foreground"
+            : "bg-secondary text-secondary-foreground"
+        }
+        hover:opacity-90
+        transition-opacity
+        px-4 py-2 rounded
+      `}
+      >
+        Themed Button
+      </ModusWcButton>
+    </div>
+  );
+}
+```
+
+## 🚀 **Vite-Specific Integration**
+
+### ✅ **Environment Variables**
+
+```tsx
+// ✅ CORRECT: Environment variables in Vite
+import { ModusWcButton } from "@trimble-oss/moduswebcomponents-react";
+
+function EnvironmentComponent() {
+  const apiUrl = import.meta.env.VITE_API_URL;
+  const isDevelopment = import.meta.env.DEV;
+
+  return (
+    <div className="bg-background text-foreground p-4">
+      <div className="text-sm text-muted-foreground mb-2">
+        API URL: {apiUrl}
+      </div>
+      <div className="text-sm text-muted-foreground mb-4">
+        Environment: {isDevelopment ? "Development" : "Production"}
+      </div>
+
+      <ModusWcButton className="bg-primary text-primary-foreground px-4 py-2 rounded">
+        Environment Button
+      </ModusWcButton>
+    </div>
+  );
+}
+```
+
+### ✅ **Dynamic Imports**
+
+```tsx
+// ✅ CORRECT: Dynamic imports with Modus components
+import { lazy, Suspense } from "react";
+import { ModusWcButton } from "@trimble-oss/moduswebcomponents-react";
+
+const LazyComponent = lazy(() => import("./LazyComponent"));
+
+function DynamicImportComponent() {
+  return (
+    <div className="space-y-4">
+      <ModusWcButton className="bg-primary text-primary-foreground px-4 py-2 rounded">
+        Load Lazy Component
+      </ModusWcButton>
+
+      <Suspense
+        fallback={
+          <div className="flex items-center justify-center p-4">
+            <div className="text-foreground">Loading...</div>
+          </div>
+        }
+      >
+        <LazyComponent />
+      </Suspense>
+    </div>
+  );
+}
+```
+
+## 🔧 **TypeScript Integration**
+
+### ✅ **TypeScript Configuration**
+
+```json
+// ✅ CORRECT: TypeScript configuration
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "useDefineForClassFields": true,
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "skipLibCheck": true,
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "react-jsx",
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true
+  },
+  "include": ["src"]
+}
+```
+
+### ✅ **Component Type Definitions**
+
+```tsx
+// ✅ CORRECT: Component type definitions
+import {
+  ModusWcButton,
+  ModusWcTextInput,
+  ModusWcCard,
+} from "@trimble-oss/moduswebcomponents-react";
+
+interface ComponentProps {
+  title: string;
+  description?: string;
+  onAction?: () => void;
+}
+
+function TypedComponent({ title, description, onAction }: ComponentProps) {
+  return (
+    <div className="space-y-4">
+      <ModusWcCard className="bg-card text-card-foreground border border-border rounded-lg p-4">
+        <div slot="header" className="text-lg font-semibold">
+          {title}
+        </div>
+        <div className="text-sm text-muted-foreground">{description}</div>
+      </ModusWcCard>
+
+      {onAction && (
+        <ModusWcButton
+          onClick={onAction}
+          className="bg-primary text-primary-foreground px-4 py-2 rounded"
+        >
+          Action Button
+        </ModusWcButton>
+      )}
+    </div>
+  );
+}
+```
+
+## 🚫 **Common Pitfalls**
+
+### ❌ **Don't Use Direct Method Access**
+
+```tsx
+// ❌ WRONG: Direct method access
+const buttonRef = useRef<ModusWcButton>(null);
+
+const handleClick = () => {
+  buttonRef.current?.click(); // ❌ This won't work
+};
+
+// ✅ CORRECT: Event handling
+const handleClick = (event: CustomEvent) => {
+  console.log("Button clicked:", event.detail);
+};
+```
+
+### ❌ **Don't Mix Event Handling Patterns**
+
+```tsx
+// ❌ WRONG: Mixing event handling patterns
+<ModusWcButton
+  onClick={handleClick}           // ❌ React event
+  onInputChange={handleChange}   // ❌ Custom event
+>
+  Button
+</ModusWcButton>
+
+// ✅ CORRECT: Consistent event handling
+<ModusWcButton ref={buttonRef}>
+  Button
+</ModusWcButton>
+```
+
+### ❌ **Don't Ignore CSS Import Order**
+
+```css
+/* ❌ WRONG: Incorrect CSS import order */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@import url("https://cdn.jsdelivr.net/npm/@trimble-oss/modus-icons@1.17.0/dist/field-systems/fonts/modus-icons.css");
+
+/* ✅ CORRECT: Proper CSS import order */
+@import url("https://cdn.jsdelivr.net/npm/@trimble-oss/modus-icons@1.17.0/dist/field-systems/fonts/modus-icons.css");
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+```
+
+## 🎯 **Key Takeaways**
+
+1. **Provider Setup**: Use ModusProvider and ThemeProvider for proper integration
+2. **Event Handling**: Use refs and event listeners for Modus Web Components
+3. **CSS Import Order**: Import Modus icons before Tailwind CSS
+4. **TypeScript**: Proper type definitions for Modus components
+5. **Vite Patterns**: Use Vite-specific patterns for environment variables and assets
+
+## 🔍 **Integration Checklist**
+
+- [ ] ✅ **Package Dependencies**: Correct Modus React package version
+- [ ] ✅ **CSS Import Order**: Modus icons imported before Tailwind
+- [ ] ✅ **Provider Setup**: ModusProvider and ThemeProvider configured
+- [ ] ✅ **Event Handling**: Proper event handling with refs and listeners
+- [ ] ✅ **TypeScript**: Proper type definitions for components
+- [ ] ✅ **Vite Integration**: Environment variables and dynamic imports
+- [ ] ✅ **Theme Integration**: Theme-aware components with conditional styling
+
+---
+
+**Remember: This React + Vite application integrates Modus Web Components using the React wrapper package with proper provider setup, event handling patterns, and CSS import order. Always use refs for event handling and ensure proper CSS import order for Modus icons.**

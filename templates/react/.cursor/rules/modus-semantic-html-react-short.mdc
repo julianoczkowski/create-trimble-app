@@ -1,0 +1,21 @@
+---
+alwaysApply: true
+---
+
+# Modus Semantic HTML - Short
+
+Use div elements exclusively to avoid Tailwind CSS conflicts.
+
+## Key Rules
+
+- **Use div elements only** - All content must use `<div>` elements
+- **No semantic HTML elements** - Never use `h1`, `p`, `section`, `header`, `footer`, `nav`, `main`, `aside`, `article`, `span`
+- **Use Tailwind classes for styling** - Apply typography and layout with Tailwind classes
+- **Icon exception** - Only `<i>` elements allowed for Modus icons
+- **Consistent structure** - Maintain consistent div-based component structure
+- **Accessibility with divs** - Ensure proper accessibility with div elements
+- **Test rendering** - Verify components render correctly in all themes
+
+## Reference
+
+For detailed HTML patterns, accessibility guidelines, and advanced div usage, fetch the full rule: `modus-semantic-html-react`

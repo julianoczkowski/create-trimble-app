@@ -8,16 +8,25 @@ import {
   getCurrentFolderName,
 } from "./utils/file.js";
 import { installDependencies } from "./utils/install.js";
-import {
-  cloneTemplate,
-  cloneDemoContent,
-  cloneReactDemoContent,
-} from "./utils/git.js";
+import { copyTemplate, getDetailedErrorMessage } from "./utils/git.js";
 import { logger } from "./utils/logger.js";
 
 export async function scaffold(options = {}) {
+  const { verbose = false, dryRun = false } = options;
+
+  // Set verbose mode
+  if (verbose) {
+    process.env.VERBOSE = "true";
+  }
+
   // Show welcome screen
   logger.welcome();
+
+  // Show security notice if requested
+  if (options.showInfo) {
+    logger.securityNotice();
+    process.exit(0);
+  }
 
   const frameworks = loadFrameworks();
 
@@ -44,6 +53,16 @@ export async function scaffold(options = {}) {
   }
 
   const config = getFrameworkById(frameworks, framework);
+
+  if (!config) {
+    console.error(chalk.red(`Error: Unknown framework "${framework}"`));
+    console.log(
+      chalk.yellow(
+        `Available frameworks: ${frameworks.map((f) => f.id).join(", ")}`,
+      ),
+    );
+    process.exit(1);
+  }
 
   // 2. Installation Location Choice
   let installInCurrentFolder = options.currentFolder;
@@ -80,11 +99,9 @@ export async function scaffold(options = {}) {
 
   // 3. Project Name
   if (installInCurrentFolder) {
-    // Use current folder name when installing in current directory
     projectName = getCurrentFolderName();
     console.log(chalk.blue(`📁 Using current folder name: ${projectName}`));
   } else if (!projectName) {
-    // Only ask for project name if creating new directory
     const result = await prompts({
       type: "text",
       name: "projectName",
@@ -94,7 +111,6 @@ export async function scaffold(options = {}) {
     });
     projectName = result.projectName;
   } else {
-    // Validate provided project name
     const validation = validateProjectName(projectName, false);
     if (validation !== true) {
       console.error(chalk.red(`Error: ${validation}`));
@@ -107,64 +123,48 @@ export async function scaffold(options = {}) {
     process.exit(0);
   }
 
-  // 3. Clone Template
-  const spinner = ora(`📦 Installing ${config.name} template...`).start();
+  const projectPath = installInCurrentFolder ? "." : projectName;
+
+  // Dry-run mode: show what would be created without executing
+  if (dryRun) {
+    console.log(chalk.cyan("\n🔍 Dry-run mode - no changes will be made\n"));
+    console.log(chalk.white("Would create project with:"));
+    console.log(chalk.gray(`  Framework: ${config.name}`));
+    console.log(chalk.gray(`  Project name: ${projectName}`));
+    console.log(
+      chalk.gray(
+        `  Location: ${installInCurrentFolder ? "Current directory" : `New directory: ${projectName}`}`,
+      ),
+    );
+    console.log(chalk.gray(`  Template: Bundled (included in CLI package)`));
+    console.log();
+    process.exit(0);
+  }
+
+  // 4. Copy Template
+  const spinner = ora(`📦 Creating ${config.name} project...`).start();
 
   try {
-    await cloneTemplate(config.repository, projectName, installInCurrentFolder);
-    spinner.succeed(chalk.green(`Template installed successfully!`));
+    await copyTemplate(framework, projectPath);
+    spinner.succeed(chalk.green(`Project created successfully!`));
 
-    // 4. Update package.json with project name
+    // 5. Update package.json with project name
     try {
-      const projectPath = installInCurrentFolder ? "." : projectName;
       await updatePackageJson(projectPath, {
         name: projectName,
       });
       logger.success("Updated project configuration");
     } catch (error) {
       logger.warning("Could not update package.json name");
-    }
-  } catch (error) {
-    spinner.fail(
-      chalk.red(
-        `💀 Failed to install template. Contact julian_oczkowski@trimble.com`
-      )
-    );
-    console.error(chalk.red(error.message));
-    process.exit(1);
-  }
-
-  // 5. Demo Content (Next.js and React)
-  if (framework === "nextjs") {
-    const demoResult = await prompts({
-      type: "confirm",
-      name: "includeDemos",
-      message: "🎨 Would you like to include demo pages?",
-      initial: false,
-    });
-
-    if (demoResult.includeDemos) {
-      const demoSpinner = ora("📥 Downloading demo content...").start();
-      try {
-        const projectPath = installInCurrentFolder ? "." : projectName;
-
-        if (framework === "nextjs") {
-          await cloneDemoContent(projectPath);
-        } else if (framework === "react") {
-          await cloneReactDemoContent(projectPath);
-        }
-
-        demoSpinner.succeed(chalk.green("Demo content added successfully!"));
-      } catch (error) {
-        demoSpinner.fail(chalk.yellow("Failed to download demo content"));
-        console.log(
-          chalk.yellow(
-            `\n💡 You can manually add demo content later if needed.`
-          )
-        );
-        console.log(chalk.gray(`   Error: ${error.message}`));
+      if (verbose) {
+        console.log(chalk.gray(`  Error: ${error.message}`));
       }
     }
+  } catch (error) {
+    spinner.fail(chalk.red(`Failed to create project`));
+    const detailedMessage = getDetailedErrorMessage(error);
+    console.error(chalk.red(`\n${detailedMessage}`));
+    process.exit(1);
   }
 
   // Visual separator before dependency installation
@@ -186,14 +186,13 @@ export async function scaffold(options = {}) {
   if (install) {
     const installSpinner = ora("Installing dependencies...").start();
     try {
-      const installPath = installInCurrentFolder ? "." : projectName;
-      await installDependencies(installPath);
+      await installDependencies(projectPath);
       installSpinner.succeed(chalk.green("Dependencies installed"));
     } catch (error) {
       installSpinner.fail(chalk.red("Failed to install dependencies"));
       console.error(chalk.red(error.message));
       console.log(
-        chalk.yellow(`\n💡 You can install dependencies manually by running:`)
+        chalk.yellow(`\n💡 You can install dependencies manually by running:`),
       );
       const installCommand = installInCurrentFolder
         ? "npm install"

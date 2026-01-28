@@ -1,0 +1,271 @@
+---
+alwaysApply: true
+---
+
+# Angular Design System - Tailwind v4 with Modus
+
+## Design System Overview
+
+This Angular application uses a **9-color design system** that enforces semantic color usage through Tailwind classes. **Direct usage of `--modus-wc-color-*` variables is prohibited** - only use the 9 semantic colors through Tailwind utilities.
+
+## Color System
+
+### 9 Core Colors
+
+The design system consists of 9 core colors, each with semantic names that map to Modus CDN variables:
+
+| Semantic Name | Modus Variable                  | Usage                       |
+| ------------- | ------------------------------- | --------------------------- |
+| `background`  | `--modus-wc-color-base-page`    | Page background             |
+| `foreground`  | `--modus-wc-color-base-content` | Primary text                |
+| `card`        | `--modus-wc-color-base-100`     | Card backgrounds            |
+| `muted`       | `--modus-wc-color-base-200`     | Subtle backgrounds, borders |
+| `secondary`   | `--modus-wc-color-base-300`     | Secondary UI elements       |
+| `primary`     | `--modus-wc-color-info`         | Primary actions, info       |
+| `success`     | `--modus-wc-color-success`      | Success states              |
+| `warning`     | `--modus-wc-color-warning`      | Warning states              |
+| `destructive` | `--modus-wc-color-error`        | Error/destructive states    |
+
+### Color Variables in `src/styles.css`
+
+The 9 semantic colors are mapped to Modus variables in the `@theme` block:
+
+```css
+@theme {
+  /* 9-Color Design System */
+  --color-background: var(--modus-wc-color-base-page);
+  --color-foreground: var(--modus-wc-color-base-content);
+  --color-card: var(--modus-wc-color-base-100);
+  --color-card-foreground: var(--modus-wc-color-base-content);
+  --color-muted: var(--modus-wc-color-base-200);
+  --color-muted-foreground: var(--modus-wc-color-base-content);
+  --color-secondary: var(--modus-wc-color-base-300);
+  --color-secondary-foreground: var(--modus-wc-color-base-content);
+  --color-primary: var(--modus-wc-color-info);
+  --color-primary-foreground: var(--modus-wc-color-base-page);
+  --color-success: var(--modus-wc-color-success);
+  --color-success-foreground: var(--modus-wc-color-base-page);
+  --color-warning: var(--modus-wc-color-warning);
+  --color-warning-foreground: var(--modus-wc-color-base-content);
+  --color-destructive: var(--modus-wc-color-error);
+  --color-destructive-foreground: var(--modus-wc-color-base-page);
+  --color-border: var(--modus-wc-color-base-200);
+  --color-ring: var(--modus-wc-color-info);
+}
+```
+
+## Tailwind v4 Integration
+
+### Modus Font Size Scale
+
+Tailwind text utilities are mapped to Modus font sizes for consistency:
+
+| Tailwind Class | Modus Variable             | Size | Usage                         |
+| -------------- | -------------------------- | ---- | ----------------------------- |
+| `text-2xs`     | `--modus-wc-font-size-2xs` | 8px  | Micro text, badges            |
+| `text-xs`      | `--modus-wc-font-size-xs`  | 10px | Small labels, captions        |
+| `text-sm`      | `--modus-wc-font-size-sm`  | 12px | Secondary text, icons         |
+| `text-base`    | `--modus-wc-font-size-md`  | 14px | **Modus base size**           |
+| `text-lg`      | `--modus-wc-font-size-lg`  | 16px | Body text, icons              |
+| `text-xl`      | `--modus-wc-font-size-xl`  | 18px | Large text, icon-only buttons |
+| `text-2xl`     | `--modus-wc-font-size-2xl` | 20px | Headings                      |
+| `text-3xl`     | `--modus-wc-font-size-3xl` | 24px | Large headings                |
+| `text-4xl`     | `--modus-wc-font-size-4xl` | 30px | Display text                  |
+
+**Note**: Modus uses 14px (`text-base`) as the default body text size, not 16px like standard Tailwind.
+
+**Implementation**: Tailwind text utilities are overridden with custom CSS classes that use Modus font size variables:
+
+```css
+.text-base {
+  font-size: var(--modus-wc-font-size-md) !important; /* 14px - Modus base */
+}
+.text-lg {
+  font-size: var(--modus-wc-font-size-lg) !important; /* 16px */
+}
+/* ... other sizes ... */
+```
+
+### Available Tailwind Classes
+
+Use these Tailwind classes (they work with Tailwind v4 via CSS variables):
+
+#### Background Colors
+
+- `bg-background` - Page background
+- `bg-card` - Card background
+- `bg-muted` - Subtle background
+- `bg-secondary` - Secondary background
+- `bg-primary` - Primary/info background
+- `bg-success` - Success background
+- `bg-warning` - Warning background
+- `bg-destructive` - Destructive/error background
+
+#### Text Colors
+
+- `text-foreground` - Primary text
+- `text-card-foreground` - Text on cards
+- `text-muted-foreground` - Muted text
+- `text-secondary-foreground` - Secondary text
+- `text-primary-foreground` - Text on primary
+- `text-success-foreground` - Text on success
+- `text-warning-foreground` - Text on warning
+- `text-destructive-foreground` - Text on destructive
+
+#### Border Colors
+
+- `border-border` - Default border
+- `border-primary` - Primary border
+- `border-success` - Success border
+- `border-warning` - Warning border
+- `border-destructive` - Destructive border
+
+## Custom Utilities
+
+### Border Utilities (Tailwind v4 Workarounds)
+
+Due to Tailwind v4 limitations with borders, use these custom utilities:
+
+#### Default Borders
+
+- `.border-default` - 1px solid border
+- `.border-thick` - 2px solid border
+- `.border-dashed` - 1px dashed border
+- `.border-bottom-default` - Bottom border only
+- `.border-top-default` - Top border only
+- `.border-left-default` - Left border only
+- `.border-right-default` - Right border only
+
+#### Color-Specific Borders
+
+- `.border-primary` - Primary color border
+- `.border-thick-primary` - 2px primary border
+- `.border-success` - Success color border
+- `.border-warning` - Warning color border
+- `.border-destructive` - Destructive color border
+- Plus directional variants: `.border-top-primary`, `.border-bottom-success`, etc.
+
+### Opacity Utilities
+
+All colors support opacity variants (20%, 40%, 60%, 80%):
+
+#### Text Opacity
+
+- `.text-foreground-80`, `.text-foreground-60`, `.text-foreground-40`, `.text-foreground-20`
+- `.text-primary-80`, `.text-primary-60`, `.text-primary-40`, `.text-primary-20`
+- `.text-success-80`, `.text-success-60`, etc.
+- Same pattern for: `card`, `muted`, `secondary`, `warning`, `destructive`
+
+#### Background Opacity
+
+- `.bg-foreground-80`, `.bg-foreground-60`, `.bg-foreground-40`, `.bg-foreground-20`
+- `.bg-primary-80`, `.bg-primary-60`, etc.
+- Same pattern for all colors
+
+#### Border Opacity
+
+- `.border-foreground-80`, `.border-foreground-60`, etc.
+- Same pattern for all colors
+
+## Usage Patterns
+
+### Component Styling
+
+```html
+<!-- ✅ CORRECT: Use Tailwind classes with design system colors -->
+<div class="bg-card text-card-foreground border border-border rounded-lg p-4">
+  <h2 class="text-foreground text-xl font-semibold">Card Title</h2>
+  <p class="text-muted-foreground">Card content</p>
+</div>
+
+<!-- ✅ CORRECT: Use custom border utilities -->
+<div class="border-default border-primary rounded-lg p-4">Primary bordered card</div>
+
+<!-- ✅ CORRECT: Use opacity utilities -->
+<p class="text-foreground-60">Muted text</p>
+<div class="bg-primary-20 border-primary rounded p-2">Subtle primary background</div>
+```
+
+### Status Colors
+
+```html
+<!-- ✅ CORRECT: Status indicators -->
+<div class="bg-success text-success-foreground border-success p-3 rounded">Success message</div>
+
+<div class="bg-warning text-warning-foreground border-warning p-3 rounded">Warning message</div>
+
+<div class="bg-destructive text-destructive-foreground border-destructive p-3 rounded">Error message</div>
+```
+
+## Forbidden Patterns
+
+### ❌ Never Use Raw Modus Variables
+
+```html
+<!-- ❌ WRONG: Raw Modus variables are PROHIBITED -->
+<div style="background: var(--modus-wc-color-base-page);">
+  <div class="bg-[var(--modus-wc-color-info)]"></div>
+  <p style="color: var(--modus-wc-color-gray-4);">Don't do this!</p>
+</div>
+```
+
+### ❌ Never Use Hardcoded Colors
+
+```html
+<!-- ❌ WRONG: Hardcoded colors -->
+<div style="background: #ffffff; color: #000000;">
+  <div class="bg-[#ffffff] text-[#000000]"></div>
+</div>
+```
+
+### ❌ Never Use Generic Tailwind Colors
+
+```html
+<!-- ❌ WRONG: Generic Tailwind colors -->
+<div class="bg-blue-500 text-white border-gray-300"></div>
+```
+
+### ❌ Never Use Inline Styles (except dynamic values)
+
+```html
+<!-- ❌ WRONG: Static inline styles -->
+<div style="margin-right: 8px;">Use mr-2 instead</div>
+
+<!-- ✅ CORRECT: Tailwind classes -->
+<div class="mr-2">Content</div>
+```
+
+## File Location
+
+All design system colors and utilities are defined in:
+
+- **`src/styles.css`** - Complete color system, opacity variants, and custom utilities
+
+This file ensures LLMs can access all available colors and utilities when generating code.
+
+## Tailwind v4 Configuration
+
+Tailwind v4 uses CSS imports and reads CSS variables directly from `src/styles.css`. No separate `tailwind.config.js` is required for basic color mapping.
+
+PostCSS configuration is in `.postcssrc.json`:
+
+```json
+{
+  "plugins": {
+    "@tailwindcss/postcss": {}
+  }
+}
+```
+
+## Key Takeaways
+
+1. **Always use semantic design system colors**: `bg-background`, `text-foreground`, `bg-card`, etc.
+2. **Never use raw Modus variables**: Don't use `var(--modus-wc-color-*)` directly
+3. **Never use hardcoded colors**: No hex, RGB, or generic Tailwind colors
+4. **Use custom border utilities**: For borders in Tailwind v4, use `.border-default`, `.border-primary`, etc.
+5. **Use opacity utilities**: For opacity, use `.text-foreground-80`, `.bg-primary-20`, etc.
+6. **All colors are local**: Defined in `src/styles.css` for LLM context awareness
+
+---
+
+**Remember**: This Angular application uses a **strict 9-color design system**. **Direct usage of `--modus-wc-color-*` variables is PROHIBITED**. Always use only the 9 semantic colors through Tailwind classes. Use custom border and opacity utilities to work around Tailwind v4 limitations.

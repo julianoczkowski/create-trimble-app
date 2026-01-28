@@ -1,0 +1,441 @@
+---
+description: ModusSelect vs ModusDropdownMenu reliability in React
+alwaysApply: false
+---
+
+# ModusSelect vs ModusDropdownMenu in React
+
+## 🚨 **CRITICAL: ModusSelect Reliability Issues**
+
+**Problem**: `ModusSelect` component has unreliable event handling in React applications, especially with Chrome DevTools automation and testing.
+
+**Root Cause**: `ModusSelect` events are inconsistent and may not fire reliably in React environments.
+
+**Solution**: Use `ModusDropdownMenu` with `itemSelect` events, which are more reliable and consistent.
+
+## ❌ **Common Anti-Patterns**
+
+### ❌ **Using ModusSelect (Unreliable)**
+
+```tsx
+// ❌ WRONG: ModusSelect with unreliable events
+function UnreliableSelect() {
+  const [selectedValue, setSelectedValue] = useState("");
+
+  const options = [
+    { label: "Option 1", value: "option1" },
+    { label: "Option 2", value: "option2" },
+    { label: "Option 3", value: "option3" },
+  ];
+
+  const handleInputChange = (event: CustomEvent<InputEvent>) => {
+    // ❌ This event may not fire reliably in React
+    console.log("Select changed:", event.target.value);
+    setSelectedValue(event.target.value);
+  };
+
+  return (
+    <ModusSelect
+      options={options}
+      value={selectedValue}
+      onInputChange={handleInputChange} // ❌ Unreliable event
+      label="Select an option"
+    />
+  );
+}
+```
+
+### ❌ **Direct Event Handling**
+
+```tsx
+// ❌ WRONG: Direct event handling
+function DirectEventHandling() {
+  const options = [
+    { label: "Option 1", value: "1" },
+    { label: "Option 2", value: "2" },
+  ];
+
+  const handleInputChange = (event: CustomEvent<InputEvent>) => {
+    // ❌ This may not work consistently in React
+    const value = event.target.value;
+    console.log("Selected:", value);
+  };
+
+  return <ModusSelect options={options} onInputChange={handleInputChange} />;
+}
+```
+
+## ✅ **Correct Patterns**
+
+### ✅ **Use ModusDropdownMenu (Reliable)**
+
+```tsx
+// ✅ CORRECT: ModusDropdownMenu with reliable events
+function ReliableDropdown() {
+  const [selectedValue, setSelectedValue] = useState("");
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef<HTMLModusWcDropdownMenuElement>(null);
+
+  const handleItemSelect = (event: CustomEvent<{ value: string }>) => {
+    // ✅ CORRECT: Reliable itemSelect event
+    const value = event.detail.value;
+    console.log("Item selected:", value);
+    setSelectedValue(value);
+    setIsOpen(false);
+  };
+
+  const toggleDropdown = () => {
+    if (dropdownRef.current) {
+      dropdownRef.current.menuVisible = !isOpen;
+      setIsOpen(!isOpen);
+    }
+  };
+
+  const menuItems = [
+    { label: "Option 1", value: "option1" },
+    { label: "Option 2", value: "option2" },
+    { label: "Option 3", value: "option3" },
+  ];
+
+  return (
+    <ModusDropdownMenu
+      ref={dropdownRef}
+      menuVisible={isOpen}
+      onItemSelect={handleItemSelect}
+      buttonContent={
+        <ModusWcButton onClick={toggleDropdown}>
+          {selectedValue || "Select an option"}
+        </ModusWcButton>
+      }
+      menuItems={menuItems}
+    />
+  );
+}
+```
+
+### ✅ **Reusable Dropdown Hook**
+
+```tsx
+// ✅ CORRECT: Reusable dropdown hook
+function useDropdown() {
+  const [selectedValue, setSelectedValue] = useState("");
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef<HTMLModusWcDropdownMenuElement>(null);
+
+  const handleItemSelect = (event: CustomEvent<{ value: string }>) => {
+    const value = event.detail.value;
+    setSelectedValue(value);
+    setIsOpen(false);
+  };
+
+  const toggleDropdown = () => {
+    if (dropdownRef.current) {
+      dropdownRef.current.menuVisible = !isOpen;
+      setIsOpen(!isOpen);
+    }
+  };
+
+  const closeDropdown = () => {
+    if (dropdownRef.current) {
+      dropdownRef.current.menuVisible = false;
+      setIsOpen(false);
+    }
+  };
+
+  return {
+    selectedValue,
+    isOpen,
+    dropdownRef,
+    handleItemSelect,
+    toggleDropdown,
+    closeDropdown,
+  };
+}
+
+// ✅ CORRECT: Use the hook
+function DropdownComponent() {
+  const {
+    selectedValue,
+    isOpen,
+    dropdownRef,
+    handleItemSelect,
+    toggleDropdown,
+  } = useDropdown();
+
+  const menuItems = [
+    { label: "Option 1", value: "option1" },
+    { label: "Option 2", value: "option2" },
+    { label: "Option 3", value: "option3" },
+  ];
+
+  return (
+    <ModusDropdownMenu
+      ref={dropdownRef}
+      menuVisible={isOpen}
+      onItemSelect={handleItemSelect}
+      buttonContent={
+        <ModusWcButton onClick={toggleDropdown}>
+          {selectedValue || "Select an option"}
+        </ModusWcButton>
+      }
+      menuItems={menuItems}
+    />
+  );
+}
+```
+
+## 🎯 **Advanced Patterns**
+
+### ✅ **Dropdown with Search**
+
+```tsx
+// ✅ CORRECT: Dropdown with search functionality
+function SearchableDropdown() {
+  const [selectedValue, setSelectedValue] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef<ModusWcDropdownMenu>(null);
+
+  const options = [
+    { value: "apple", label: "Apple" },
+    { value: "banana", label: "Banana" },
+    { value: "cherry", label: "Cherry" },
+    { value: "date", label: "Date" },
+    { value: "elderberry", label: "Elderberry" },
+  ];
+
+  const filteredOptions = options.filter((option) =>
+    option.label.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const handleItemSelect = (event: CustomEvent) => {
+    const value = event.detail;
+    setSelectedValue(value);
+    setIsOpen(false);
+    setSearchTerm("");
+  };
+
+  const toggleDropdown = () => {
+    if (dropdownRef.current) {
+      const dropdown = dropdownRef.current.querySelector(
+        "modus-dropdown-menu"
+      ) as any;
+      if (dropdown) {
+        if (isOpen) {
+          dropdown.close();
+        } else {
+          dropdown.open();
+        }
+        setIsOpen(!isOpen);
+      }
+    }
+  };
+
+  return (
+    <div className="space-y-2">
+      <ModusWcButton onClick={toggleDropdown}>
+        {selectedValue || "Select an option"}
+      </ModusWcButton>
+
+      <ModusWcDropdownMenu ref={dropdownRef} onItemSelect={handleItemSelect}>
+        <div className="p-2">
+          <input
+            type="text"
+            placeholder="Search options..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full px-3 py-2 border border-input rounded bg-input text-foreground"
+          />
+        </div>
+
+        {filteredOptions.map((option) => (
+          <ModusWcDropdownMenuItem key={option.value} value={option.value}>
+            {option.label}
+          </ModusWcDropdownMenuItem>
+        ))}
+      </ModusWcDropdownMenu>
+    </div>
+  );
+}
+```
+
+### ✅ **Multi-Select Dropdown**
+
+```tsx
+// ✅ CORRECT: Multi-select dropdown
+function MultiSelectDropdown() {
+  const [selectedValues, setSelectedValues] = useState<string[]>([]);
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef<ModusWcDropdownMenu>(null);
+
+  const options = [
+    { value: "option1", label: "Option 1" },
+    { value: "option2", label: "Option 2" },
+    { value: "option3", label: "Option 3" },
+    { value: "option4", label: "Option 4" },
+  ];
+
+  const handleItemSelect = (event: CustomEvent) => {
+    const value = event.detail;
+    setSelectedValues((prev) => {
+      if (prev.includes(value)) {
+        return prev.filter((v) => v !== value);
+      } else {
+        return [...prev, value];
+      }
+    });
+  };
+
+  const toggleDropdown = () => {
+    if (dropdownRef.current) {
+      const dropdown = dropdownRef.current.querySelector(
+        "modus-dropdown-menu"
+      ) as any;
+      if (dropdown) {
+        if (isOpen) {
+          dropdown.close();
+        } else {
+          dropdown.open();
+        }
+        setIsOpen(!isOpen);
+      }
+    }
+  };
+
+  return (
+    <div className="space-y-2">
+      <ModusWcButton onClick={toggleDropdown}>
+        {selectedValues.length > 0
+          ? `${selectedValues.length} selected`
+          : "Select options"}
+      </ModusWcButton>
+
+      <ModusWcDropdownMenu ref={dropdownRef} onItemSelect={handleItemSelect}>
+        {options.map((option) => (
+          <ModusWcDropdownMenuItem
+            key={option.value}
+            value={option.value}
+            className={
+              selectedValues.includes(option.value)
+                ? "bg-primary text-primary-foreground"
+                : ""
+            }
+          >
+            {option.label}
+          </ModusWcDropdownMenuItem>
+        ))}
+      </ModusWcDropdownMenu>
+    </div>
+  );
+}
+```
+
+## 🔧 **Testing Patterns**
+
+### ✅ **Test Dropdown Reliability**
+
+```tsx
+// ✅ CORRECT: Test dropdown reliability
+function DropdownTest() {
+  const [testResults, setTestResults] = useState<string[]>([]);
+  const dropdownRef = useRef<ModusWcDropdownMenu>(null);
+
+  const testDropdown = () => {
+    if (dropdownRef.current) {
+      const dropdown = dropdownRef.current.querySelector(
+        "modus-dropdown-menu"
+      ) as any;
+      if (dropdown) {
+        dropdown.open();
+        setTestResults((prev) => [...prev, "Dropdown opened"]);
+
+        setTimeout(() => {
+          dropdown.close();
+          setTestResults((prev) => [...prev, "Dropdown closed"]);
+        }, 1000);
+      }
+    }
+  };
+
+  const handleItemSelect = (event: CustomEvent) => {
+    const value = event.detail;
+    setTestResults((prev) => [...prev, `Item selected: ${value}`]);
+  };
+
+  return (
+    <div className="space-y-4">
+      <ModusWcButton onClick={testDropdown}>Test Dropdown</ModusWcButton>
+
+      <ModusWcDropdownMenu ref={dropdownRef} onItemSelect={handleItemSelect}>
+        <ModusWcDropdownMenuItem value="test1">
+          Test Option 1
+        </ModusWcDropdownMenuItem>
+        <ModusWcDropdownMenuItem value="test2">
+          Test Option 2
+        </ModusWcDropdownMenuItem>
+      </ModusWcDropdownMenu>
+
+      <div>
+        <h3>Test Results:</h3>
+        {testResults.map((result, index) => (
+          <div key={index}>{result}</div>
+        ))}
+      </div>
+    </div>
+  );
+}
+```
+
+## 🚫 **What NOT to Do**
+
+### ❌ **Don't Use ModusSelect**
+
+```tsx
+// ❌ WRONG: Don't use ModusSelect
+const options = [{ label: "Option 1", value: "1" }];
+<ModusSelect options={options} onInputChange={handleChange} />;
+```
+
+### ❌ **Don't Rely on ModusSelect Events**
+
+```tsx
+// ❌ WRONG: Don't rely on ModusSelect events
+const handleInputChange = (event: CustomEvent<InputEvent>) => {
+  // This may not fire reliably in React
+  setValue(event.target.value);
+};
+```
+
+### ❌ **Don't Mix Select and Dropdown**
+
+```tsx
+// ❌ WRONG: Don't mix select and dropdown
+<div>
+  <ModusSelect options={options} onInputChange={handleSelect} />
+  {/* ❌ Unreliable */}
+
+  <ModusDropdownMenu menuItems={menuItems} onItemSelect={handleDropdown} />
+  {/* ✅ Reliable */}
+</div>
+```
+
+## 🎯 **Key Takeaways**
+
+1. **Use ModusDropdownMenu**: Always use `ModusDropdownMenu` instead of `ModusSelect`
+2. **Reliable Events**: `itemSelect` events are more reliable than `inputChange` events
+3. **Programmatic Control**: Use `menuVisible` property for programmatic control
+4. **Event Handling**: Use proper event handling patterns with refs
+5. **Testing**: Test dropdown functionality thoroughly
+
+## 🔍 **Dropdown Implementation Checklist**
+
+- [ ] ✅ **Use ModusDropdownMenu**: Never use ModusSelect
+- [ ] ✅ **Event Handling**: Use itemSelect events for reliability
+- [ ] ✅ **Programmatic Control**: Use menuVisible property for control
+- [ ] ✅ **State Management**: Proper state management with React
+- [ ] ✅ **Testing**: Test dropdown functionality and events
+- [ ] ✅ **Accessibility**: Ensure proper accessibility with dropdown
+
+---
+
+**Remember: ModusSelect has unreliable event handling in React applications. Always use ModusDropdownMenu with itemSelect events for reliable dropdown functionality. Use menuVisible property for programmatic control and proper event handling patterns.**

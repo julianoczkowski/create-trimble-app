@@ -1,0 +1,21 @@
+---
+alwaysApply: true
+---
+
+# Modus Accordion State Management - Short
+
+Essential state management patterns for Modus Accordion components in React.
+
+## Key Rules
+
+- **Let Modus components manage their own state** - Don't try to control accordion state from React
+- **Use `expanded` for initial state only** - Set initial state, then let component handle changes
+- **Use `onExpandedChange` for tracking** - Monitor state changes without controlling them
+- **Use refs for programmatic control** - Access component methods when needed
+- **Avoid real-time synchronization** - Don't sync React state with accordion state
+- **Handle events properly** - Use `onExpandedChange` to track state changes
+- **Don't use `useEffect` for state sync** - Let components manage their own state
+
+## Reference
+
+For detailed state management patterns, event handling, and advanced accordion usage, fetch the full rule: `modus-accordion-state-management-react`

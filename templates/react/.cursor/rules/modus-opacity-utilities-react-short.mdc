@@ -1,0 +1,64 @@
+# Modus Opacity Utilities - Short
+
+Essential opacity utilities for Modus Design System colors in React + Vite.
+
+## Key Rules
+
+- **Use custom opacity utilities, not Tailwind /80 syntax** - `text-foreground-80` not `text-foreground/80`
+- **CSS variables don't work with Tailwind opacity modifiers** - Tailwind needs actual color values
+- **Use color-mix() for opacity variants** - Modern CSS function for proper opacity calculation
+- **All utilities defined in index.css** - No Tailwind config changes needed
+- **Respects theme switching** - Works in all 6 Modus themes
+- **Use semantic color names** - `foreground`, `primary`, `destructive`, etc.
+
+## Available Utilities
+
+### Opacity Levels
+
+- **80%** - `text-foreground-80`, `bg-primary-80`, `border-destructive-80`
+- **60%** - `text-foreground-60`, `bg-primary-60`, `border-destructive-60`
+- **40%** - `text-foreground-40`, `bg-primary-40`, `border-destructive-40`
+- **20%** - `text-foreground-20`, `bg-primary-20`, `border-destructive-20`
+
+### Colors
+
+- **foreground** - `text-foreground-80`, `bg-foreground-80`, `border-foreground-80`
+- **muted-foreground** - `text-muted-foreground-80`, `bg-muted-foreground-80`
+- **primary** - `text-primary-80`, `bg-primary-80`, `border-primary-80`
+- **secondary** - `text-secondary-80`, `bg-secondary-80`
+- **destructive** - `text-destructive-80`, `bg-destructive-80`, `border-destructive-80`
+- **warning** - `text-warning-80`, `bg-warning-80`, `border-warning-80`
+- **success** - `text-success-80`, `bg-success-80`, `border-success-80`
+
+## Usage Examples
+
+```tsx
+// ❌ This doesn't work with CSS variables
+<div className="text-foreground/80">Text with 80% opacity</div>
+
+// ✅ Use custom opacity utilities
+<div className="text-foreground-80">Text with 80% opacity</div>
+<div className="bg-primary-60">Primary background with 60% opacity</div>
+<div className="border border-destructive-40">Destructive border with 40% opacity</div>
+```
+
+## Common Patterns
+
+```tsx
+// Text hierarchy
+<div className="text-foreground">Main heading (100%)</div>
+<div className="text-foreground-80">Subheading (80%)</div>
+<div className="text-muted-foreground-60">Description (60%)</div>
+
+// Interactive states
+<button className="bg-primary hover:bg-primary-80 transition-colors">
+  Hover with opacity
+</button>
+
+// Overlay effects
+<div className="bg-foreground-20 absolute inset-0 rounded-lg"></div>
+```
+
+## Reference
+
+For detailed implementation patterns, migration guide, and advanced techniques, fetch the full rule: `modus-opacity-utilities-react`

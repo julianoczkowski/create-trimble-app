@@ -1,0 +1,21 @@
+---
+alwaysApply: true
+---
+
+# Modus Tailwind Usage - Short
+
+Tailwind CSS v3 with Modus Design System integration.
+
+## Key Rules
+
+- **Tailwind v3 with design system** - Use Tailwind v3 with Modus Design System integration
+- **No generic Tailwind colors** - Never use `bg-blue-500`, `text-gray-600`, etc.
+- **Use design system colors** - `bg-background`, `text-foreground`, `bg-primary`, etc.
+- **Custom utilities for borders** - Use `border-default`, `border-success`, `border-warning`, etc.
+- **Elevation utilities** - Use `elevation-1`, `elevation-2`, `elevation-3` for shadows
+- **Proper CSS import order** - Modus CSS before Tailwind CSS
+- **Test in all themes** - Ensure Tailwind classes work in all 6 themes
+
+## Reference
+
+For detailed Tailwind integration, custom utilities, and advanced styling patterns, fetch the full rule: `modus-tailwind-usage-react`

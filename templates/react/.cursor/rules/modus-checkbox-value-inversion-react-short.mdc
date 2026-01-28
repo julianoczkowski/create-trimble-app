@@ -1,0 +1,21 @@
+---
+alwaysApply: true
+---
+
+# Modus Checkbox Value Inversion - Short
+
+Critical bug fix for ModusWcCheckbox value property inversion.
+
+## Key Rules
+
+- **Always invert checkbox value property** - `const actualChecked = !value` from `inputChange` event
+- **Use wrapper components** - Create React wrapper to handle inversion automatically
+- **Never trust the raw value** - The `value` property is inverted (false when checked, true when unchecked)
+- **Handle in event handlers** - Invert value in `onInputChange` event handler
+- **Use utility functions** - Create helper functions for value inversion
+- **Test thoroughly** - Verify checkbox behavior matches expected state
+- **Document the bug** - Make team aware of this critical issue
+
+## Reference
+
+For detailed bug explanation, wrapper component patterns, and utility functions, fetch the full rule: `modus-checkbox-value-inversion-react`

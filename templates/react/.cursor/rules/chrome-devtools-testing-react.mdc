@@ -1,0 +1,218 @@
+---
+description: Use Chrome Dev Tools MCP when testing the implementations
+alwaysApply: false
+---
+
+# Chrome DevTools MCP Testing Rules for React + Vite
+
+## 🔧 Chrome DevTools Integration
+
+### 🤖 Use Chrome DevTools MCP Server
+
+Before and during implementation testing, **ALWAYS** leverage the `chrome-devtools` MCP server for comprehensive debugging and validation:
+
+```bash
+# MCP server is configured in .cursor/mcp.json
+# Chrome DevTools MCP provides real-time browser debugging capabilities
+```
+
+**Available via Chrome DevTools MCP:**
+
+- Real-time DOM inspection and manipulation
+- Console log monitoring and debugging
+- Network request analysis and performance metrics
+- JavaScript error detection and stack traces
+- CSS debugging and style inspection
+- Performance profiling and memory analysis
+- Responsive design testing across viewports
+- Accessibility auditing and ARIA validation
+
+## 🧪 Testing Implementation Workflow
+
+### ✅ Before Testing Any Implementation:
+
+1. **Start Development Server:**
+
+   ```bash
+   npm run dev
+   ```
+
+2. **Query Chrome DevTools MCP:**
+
+   ```
+   Ask: "Open Chrome DevTools and navigate to localhost:5173"
+   Ask: "Check console for any JavaScript errors"
+   Ask: "Inspect the DOM structure for proper semantic HTML"
+   ```
+
+3. **Component-Specific Testing:**
+
+   ```
+   Ask: "Test button interactions and event handling"
+   Ask: "Verify responsive design across mobile and desktop viewports"
+   Ask: "Check accessibility compliance with screen reader testing"
+   ```
+
+4. **Performance Validation:**
+   ```
+   Ask: "Run Lighthouse audit for performance and accessibility"
+   Ask: "Check network requests for optimal loading"
+   Ask: "Monitor memory usage during component interactions"
+   ```
+
+### 🎯 Testing Patterns for Different Implementation Types
+
+#### React Component Testing:
+
+```
+1. Chrome DevTools MCP: "Navigate to component page"
+2. Chrome DevTools MCP: "Inspect React component in DevTools"
+3. Chrome DevTools MCP: "Test all interactive states (hover, focus, disabled)"
+4. Chrome DevTools MCP: "Verify proper event emission and handling"
+5. Chrome DevTools MCP: "Check for console warnings or errors"
+```
+
+#### Modus Web Component Testing:
+
+```
+1. Chrome DevTools MCP: "Inspect Modus web component shadow DOM"
+2. Chrome DevTools MCP: "Verify CSS custom properties are applied correctly"
+3. Chrome DevTools MCP: "Test theme switching (light/dark, classic/modern)"
+4. Chrome DevTools MCP: "Validate ARIA attributes and accessibility tree"
+5. Chrome DevTools MCP: "Check component props and attributes in Elements panel"
+```
+
+#### Performance Testing:
+
+```
+1. Chrome DevTools MCP: "Open Performance panel"
+2. Chrome DevTools MCP: "Record page load and interaction performance"
+3. Chrome DevTools MCP: "Check for layout shifts and reflows"
+4. Chrome DevTools MCP: "Analyze bundle size and loading times"
+5. Chrome DevTools MCP: "Verify lazy loading and code splitting"
+```
+
+## 📋 Chrome DevTools Testing Checklist
+
+For every implementation test session:
+
+- [ ] ✅ **Server Running**: Check if server is already running if not start it (`npm run dev`)
+- [ ] ✅ **DevTools Connected**: Chrome DevTools MCP connected and responsive
+- [ ] ✅ **Console Clean**: No JavaScript errors or warnings in console
+- [ ] ✅ **DOM Structure**: Proper semantic HTML and component structure
+- [ ] ✅ **Interactions**: All buttons, forms, and interactive elements working
+- [ ] ✅ **Responsive**: Component works across mobile, tablet, and desktop
+- [ ] ✅ **Accessibility**: ARIA attributes, keyboard navigation, screen reader support
+- [ ] ✅ **Performance**: Lighthouse scores above 90 for performance and accessibility
+- [ ] ✅ **Theme Compatibility**: If light and dark themes are present in code test both
+- [ ] ✅ **Network**: Optimal loading, no unnecessary requests
+
+## 🚫 Common Testing Anti-Patterns
+
+- ❌ **Not using Chrome DevTools MCP** for real-time debugging
+- ❌ **Ignoring console errors** during implementation
+- ❌ **Not testing theme switching** functionality
+- ❌ **Skipping accessibility validation** with DevTools
+- ❌ **Not checking network performance** during testing
+- ❌ **Missing responsive breakpoint testing**
+- ❌ **Not validating Modus component integration**
+
+## 🔍 Advanced Chrome DevTools Testing
+
+### Component State Debugging:
+
+```
+1. Chrome DevTools MCP: "Set breakpoints in component event handlers"
+2. Chrome DevTools MCP: "Inspect React component state and props"
+3. Chrome DevTools MCP: "Monitor reactive state changes in real-time"
+4. Chrome DevTools MCP: "Debug component lifecycle and mounting"
+```
+
+### CSS and Styling Validation:
+
+```
+1. Chrome DevTools MCP: "Inspect computed styles for Modus CSS variables"
+2. Chrome DevTools MCP: "Verify CSS custom properties cascade correctly"
+3. Chrome DevTools MCP: "Check for unused CSS and optimization opportunities"
+4. Chrome DevTools MCP: "Test CSS animations and transitions"
+```
+
+### Network and Performance Analysis:
+
+```
+1. Chrome DevTools MCP: "Monitor API calls and response times"
+2. Chrome DevTools MCP: "Check for memory leaks during navigation"
+3. Chrome DevTools MCP: "Analyze JavaScript bundle size and loading"
+4. Chrome DevTools MCP: "Verify Vite HMR (Hot Module Replacement) performance"
+```
+
+## 🎯 Integration with Development Workflow
+
+### During Feature Development:
+
+```
+1. Implement component/feature
+2. Chrome DevTools MCP: "Test implementation in browser"
+3. Fix any issues found through DevTools
+4. Chrome DevTools MCP: "Validate final implementation"
+5. Commit changes after DevTools validation
+```
+
+### During Code Review:
+
+```
+1. Chrome DevTools MCP: "Test reviewer's implementation"
+2. Chrome DevTools MCP: "Verify accessibility and performance"
+3. Chrome DevTools MCP: "Check cross-browser compatibility"
+4. Provide DevTools-based feedback and suggestions
+```
+
+### During Deployment:
+
+```
+1. Chrome DevTools MCP: "Test production build locally"
+2. Chrome DevTools MCP: "Verify minification and optimization"
+3. Chrome DevTools MCP: "Check for production-only issues"
+4. Chrome DevTools MCP: "Validate final performance metrics"
+```
+
+## 📖 Chrome DevTools MCP Commands Reference
+
+### Essential Testing Commands:
+
+```
+"Navigate to [URL]" - Open specific page for testing
+"Check console for errors" - Monitor JavaScript console
+"Inspect element [selector]" - Examine specific DOM elements
+"Test responsive design" - Switch between device viewports
+"Run Lighthouse audit" - Comprehensive performance/accessibility check
+"Monitor network requests" - Analyze loading and API calls
+"Check accessibility tree" - Validate ARIA and screen reader support
+"Profile performance" - Record and analyze runtime performance
+```
+
+### Modus-Specific Commands:
+
+```
+"Inspect Modus web component" - Examine shadow DOM and properties
+"Test theme switching" - Validate light/dark and classic/modern themes
+"Check CSS custom properties" - Verify Modus color variables
+"Validate component props" - Ensure proper attribute handling
+"Test component events" - Verify event emission and handling
+```
+
+### React + Vite Specific Commands:
+
+```
+"Test Vite HMR" - Verify hot module replacement works
+"Check React DevTools" - Inspect React component tree
+"Monitor bundle size" - Analyze Vite build output
+"Test routing" - Verify React Router navigation
+"Check environment variables" - Validate import.meta.env usage
+```
+
+---
+
+**Remember: Chrome DevTools MCP is your primary testing companion. Use it proactively during development, not just when issues arise. Real-time browser debugging ensures robust, accessible, and performant implementations.**
+
+**Chrome DevTools Documentation:** [Chrome DevTools Guide](https://developer.chrome.com/docs/devtools/)

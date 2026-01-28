@@ -1,12 +1,23 @@
 # Create Modus App
 
-Interactive CLI to scaffold Modus 2.0 web component applications for React, Vue, Angular, and HTML frameworks.
+Interactive CLI to scaffold Modus 2.0 web component applications for React and Angular.
+
+**Templates are bundled directly** - no external downloads, works fully offline.
 
 ## Quick Start
 
 ```bash
 npx @julianoczkowski/create-modus-app
 ```
+
+## Features
+
+- 📦 **Bundled Templates** - Templates included in package, no network required
+- 🔒 **Secure** - No runtime external dependencies
+- ⚛️ **React** - React + Vite + Modus 2.0 Components + Cursor Rules
+- 🅰️ **Angular** - Angular + Modus 2.0 Web Components + Cursor Rules
+- 🎯 **Interactive** - Beautiful CLI with framework selection
+- ⚡ **Fast** - Local file copy, instant setup
 
 ## Usage
 
@@ -16,62 +27,115 @@ npx @julianoczkowski/create-modus-app
 npx @julianoczkowski/create-modus-app
 ```
 
-This will show you a beautiful welcome screen and guide you through:
+This will guide you through:
 
-1. Framework selection (React, Vue, Angular, or HTML)
-2. Project name input
-3. Template cloning
+1. Framework selection (React or Angular)
+2. Installation location choice
+3. Project name input
 4. Optional dependency installation
 
 ### Command Line Options
 
 ```bash
-# Specify project name
-npx @julianoczkowski/create-modus-app my-awesome-app
+# Create with project name
+npx @julianoczkowski/create-modus-app my-app
 
 # Specify framework
-npx @julianoczkowski/create-modus-app my-app --framework vue
+npx @julianoczkowski/create-modus-app my-app --framework react
+
+# Install in current folder
+npx @julianoczkowski/create-modus-app --current-folder
+
+# Preview without creating files
+npx @julianoczkowski/create-modus-app my-app --dry-run
+
+# Enable verbose output
+npx @julianoczkowski/create-modus-app my-app --verbose
+
+# Show CLI information
+npx @julianoczkowski/create-modus-app --info
 
 # Skip dependency installation
 npx @julianoczkowski/create-modus-app my-app --no-install
 
 # Show help
 npx @julianoczkowski/create-modus-app --help
-
-# Show version
-npx @julianoczkowski/create-modus-app --version
 ```
+
+## CLI Options
+
+| Option                   | Description                            |
+| ------------------------ | -------------------------------------- |
+| `[project-name]`         | Name of the project to create          |
+| `-f, --framework <name>` | Framework to use (react, angular)      |
+| `--current-folder`       | Install in current folder              |
+| `--dry-run`              | Preview what would be created          |
+| `--verbose`              | Enable verbose output for debugging    |
+| `--info`                 | Show information about this CLI        |
+| `--no-install`           | Skip automatic dependency installation |
+| `-v, --version`          | Display version number                 |
+| `-h, --help`             | Display help                           |
 
 ## Supported Frameworks
 
-| Framework      | Description                                                                                  | Template Repository                 |
-| -------------- | -------------------------------------------------------------------------------------------- | ----------------------------------- |
-| ⚛️ **React**   | Build with React and Modus components                                                        | `julianoczkowski/modus-react-app`   |
-| 💚 **Vue**     | Build with Vue 3 and Modus components                                                        | `julianoczkowski/modus-vue-app`     |
-| 🅰️ **Angular** | Build with Angular and Modus components                                                      | `julianoczkowski/modus-angular-app` |
-| 🎓 **HTML**    | Vanilla JavaScript with Modus components<br/>_(Beginner Friendly - No build tools required)_ | `julianoczkowski/modus-html-app`    |
+| Framework      | Description  | What's Included                                                                                          |
+| -------------- | ------------ | -------------------------------------------------------------------------------------------------------- |
+| ⚛️ **React**   | React + Vite | Modus 2.0 Components, TypeScript, Tailwind CSS, 40+ Cursor Rules, GitHub Templates, Code Quality Scripts |
+| 🅰️ **Angular** | Angular 20+  | Modus 2.0 Web Components, TypeScript, Tailwind CSS, 11 Cursor Rules, GitHub Workflows, Demo Components   |
 
-## What It Does
+## What's Included in Each Template
 
-1. **Clones** complete, pre-configured template repositories
-2. **Updates** project name in `package.json`
-3. **Optionally installs** dependencies using your preferred package manager (npm/yarn/pnpm)
-4. **Shows** helpful next steps
+Both templates come fully configured with:
 
-## Template Repositories
+```
+your-project/
+├── .cursor/           # Cursor IDE rules for Modus development
+├── .github/           # Issue templates, PR template, CI workflows
+├── .husky/            # Git hooks (pre-commit)
+├── .vscode/           # VS Code extensions & settings
+├── docs/              # Documentation
+├── scripts/           # Code quality check scripts
+├── src/               # Source code with demo components
+├── package.json       # All dependencies configured
+└── README.md          # Getting started guide
+```
 
-Each template repository contains:
+## Architecture
 
-- Complete `package.json` with all dependencies
-- Pre-configured build tools (if applicable)
-- Example Modus components
-- README with setup instructions
-- All necessary configuration files
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    npx create-modus-app                      │
+├─────────────────────────────────────────────────────────────┤
+│  1. Parse CLI arguments (Commander.js)                       │
+│  2. Interactive prompts (if needed)                          │
+│  3. Copy bundled template (local file copy)                  │
+│  4. Update package.json with project name                    │
+│  5. Install dependencies (optional)                          │
+│  6. Show success message                                     │
+└─────────────────────────────────────────────────────────────┘
+```
+
+For detailed architecture documentation, see [docs/architecture.md](docs/architecture.md).
+
+## Security
+
+This CLI is designed with security as a priority:
+
+- **No External Downloads** - Templates are bundled in the npm package
+- **Works Offline** - No network required to create projects
+- **npm Provenance** - Published with provenance attestation
+- **Minimal Dependencies** - Only essential runtime dependencies
+
+Unlike other scaffolding tools that download templates from GitHub at runtime, this CLI bundles templates directly. This eliminates:
+
+- Supply chain attacks from compromised repositories
+- Network failures during project creation
+- Version drift between CLI and templates
 
 ## Requirements
 
 - Node.js 18 or higher
-- Git (for cloning templates)
+- npm, yarn, or pnpm
 
 ## Development
 
@@ -83,20 +147,34 @@ cd create-modus-app
 # Install dependencies
 npm install
 
-# Test locally
+# Run locally
 npm run dev
 
-# Test help command
+# Run tests
+npm test
+
+# Test specific commands
 node bin/create-modus-app.js --help
+node bin/create-modus-app.js my-app --framework react --dry-run
 ```
+
+For detailed testing instructions, see [docs/local-testing.md](docs/local-testing.md).
+
+## Documentation
+
+| Document                               | Description                    |
+| -------------------------------------- | ------------------------------ |
+| [Architecture](docs/architecture.md)   | How the CLI works internally   |
+| [Local Testing](docs/local-testing.md) | How to test during development |
 
 ## Contributing
 
 1. Fork the repository
 2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+3. Run tests (`npm test`)
+4. Commit your changes (`git commit -m 'Add some amazing feature'`)
+5. Push to the branch (`git push origin feature/amazing-feature`)
+6. Open a Pull Request
 
 ## License
 
@@ -104,7 +182,8 @@ MIT © Julian Oczkowski
 
 ## Related
 
-- [Modus Web Components Documentation](https://modus-web-components.trimble.com)
+- [Modus Web Components Documentation](https://trimble-oss.github.io/modus-wc-2.0/main/?path=/docs/documentation-getting-started--docs)
+- [Modus Icons](https://modus-icons.trimble.com/)
 - [Trimble Modus Design System](https://modus.trimble.com)
 
 ---

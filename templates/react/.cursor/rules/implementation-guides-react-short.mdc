@@ -1,0 +1,21 @@
+---
+alwaysApply: true
+---
+
+# Implementation Guides - Short
+
+Create comprehensive implementation guides for major feature development.
+
+## Key Rules
+
+- **Create guides for major features** - Any feature requiring 2+ hours of development
+- **Document before coding** - Plan architecture and approach first
+- **Use required template sections** - Overview, architecture, plan, testing, deployment, documentation, review
+- **Store in `.cursor/rules/implementation-guides/`** - Organized by feature name
+- **Update status throughout development** - Planning → In Progress → Complete → Archived
+- **Include post-implementation review** - Document lessons learned and improvements
+- **Reference in commits** - Link to implementation guide in commit messages
+
+## Reference
+
+For detailed template structure, lifecycle management, and implementation guide best practices, fetch the full rule: `implementation-guides-react`

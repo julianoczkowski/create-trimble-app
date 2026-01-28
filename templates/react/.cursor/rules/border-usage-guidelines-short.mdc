@@ -1,0 +1,20 @@
+---
+alwaysApply: true
+---
+
+# Border Usage Guidelines - Short
+
+Essential border usage rules for Modus Design System integration.
+
+## Key Rules
+
+- **Use design system border utilities only** - `border-default`, `border-success`, `border-warning`, `border-destructive`, `border-primary`
+- **Never use Tailwind color classes in borders** - No `border-blue-500`, `border-gray-300`, etc.
+- **Use `border-thick` for emphasis** - For important borders and separators
+- **Use directional borders** - `border-t`, `border-b`, `border-l`, `border-r` with design system colors
+- **No inline styles for borders** - Use Tailwind classes exclusively
+- **Context-specific usage** - Cards use `border-default`, alerts use semantic colors, forms use `border-input`
+
+## Reference
+
+For detailed border usage patterns, examples, and advanced techniques, fetch the full rule: `border-usage-guidelines`

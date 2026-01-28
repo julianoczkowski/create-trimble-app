@@ -1,0 +1,491 @@
+---
+description: Critical bug in ModusWcCheckbox value property inversion
+alwaysApply: false
+---
+
+# ModusWcCheckbox Value Inversion Bug in React
+
+## 🚨 **CRITICAL BUG: Checkbox Value Inversion**
+
+**Problem**: The `ModusWcCheckbox` component has an inverted `value` property that causes unexpected behavior in React applications.
+
+**Bug Details**:
+
+- When checkbox is **checked**: `target.value` returns `false`
+- When checkbox is **unchecked**: `target.value` returns `true`
+- This is the **opposite** of what developers expect
+- The bug occurs in the `inputChange` event's `target.value` property
+
+## ❌ **The Problem in Action**
+
+### ❌ **Expected vs Actual Behavior**
+
+```tsx
+// ❌ WRONG: This doesn't work as expected
+function CheckboxComponent() {
+  const [isChecked, setIsChecked] = useState(false);
+
+  const handleChange = (event: CustomEvent<InputEvent>) => {
+    const value = (event.target as HTMLModusWcCheckboxElement).value; // ❌ This is inverted!
+    console.log("Checkbox value:", value); // false when checked, true when unchecked
+    setIsChecked(value); // ❌ This sets wrong state
+  };
+
+  return (
+    <ModusWcCheckbox value={isChecked} onInputChange={handleChange}>
+      Checkbox Label
+    </ModusWcCheckbox>
+  );
+}
+```
+
+### ❌ **Common Mistakes**
+
+```tsx
+// ❌ WRONG: Direct value usage
+const handleChange = (event: CustomEvent<InputEvent>) => {
+  const value = (event.target as HTMLModusWcCheckboxElement).value; // ❌ Inverted value
+  setState(value); // ❌ Wrong state
+};
+
+// ❌ WRONG: Assuming value matches checked state
+const handleChange = (event: CustomEvent<InputEvent>) => {
+  const value = (event.target as HTMLModusWcCheckboxElement).value; // ❌ false when checked
+  const isChecked = value; // ❌ Wrong assumption
+  updateUI(isChecked); // ❌ Wrong UI state
+};
+```
+
+## ✅ **Solution: Invert the Value**
+
+### ✅ **Correct Pattern: Invert the Value**
+
+```tsx
+// ✅ CORRECT: Always invert the value
+function CheckboxComponent() {
+  const [isChecked, setIsChecked] = useState(false);
+
+  const handleChange = (event: CustomEvent<InputEvent>) => {
+    const value = (event.target as HTMLModusWcCheckboxElement).value;
+    const actualChecked = !value; // ✅ CORRECT: Invert the value
+    console.log("Checkbox value:", value); // false when checked
+    console.log("Actual checked:", actualChecked); // true when checked
+    setIsChecked(actualChecked);
+  };
+
+  return (
+    <ModusWcCheckbox value={isChecked} onInputChange={handleChange}>
+      Checkbox Label
+    </ModusWcCheckbox>
+  );
+}
+```
+
+### ✅ **Reusable Solution Pattern**
+
+```tsx
+// ✅ CORRECT: Create a utility function
+function useModusCheckbox(initialChecked = false) {
+  const [isChecked, setIsChecked] = useState(initialChecked);
+
+  const handleChange = (event: CustomEvent<InputEvent>) => {
+    const value = (event.target as HTMLModusWcCheckboxElement).value;
+    const actualChecked = !value; // ✅ CORRECT: Always invert
+    setIsChecked(actualChecked);
+  };
+
+  return {
+    isChecked,
+    handleChange,
+    setChecked: setIsChecked,
+  };
+}
+
+// ✅ CORRECT: Use the utility
+function CheckboxComponent() {
+  const { isChecked, handleChange } = useModusCheckbox(false);
+
+  return (
+    <ModusWcCheckbox value={isChecked} onInputChange={handleChange}>
+      Checkbox Label
+    </ModusWcCheckbox>
+  );
+}
+```
+
+### ✅ **Wrapper Component Pattern (Recommended)**
+
+```tsx
+// ✅ CORRECT: Create a wrapper component that handles the inversion
+interface ModusCheckboxProps {
+  value?: boolean;
+  onValueChange?: (event: CustomEvent<boolean>) => void;
+  // ... other props
+}
+
+function ModusCheckbox({ value, onValueChange, ...props }: ModusCheckboxProps) {
+  const checkboxRef = useRef<HTMLModusWcCheckboxElement>(null);
+
+  useEffect(() => {
+    const checkbox = checkboxRef.current;
+    if (!checkbox || !onValueChange) return;
+
+    const handleValueChange = (event: Event) => {
+      const customEvent = event as CustomEvent<InputEvent>;
+      // 🚨 CRITICAL: Handle the value inversion bug
+      const rawValue = (customEvent.target as HTMLModusWcCheckboxElement).value;
+      const actualValue = !rawValue; // ✅ CORRECT: Invert the value
+
+      // Create a new event with the corrected value
+      const correctedEvent = new CustomEvent("valueChange", {
+        detail: actualValue,
+        bubbles: true,
+        cancelable: true,
+      });
+
+      onValueChange(correctedEvent);
+    };
+
+    checkbox.addEventListener("inputChange", handleValueChange);
+    return () => checkbox.removeEventListener("inputChange", handleValueChange);
+  }, [onValueChange]);
+
+  return <ModusWcCheckbox ref={checkboxRef} value={value} {...props} />;
+}
+
+// ✅ CORRECT: Use the wrapper component
+function MyComponent() {
+  const [isChecked, setIsChecked] = useState(false);
+
+  const handleChange = (event: CustomEvent<boolean>) => {
+    const value = event.detail; // ✅ This is now correct!
+    setIsChecked(value);
+  };
+
+  return (
+    <ModusCheckbox value={isChecked} onValueChange={handleChange}>
+      Checkbox Label
+    </ModusCheckbox>
+  );
+}
+```
+
+## 🎯 **Advanced Patterns**
+
+### ✅ **Multiple Checkboxes with Inversion**
+
+```tsx
+// ✅ CORRECT: Handle multiple checkboxes
+function MultipleCheckboxes() {
+  const [checkboxes, setCheckboxes] = useState({
+    option1: false,
+    option2: true,
+    option3: false,
+  });
+
+  const handleCheckboxChange =
+    (key: string) => (event: CustomEvent<InputEvent>) => {
+      const value = (event.target as HTMLModusWcCheckboxElement).value;
+      const actualChecked = !value; // ✅ CORRECT: Invert value
+
+      setCheckboxes((prev) => ({
+        ...prev,
+        [key]: actualChecked,
+      }));
+    };
+
+  return (
+    <div>
+      {Object.entries(checkboxes).map(([key, isChecked]) => (
+        <ModusWcCheckbox
+          key={key}
+          value={isChecked}
+          onInputChange={handleCheckboxChange(key)}
+        >
+          Option {key}
+        </ModusWcCheckbox>
+      ))}
+    </div>
+  );
+}
+```
+
+### ✅ **Form Integration with Inversion**
+
+```tsx
+// ✅ CORRECT: Form with checkbox inversion
+function FormWithCheckbox() {
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    agreeToTerms: false,
+    subscribeNewsletter: false,
+  });
+
+  const handleCheckboxChange =
+    (field: string) => (event: CustomEvent<InputEvent>) => {
+      const value = (event.target as HTMLModusWcCheckboxElement).value;
+      const actualChecked = !value; // ✅ CORRECT: Invert value
+
+      setFormData((prev) => ({
+        ...prev,
+        [field]: actualChecked,
+      }));
+    };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    console.log("Form data:", formData); // ✅ CORRECT: Actual checked states
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <input
+        type="text"
+        value={formData.name}
+        onChange={(e) =>
+          setFormData((prev) => ({ ...prev, name: e.target.value }))
+        }
+        placeholder="Name"
+      />
+
+      <ModusWcCheckbox
+        value={formData.agreeToTerms}
+        onInputChange={handleCheckboxChange("agreeToTerms")}
+      >
+        I agree to the terms and conditions
+      </ModusWcCheckbox>
+
+      <ModusWcCheckbox
+        value={formData.subscribeNewsletter}
+        onInputChange={handleCheckboxChange("subscribeNewsletter")}
+      >
+        Subscribe to newsletter
+      </ModusWcCheckbox>
+
+      <button type="submit">Submit</button>
+    </form>
+  );
+}
+```
+
+### ✅ **Checkbox with External State Management**
+
+```tsx
+// ✅ CORRECT: External state with inversion
+function CheckboxWithExternalState() {
+  const [externalState, setExternalState] = useState({
+    isEnabled: false,
+    isVisible: true,
+    isRequired: false,
+  });
+
+  const handleCheckboxChange =
+    (field: keyof typeof externalState) => (event: CustomEvent) => {
+      const value = event.detail;
+      const actualChecked = !value; // ✅ CORRECT: Invert value
+
+      setExternalState((prev) => ({
+        ...prev,
+        [field]: actualChecked,
+      }));
+
+      // ✅ CORRECT: Use actual checked state for side effects
+      if (field === "isEnabled" && actualChecked) {
+        console.log("Feature enabled");
+      }
+    };
+
+  return (
+    <div>
+      <ModusWcCheckbox
+        checked={externalState.isEnabled}
+        onValueChange={handleCheckboxChange("isEnabled")}
+      >
+        Enable Feature
+      </ModusWcCheckbox>
+
+      <ModusWcCheckbox
+        checked={externalState.isVisible}
+        onValueChange={handleCheckboxChange("isVisible")}
+      >
+        Make Visible
+      </ModusWcCheckbox>
+
+      <ModusWcCheckbox
+        checked={externalState.isRequired}
+        onValueChange={handleCheckboxChange("isRequired")}
+      >
+        Required Field
+      </ModusWcCheckbox>
+    </div>
+  );
+}
+```
+
+## 🔧 **Testing the Inversion Bug**
+
+### ✅ **Test Pattern for Checkbox Inversion**
+
+```tsx
+// ✅ CORRECT: Test the inversion behavior
+function TestCheckboxInversion() {
+  const [testResults, setTestResults] = useState<string[]>([]);
+
+  const handleChange = (event: CustomEvent) => {
+    const value = event.detail;
+    const actualChecked = !value; // ✅ CORRECT: Invert value
+
+    const result = `Value: ${value}, Actual Checked: ${actualChecked}`;
+    setTestResults((prev) => [...prev, result]);
+  };
+
+  return (
+    <div>
+      <ModusWcCheckbox onValueChange={handleChange}>
+        Test Checkbox (Click to see inversion)
+      </ModusWcCheckbox>
+
+      <div>
+        <h3>Test Results:</h3>
+        {testResults.map((result, index) => (
+          <div key={index}>{result}</div>
+        ))}
+      </div>
+    </div>
+  );
+}
+```
+
+### ✅ **Debugging the Inversion**
+
+```tsx
+// ✅ CORRECT: Debug the inversion behavior
+function DebugCheckboxInversion() {
+  const [debugInfo, setDebugInfo] = useState<{
+    value: boolean | null;
+    actualChecked: boolean | null;
+    timestamp: string;
+  } | null>(null);
+
+  const handleChange = (event: CustomEvent) => {
+    const value = event.detail;
+    const actualChecked = !value; // ✅ CORRECT: Invert value
+
+    setDebugInfo({
+      value,
+      actualChecked,
+      timestamp: new Date().toISOString(),
+    });
+  };
+
+  return (
+    <div>
+      <ModusWcCheckbox onValueChange={handleChange}>
+        Debug Checkbox
+      </ModusWcCheckbox>
+
+      {debugInfo && (
+        <div className="mt-4 p-4 bg-muted rounded">
+          <h3>Debug Info:</h3>
+          <p>Raw value: {debugInfo.value?.toString()}</p>
+          <p>Actual checked: {debugInfo.actualChecked?.toString()}</p>
+          <p>Timestamp: {debugInfo.timestamp}</p>
+        </div>
+      )}
+    </div>
+  );
+}
+```
+
+## 🚫 **What NOT to Do**
+
+### ❌ **Don't Use Raw Value**
+
+```tsx
+// ❌ WRONG: Don't use raw value directly
+const handleChange = (event: CustomEvent) => {
+  const value = event.detail; // ❌ This is inverted
+  setState(value); // ❌ Wrong state
+};
+```
+
+### ❌ **Don't Assume Value Matches Checked State**
+
+```tsx
+// ❌ WRONG: Don't assume value is correct
+const handleChange = (event: CustomEvent) => {
+  const value = event.detail; // ❌ false when checked
+  const isChecked = value; // ❌ Wrong assumption
+  updateUI(isChecked); // ❌ Wrong UI
+};
+```
+
+### ❌ **Don't Ignore the Inversion**
+
+```tsx
+// ❌ WRONG: Don't ignore the inversion bug
+const handleChange = (event: CustomEvent) => {
+  const value = event.detail; // ❌ Inverted value
+  // This will cause bugs in your application
+  setState(value); // ❌ Wrong state
+};
+```
+
+## 🎯 **Key Takeaways**
+
+1. **Always Invert the Value**: `const actualChecked = !value` where `value` comes from `event.target.value`
+2. **Use Correct Event**: Listen to `inputChange` event, not `valueChange`
+3. **Access Target Value**: Use `(event.target as HTMLModusWcCheckboxElement).value`
+4. **Create Wrapper Components**: Best practice is to handle inversion in a wrapper component
+5. **Test the Inversion**: Always test checkbox behavior with state management
+6. **Document the Bug**: Make sure team knows about this issue
+7. **Use Utility Functions**: Create reusable patterns for checkbox handling
+
+## 🔍 **Affected Components**
+
+This bug affects:
+
+- ✅ `ModusWcCheckbox` - Primary affected component
+- ✅ Any form with checkboxes
+- ✅ Any state management with checkboxes
+- ✅ Any checkbox validation logic
+
+## 🛠️ **Migration Guide**
+
+If you have existing code with this bug:
+
+```tsx
+// ❌ OLD CODE (with bug)
+const handleChange = (event: CustomEvent) => {
+  const value = event.detail; // ❌ Wrong event detail
+  setState(value); // ❌ Wrong
+};
+
+// ✅ NEW CODE (fixed)
+const handleChange = (event: CustomEvent<InputEvent>) => {
+  const value = (event.target as HTMLModusWcCheckboxElement).value;
+  const actualChecked = !value; // ✅ CORRECT: Invert
+  setState(actualChecked); // ✅ Correct
+};
+
+// ✅ BEST PRACTICE: Use wrapper component
+function MyComponent() {
+  const [isChecked, setIsChecked] = useState(false);
+
+  const handleChange = (event: CustomEvent<boolean>) => {
+    const value = event.detail; // ✅ This is now correct with wrapper!
+    setState(value);
+  };
+
+  return (
+    <ModusCheckbox value={isChecked} onValueChange={handleChange}>
+      Label
+    </ModusCheckbox>
+  );
+}
+```
+
+---
+
+**Remember: This is a critical bug in the ModusWcCheckbox component. Always invert the value property to get the correct checked state. This bug affects all checkbox implementations in React applications using Modus Web Components.**

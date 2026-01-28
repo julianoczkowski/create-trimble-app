@@ -1,0 +1,418 @@
+---
+description: Comprehensive rules for creating Angular demo pages for Modus Web Components based on validated patterns and common fixes. Includes icon validation, color type checking, import management, and demo page structure patterns.
+globs: ["**/demos/**/*.ts", "**/demos/**/*.html"]
+---
+
+# Demo Page Development Rules
+
+Comprehensive rules for creating Angular demo pages for Modus Web Components based on validated patterns and common fixes.
+
+---
+
+## Icon Name Validation
+
+### ✅ ALWAYS Validate Icon Names
+
+**Before using any icon**, verify it exists in the Modus Icons library:
+
+1. Run validation: `npm run lint:icon-names`
+2. Check `data/modusIcons.ts` for complete list (710 valid icons)
+3. Use icon name suggestions from lint errors
+
+### ❌ Common Invalid Icon Names
+
+**NEVER use these non-existent icon names**:
+
+```html
+<!-- ❌ WRONG: These don't exist -->
+<modus-icon name="error" />
+<modus-icon name="edit" />
+<modus-icon name="user" />
+<modus-icon name="chevron_down" />
+<i class="modus-icons">delete_icon</i>
+```
+
+**✅ CORRECT: Use valid Modus icon names**:
+
+```html
+<!-- ✅ CORRECT: Valid icon names -->
+<modus-icon name="alert" variant="solid" size="lg" />
+<modus-icon name="file_edit" variant="outlined" size="md" />
+<modus-icon name="user_account" variant="outlined" size="lg" />
+<i class="modus-icons text-lg">expand_more</i>
+```
+
+### Icon Name Replacements
+
+| ❌ Wrong | ✅ Correct | Context |
+|----------|-----------|---------|
+| `error` | `alert` | Error/warning states |
+| `edit` | `file_edit` | Edit actions |
+| `user` | `user_account` | User/profile icons |
+| `chevron_down` | `expand_more` | Dropdown indicators |
+| `delete_icon` | `delete` | Delete actions |
+| `save_icon` | `save_disk` | Save actions |
+
+### Icon Naming Rules
+
+- ✅ **Use underscores**: `file_edit`, `user_account`
+- ❌ **Never use hyphens**: `file-edit`, `user-account`
+- ✅ **Lowercase only**: `alert`, `check_circle`
+- ❌ **Never use camelCase**: `checkCircle`, `userAccount`
+
+---
+
+## Component Color Types
+
+### ⚠️ CRITICAL: Colors Are Component-Specific
+
+**Different components have different valid color types. NEVER assume colors are universal.**
+
+### Loader Colors
+
+```typescript
+// ✅ Valid for modus-loader
+type LoaderColor = 'primary' | 'success' | 'warning' | 'error' | undefined;
+```
+
+**✅ CORRECT**:
+```html
+<modus-loader color="primary" />
+<modus-loader color="success" />
+<modus-loader color="warning" />
+<modus-loader color="error" />
+```
+
+**❌ WRONG**:
+```html
+<!-- ❌ 'danger' doesn't exist for loader -->
+<modus-loader color="danger" />
+```
+
+### Button Colors
+
+```typescript
+// ✅ Valid for modus-button
+type ButtonColor = 'primary' | 'secondary' | 'tertiary' | 'warning' | 'danger';
+```
+
+**Note**: Button uses `'danger'`, but Loader uses `'error'`. **Each component has its own color type!**
+
+### How to Check Component Colors
+
+1. **Read component wrapper**: `src/app/components/modus-[component].component.ts`
+2. **Check TypeScript types**: Look for `[Component]Color` type definition
+3. **Verify in imports**: `import type { LoaderColor, ButtonColor } from '@trimble-oss/moduswebcomponents'`
+
+**Rule**: **ALWAYS check the component's TypeScript definition before using color props.**
+
+---
+
+## Import Management
+
+### ✅ Remove Unused Imports
+
+**NEVER leave unused imports in component files:**
+
+```typescript
+// ❌ WRONG: Unused import causes build warnings
+import { ModusButtonComponent } from '../modus-button.component';
+
+@Component({
+  imports: [
+    ModusButtonComponent, // ❌ Not used in template
+  ],
+})
+```
+
+**✅ CORRECT: Only import what's used**:
+
+```typescript
+@Component({
+  imports: [
+    CommonModule,
+    DemoPageComponent,
+    DemoExampleComponent,
+    ModusDropdownMenuComponent, // ✅ Actually used in template
+    ModusMenuComponent, // ✅ Actually used in template
+    // Only include components that appear in template
+  ],
+})
+```
+
+**Rule**: **Run build to catch unused imports: `npm run build`**
+
+---
+
+## Demo Page Structure
+
+### Required Structure
+
+**ALWAYS follow this pattern**:
+
+```typescript
+@Component({
+  selector: 'app-[component]-demo-page',
+  standalone: true,
+  imports: [
+    CommonModule,
+    DemoPageComponent,
+    DemoExampleComponent,
+    // Only Modus components actually used in template
+  ],
+  template: `
+    <demo-page
+      title="Modus [Component]"
+      description="Clear, specific description of what the component does and when to use it"
+    >
+      <demo-example
+        title="Example Title"
+        description="Description of this specific example"
+      >
+        <!-- Demo content here -->
+      </demo-example>
+    </demo-page>
+  `,
+})
+export class [Component]DemoPageComponent {
+  // Add signals and methods only if needed for interactivity
+}
+```
+
+### Description Guidelines
+
+**✅ CORRECT: Specific and helpful**:
+
+```html
+<demo-page
+  title="Modus Modal"
+  description="Modals provide focused interactions by overlaying content on top of the current page. Use modals for confirmations, forms, or detailed views that require user attention."
+/>
+```
+
+**❌ WRONG: Generic or unhelpful**:
+
+```html
+<demo-page title="Modal" description="Modal component" />
+```
+
+---
+
+## State Management
+
+### ✅ Use Signals for Interactive Examples
+
+**For interactive demos, ALWAYS use Angular signals**:
+
+```typescript
+export class InteractiveDemoComponent {
+  readonly selectedValue = signal<string | null>(null);
+
+  handleChange(event: { value: string }): void {
+    this.selectedValue.set(event.value);
+  }
+}
+```
+
+**Template with signals**:
+
+```html
+<modus-[component]
+  [value]="selectedValue()"
+  (change)="handleChange($event)"
+/>
+@if (selectedValue()) {
+  <div class="p-4 rounded-lg bg-muted text-muted-foreground">
+    Selected: {{ selectedValue() }}
+  </div>
+}
+```
+
+**❌ WRONG: Hardcoded state**:
+
+```html
+<!-- ❌ WRONG: Static selected state -->
+<modus-menu-item label="Option 1" [selected]="true" />
+<modus-menu-item label="Option 2" [selected]="false" />
+```
+
+---
+
+## Route and Export Registration
+
+### ✅ ALWAYS Register Routes
+
+**Add route in `app.routes.ts`**:
+
+```typescript
+{
+  path: 'demos/[component-name]',
+  loadComponent: () =>
+    import('./components/demos/[component]-demo-page.component').then(
+      (m) => m.[Component]DemoPageComponent
+    ),
+}
+```
+
+### ✅ ALWAYS Export Components
+
+**Export from `demos/index.ts`**:
+
+```typescript
+export * from './[component]-demo-page.component';
+```
+
+### ✅ ALWAYS Add Demo Links
+
+**Add to appropriate category in `demos-page.component.ts`**:
+
+```html
+<!-- Navigation category -->
+<a
+  routerLink="/demos/[component-name]"
+  class="p-4 rounded-lg bg-card border-default hover:bg-muted transition-colors"
+>
+  <div class="text-lg font-medium text-card-foreground mb-1">Component Name</div>
+  <div class="text-sm text-muted-foreground">
+    Clear description of component purpose and usage
+  </div>
+</a>
+```
+
+**Categories**:
+- **Layout**: Card, Accordion
+- **Navigation**: Breadcrumbs, Dropdown Menu, Menu
+- **Form**: Autocomplete, Checkbox, Date, Input Feedback, Input Label
+- **Feedback**: Alert, Loader, Modal
+- **Display**: Avatar, Badge, Chip, Divider, Icon
+- **Actions**: Button
+
+---
+
+## Validation Checklist
+
+**Before completing any demo page, verify ALL of these**:
+
+- [ ] **Icon names validated**: Run `npm run lint:icon-names` - all pass
+- [ ] **Component colors verified**: Check component's TypeScript definition for valid colors
+- [ ] **No unused imports**: Run `npm run build` - no import warnings
+- [ ] **Route registered**: Added to `app.routes.ts`
+- [ ] **Demo link added**: Added to `demos-page.component.ts` in correct category
+- [ ] **Component exported**: Added to `demos/index.ts`
+- [ ] **All linting passes**: Run `npm run lint:all` - all checks pass
+- [ ] **Build succeeds**: Run `npm run build` - no errors
+- [ ] **Descriptions are clear**: Specific, helpful descriptions (not generic)
+- [ ] **Examples are realistic**: Show real-world usage patterns
+- [ ] **Signals used properly**: Interactive examples use signals (not hardcoded state)
+
+---
+
+## Quick Validation Commands
+
+```bash
+# Validate all linting (including icons)
+npm run lint:all
+
+# Validate only icon names
+npm run lint:icon-names
+
+# Verify TypeScript compilation
+npm run type-check
+
+# Verify build succeeds
+npm run build
+```
+
+---
+
+## Common Patterns
+
+### Pattern 1: Interactive Demo with Signals
+
+```typescript
+export class InteractiveDemoComponent {
+  readonly selectedValue = signal<string | null>(null);
+
+  handleChange(event: { value: string }): void {
+    this.selectedValue.set(event.value);
+    console.log('Value changed:', event.value);
+  }
+}
+```
+
+```html
+<modus-[component]
+  [value]="selectedValue()"
+  (change)="handleChange($event)"
+/>
+@if (selectedValue()) {
+  <div class="p-4 rounded-lg bg-muted text-muted-foreground">
+    <div class="font-semibold mb-2">Selected Value:</div>
+    <div class="text-sm">{{ selectedValue() }}</div>
+  </div>
+}
+```
+
+### Pattern 2: Multiple Variants Example
+
+```html
+<demo-example title="Variants" description="Different visual styles">
+  <div class="flex flex-wrap gap-4">
+    <modus-[component] variant="variant1">Option 1</modus-[component]>
+    <modus-[component] variant="variant2">Option 2</modus-[component]>
+    <modus-[component] variant="variant3">Option 3</modus-[component]>
+  </div>
+</demo-example>
+```
+
+### Pattern 3: Size Examples
+
+```html
+<demo-example title="Sizes" description="Different sizes for various contexts">
+  <div class="flex flex-wrap items-center gap-4">
+    <modus-[component] size="sm">Small</modus-[component]>
+    <modus-[component] size="md">Medium</modus-[component]>
+    <modus-[component] size="lg">Large</modus-[component]>
+  </div>
+</demo-example>
+```
+
+### Pattern 4: Color Examples
+
+```html
+<demo-example title="Colors" description="Different semantic colors">
+  <div class="flex flex-wrap gap-4">
+    <modus-[component] color="primary">Primary</modus-[component]>
+    <modus-[component] color="success">Success</modus-[component]>
+    <modus-[component] color="warning">Warning</modus-[component]>
+    <modus-[component] color="error">Error</modus-[component]>
+    <!-- Note: Verify valid colors for each component type! -->
+  </div>
+</demo-example>
+```
+
+---
+
+## Reference Resources
+
+- **Modus Icons**: `data/modusIcons.ts` - Complete list of 710 valid icons
+- **Component Wrappers**: `src/app/components/` - Check for valid prop types
+- **Theme Demo**: `src/app/components/theme-demo.component.ts` - Reference examples
+- **Existing Demos**: `src/app/components/demos/` - Pattern examples
+- **Development Guide**: `docs/demo-page-development-guide.md` - Comprehensive guide
+
+---
+
+## Key Rules Summary
+
+1. **✅ ALWAYS validate icon names** - Run `npm run lint:icon-names` before committing
+2. **✅ ALWAYS check component color types** - Each component has different valid colors
+3. **✅ ALWAYS remove unused imports** - Run build to catch warnings
+4. **✅ ALWAYS register routes and exports** - Three places: routes, index, demos page
+5. **✅ ALWAYS use signals for interactive examples** - Never hardcode state
+6. **✅ ALWAYS write clear descriptions** - Specific, helpful, not generic
+7. **✅ ALWAYS run full validation** - `npm run lint:all` and `npm run build` before completion
+
+---
+
+**Remember**: When in doubt, check existing demo pages in `src/app/components/demos/` for working patterns, or reference `src/app/components/theme-demo.component.ts` for component usage examples.

@@ -1,0 +1,66 @@
+{
+  "name": "angular-vite",
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "ng": "ng",
+    "start": "ng serve",
+    "build": "ng build",
+    "watch": "ng build --watch --configuration development",
+    "test": "ng test",
+    "type-check": "node scripts/check-typescript.js",
+    "lint:colors": "node scripts/check-modus-colors.js",
+    "lint:styles": "node scripts/check-inline-styles.js",
+    "lint:borders": "node scripts/check-border-violations.js",
+    "lint:opacity": "node scripts/check-opacity-utilities.js",
+    "lint:icons": "node scripts/check-modus-icons.js",
+    "lint:icon-names": "node scripts/check-icon-names.js",
+    "lint:all": "npm run type-check && npm run lint:colors && npm run lint:styles && npm run lint:borders && npm run lint:opacity && npm run lint:icons && npm run lint:icon-names",
+    "prepare": "husky"
+  },
+  "prettier": {
+    "printWidth": 100,
+    "singleQuote": true,
+    "overrides": [
+      {
+        "files": "*.html",
+        "options": {
+          "parser": "angular"
+        }
+      }
+    ]
+  },
+  "private": true,
+  "dependencies": {
+    "@angular/common": "^20.3.0",
+    "@angular/compiler": "^20.3.0",
+    "@angular/core": "^20.3.0",
+    "@angular/forms": "^20.3.0",
+    "@angular/platform-browser": "^20.3.0",
+    "@angular/router": "^20.3.0",
+    "@tailwindcss/postcss": "^4.1.16",
+    "@trimble-oss/modus-icons": "^1.18.0",
+    "@trimble-oss/moduswebcomponents": "^1.0.1",
+    "@trimble-oss/moduswebcomponents-angular": "^1.0.1-ng19",
+    "postcss": "^8.5.6",
+    "rxjs": "~7.8.0",
+    "tailwindcss": "^4.1.16",
+    "tslib": "^2.3.0",
+    "zone.js": "~0.15.0"
+  },
+  "devDependencies": {
+    "@angular/build": "^20.3.8",
+    "@angular/cli": "^20.3.8",
+    "@angular/compiler-cli": "^20.3.0",
+    "@types/jasmine": "~5.1.0",
+    "glob": "^11.0.0",
+    "husky": "^9.1.7",
+    "jasmine-core": "~5.9.0",
+    "karma": "~6.4.0",
+    "karma-chrome-launcher": "~3.2.0",
+    "karma-coverage": "~2.2.0",
+    "karma-jasmine": "~5.1.0",
+    "karma-jasmine-html-reporter": "~2.1.0",
+    "typescript": "~5.9.2"
+  }
+}

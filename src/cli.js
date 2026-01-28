@@ -1,81 +1,134 @@
 #!/usr/bin/env node
 
-import { scaffold } from "./scaffold.js";
+import { Command } from "commander";
 import chalk from "chalk";
+import { readFileSync } from "fs";
+import { fileURLToPath } from "url";
+import { dirname, join } from "path";
+import { scaffold } from "./scaffold.js";
 
-// Parse command line arguments
-const args = process.argv.slice(2);
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
-// Show help if requested
-if (args.includes("--help") || args.includes("-h")) {
-  console.log(`
-🎯 Create Modus App - Interactive CLI for Modus 2.0 Applications
+// Load package.json for version info
+const packageJsonPath = join(__dirname, "..", "package.json");
+const packageJson = JSON.parse(readFileSync(packageJsonPath, "utf-8"));
 
-Usage:
-  npx @julianoczkowski/create-modus-app [project-name] [options]
-
-Options:
-  --framework <name>    Specify framework (react, angular)
-  --current-folder      Install in current folder and inherit folder name
-  --help, -h           Show this help message
-  --version, -v        Show version number
-
-Examples:
-  npx @julianoczkowski/create-modus-app                    # Interactive mode (choose framework, location, and name)
-  npx @julianoczkowski/create-modus-app my-app             # With your project name
-  npx @julianoczkowski/create-modus-app my-app --framework react
-  npx @julianoczkowski/create-modus-app --current-folder   # Install in current folder
-
-Frameworks:
-  ⚛️ react    - Build with React and Modus 2 Web Components
-  🅰️ angular  - Build with Angular and Modus 2 Web Components
- 
-
-For more information, visit: https://github.com/julianoczkowski/create-modus-app
-`);
-  process.exit(0);
-}
-
-// Show version if requested
-if (args.includes("--version") || args.includes("-v")) {
-  const packageJson = JSON.parse(
-    await import("fs").then((fs) =>
-      fs.readFileSync(new URL("../package.json", import.meta.url), "utf-8")
-    )
-  );
-  console.log(packageJson.version);
-  process.exit(0);
-}
-
-// Parse options
-const options = {};
-
-// Extract project name if provided as first argument (not starting with --)
-if (args[0] && !args[0].startsWith("--")) {
-  options.projectName = args[0];
-}
-
-// Parse framework option
-const frameworkIndex = args.indexOf("--framework");
-if (frameworkIndex !== -1 && args[frameworkIndex + 1]) {
-  options.framework = args[frameworkIndex + 1];
-}
-
-// Parse install option
-if (args.includes("--no-install")) {
-  options.install = false;
-}
-
-// Parse current folder option
-if (args.includes("--current-folder")) {
-  options.currentFolder = true;
-}
-
-export async function cli() {
+// Check for updates (non-blocking)
+async function checkForUpdates() {
   try {
-    await scaffold(options);
-  } catch (error) {
-    console.error(chalk.red("Error:"), error.message);
-    process.exit(1);
+    const { default: updateNotifier } = await import("update-notifier");
+    const notifier = updateNotifier({
+      pkg: packageJson,
+      updateCheckInterval: 1000 * 60 * 60 * 24, // 1 day
+    });
+    notifier.notify({ isGlobal: true });
+  } catch {
+    // Silently ignore update check failures
   }
+}
+
+const program = new Command();
+
+program
+  .name("create-modus-app")
+  .description(
+    "Interactive CLI to scaffold Modus 2.0 web component applications",
+  )
+  .version(packageJson.version, "-v, --version", "Display version number")
+  .argument("[project-name]", "Name of the project to create")
+  .option(
+    "-f, --framework <name>",
+    "Framework to use (react, angular)",
+    validateFramework,
+  )
+  .option(
+    "--current-folder",
+    "Install in current folder and use folder name as project name",
+  )
+  .option("--no-install", "Skip automatic dependency installation")
+  .option("--dry-run", "Preview what would be created without making changes")
+  .option("--verbose", "Enable verbose output for debugging")
+  .option("--info", "Show information about this CLI")
+  .addHelpText(
+    "after",
+    `
+${chalk.cyan("Examples:")}
+  ${chalk.gray("# Interactive mode - choose framework and name")}
+  $ npx @julianoczkowski/create-modus-app
+
+  ${chalk.gray("# Create a React project")}
+  $ npx @julianoczkowski/create-modus-app my-app --framework react
+
+  ${chalk.gray("# Create an Angular project")}
+  $ npx @julianoczkowski/create-modus-app my-app --framework angular
+
+  ${chalk.gray("# Install in current folder")}
+  $ npx @julianoczkowski/create-modus-app --current-folder
+
+  ${chalk.gray("# Preview without creating files")}
+  $ npx @julianoczkowski/create-modus-app my-app --dry-run
+
+${chalk.cyan("Frameworks:")}
+  ${chalk.white("react")}    - React with Vite and Modus 2.0 Components
+  ${chalk.white("angular")}  - Angular with Modus 2.0 Web Components
+
+${chalk.cyan("Security:")}
+  Templates are bundled directly in this CLI package.
+  No external downloads - works offline, always consistent.
+  Use ${chalk.yellow("--info")} for more details.
+
+${chalk.cyan("More information:")}
+  ${chalk.blue("https://github.com/julianoczkowski/create-modus-app")}
+`,
+  )
+  .action(async (projectName, options) => {
+    // Check for updates in background
+    checkForUpdates();
+
+    try {
+      await scaffold({
+        projectName,
+        framework: options.framework,
+        currentFolder: options.currentFolder,
+        install: options.install,
+        dryRun: options.dryRun,
+        verbose: options.verbose,
+        showInfo: options.info,
+      });
+    } catch (error) {
+      console.error(chalk.red("Error:"), error.message);
+      if (options.verbose) {
+        console.error(chalk.gray(error.stack));
+      }
+      process.exit(1);
+    }
+  });
+
+/**
+ * Validate framework option
+ * @param {string} value - Framework name
+ * @returns {string} - Validated framework name
+ */
+function validateFramework(value) {
+  const validFrameworks = ["react", "angular"];
+  const lowercaseValue = value.toLowerCase();
+
+  if (!validFrameworks.includes(lowercaseValue)) {
+    throw new Error(
+      `Invalid framework "${value}". Valid options: ${validFrameworks.join(", ")}`,
+    );
+  }
+
+  return lowercaseValue;
+}
+
+// Export for testing
+export async function cli(args = process.argv) {
+  await program.parseAsync(args);
+}
+
+// Run CLI if this is the main module
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
+  cli();
 }

@@ -1,0 +1,505 @@
+---
+description: Theme implementation guidelines for React + Vite with Modus Design System
+alwaysApply: false
+---
+
+# Modus Themes Implementation in React + Vite
+
+## 🎨 **Theme System Overview**
+
+**CRITICAL**: This React + Vite application supports **6 Modus themes** with proper theme switching, persistence, and hydration safety.
+
+**Available Themes**: 4 Modus themes + 2 Connect themes
+
+- `modus-classic-light` / `modus-classic-dark`
+- `modus-modern-light` / `modus-modern-dark`
+- `connect-light` / `connect-dark`
+
+## 🏗️ **Theme Architecture**
+
+### ✅ **ThemeProvider Setup**
+
+```tsx
+// ✅ CORRECT: ThemeProvider in App.tsx
+import { ThemeProvider } from "./contexts/ThemeContext";
+
+function App() {
+  return (
+    <ThemeProvider>
+      <ModusProvider>
+        <Router>
+          <div className="min-h-screen flex flex-col">
+            <AppHeader />
+            <div className="flex-1">
+              <Routes>{/* Routes */}</Routes>
+            </div>
+            <AppFooter />
+          </div>
+        </Router>
+      </ModusProvider>
+    </ThemeProvider>
+  );
+}
+```
+
+### ✅ **Theme Context Implementation**
+
+```tsx
+// ✅ CORRECT: Theme context with hydration safety
+import { useEffect, useState, type ReactNode } from "react";
+import { ThemeContext, type Theme } from "./ThemeContextData";
+
+interface ThemeProviderProps {
+  children: ReactNode;
+}
+
+const VALID_THEMES: Theme[] = [
+  "modus-classic-light",
+  "modus-classic-dark",
+  "modus-modern-light",
+  "modus-modern-dark",
+  "connect-light",
+  "connect-dark",
+];
+
+export function ThemeProvider({ children }: ThemeProviderProps) {
+  const [theme, setThemeState] = useState<Theme>("modus-classic-light");
+  const [mounted, setMounted] = useState(false);
+
+  // Derived state
+  const isDark = theme.includes("dark");
+  const isModern = theme.includes("modern");
+
+  // Load theme from localStorage on mount
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      try {
+        const savedTheme = window.localStorage.getItem(
+          "preferred-theme"
+        ) as Theme | null;
+
+        if (savedTheme && VALID_THEMES.includes(savedTheme)) {
+          setThemeState(savedTheme);
+        }
+      } catch (error) {
+        console.warn("Unable to read stored theme preference:", error);
+      }
+    }
+    setMounted(true);
+  }, []);
+
+  // Apply theme to document when it changes
+  useEffect(() => {
+    if (!mounted) return;
+
+    const html = document.documentElement;
+
+    // Set theme attribute (official Modus way)
+    html.setAttribute("data-theme", theme);
+
+    // Save to localStorage
+    if (typeof window !== "undefined") {
+      try {
+        window.localStorage.setItem("preferred-theme", theme);
+      } catch (error) {
+        console.warn("Unable to persist theme preference:", error);
+      }
+    }
+  }, [theme, mounted]);
+
+  const setTheme = (newTheme: Theme) => {
+    setThemeState(newTheme);
+  };
+
+  // Prevent hydration mismatch by not rendering until mounted
+  if (!mounted) {
+    return <>{children}</>;
+  }
+
+  return (
+    <ThemeContext.Provider value={{ theme, setTheme, isDark, isModern }}>
+      {children}
+    </ThemeContext.Provider>
+  );
+}
+```
+
+## 🎯 **Theme Usage Patterns**
+
+### ✅ **Theme-Aware Components**
+
+```tsx
+// ✅ CORRECT: Theme-aware component
+import { useTheme } from "../hooks/useTheme";
+
+function ThemedComponent() {
+  const { theme, isDark, isModern } = useTheme();
+
+  return (
+    <div
+      className={`
+      bg-background text-foreground
+      ${isDark ? "border-border" : "border-border"}
+      transition-colors duration-200
+    `}
+    >
+      <div className="text-foreground">Current theme: {theme}</div>
+      <div className="text-muted-foreground">
+        Mode: {isDark ? "Dark" : "Light"}
+      </div>
+      <div className="text-muted-foreground">
+        Style: {isModern ? "Modern" : "Classic"}
+      </div>
+    </div>
+  );
+}
+```
+
+### ✅ **Conditional Theming**
+
+```tsx
+// ✅ CORRECT: Conditional theming
+function ConditionalThemedComponent() {
+  const { theme } = useTheme();
+
+  const getThemeSpecificContent = () => {
+    switch (theme) {
+      case "modus-classic-light":
+        return "Classic Light Theme";
+      case "modus-classic-dark":
+        return "Classic Dark Theme";
+      case "modus-modern-light":
+        return "Modern Light Theme";
+      case "modus-modern-dark":
+        return "Modern Dark Theme";
+      case "connect-light":
+        return "Connect Light Theme";
+      case "connect-dark":
+        return "Connect Dark Theme";
+      default:
+        return "Default Theme";
+    }
+  };
+
+  return (
+    <div className="bg-background text-foreground p-4 rounded border border-border">
+      <div className="text-lg font-semibold">{getThemeSpecificContent()}</div>
+    </div>
+  );
+}
+```
+
+### ✅ **Theme Switching Component**
+
+```tsx
+// ✅ CORRECT: Theme switching component using ModusDropdownMenu
+import ModusDropdownMenu from "./ModusDropdownMenu";
+import type { MenuItem } from "./ModusMenu";
+
+function ThemeSwitcher() {
+  const { theme, setTheme } = useTheme();
+
+  const handleItemSelect = (event: CustomEvent<{ value: string }>) => {
+    setTheme(event.detail.value as Theme);
+  };
+
+  const themes = [
+    { value: "modus-classic-light", label: "Classic Light" },
+    { value: "modus-classic-dark", label: "Classic Dark" },
+    { value: "modus-modern-light", label: "Modern Light" },
+    { value: "modus-modern-dark", label: "Modern Dark" },
+    { value: "connect-light", label: "Connect Light" },
+    { value: "connect-dark", label: "Connect Dark" },
+  ];
+
+  const menuItems: MenuItem[] = themes.map((themeOption) => ({
+    label: themeOption.label,
+    value: themeOption.value,
+    selected: theme === themeOption.value,
+  }));
+
+  return (
+    <div className="space-y-2">
+      <div className="text-sm font-medium text-foreground">Theme</div>
+      <ModusDropdownMenu
+        menuItems={menuItems}
+        onItemSelect={handleItemSelect}
+        buttonContent={
+          <div className="flex items-center justify-between w-full px-3 py-2">
+            <span>
+              {themes.find((t) => t.value === theme)?.label || "Select Theme"}
+            </span>
+            <i className="modus-icons">expand_more</i>
+          </div>
+        }
+      />
+    </div>
+  );
+}
+```
+
+## 🎨 **Advanced Theme Patterns**
+
+### ✅ **Theme-Specific Styling**
+
+```tsx
+// ✅ CORRECT: Theme-specific styling
+function ThemeSpecificComponent() {
+  const { theme, isDark, isModern } = useTheme();
+
+  const getThemeClasses = () => {
+    if (isModern) {
+      return isDark
+        ? "bg-card text-card-foreground border-border rounded-lg p-4 shadow-lg"
+        : "bg-card text-card-foreground border-border rounded-lg p-4 shadow-md";
+    } else {
+      return isDark
+        ? "bg-card text-card-foreground border-border rounded p-4"
+        : "bg-card text-card-foreground border-border rounded p-4";
+    }
+  };
+
+  return (
+    <div className={getThemeClasses()}>
+      <div className="text-lg font-semibold">Theme-specific styling</div>
+      <div className="text-sm text-muted-foreground">
+        This component adapts to the current theme
+      </div>
+    </div>
+  );
+}
+```
+
+### ✅ **Theme Persistence**
+
+```tsx
+// ✅ CORRECT: Theme persistence with localStorage
+function PersistentThemeComponent() {
+  const { theme, setTheme } = useTheme();
+
+  const saveThemePreference = (newTheme: Theme) => {
+    setTheme(newTheme);
+    // Theme is automatically saved to localStorage by ThemeProvider
+  };
+
+  const resetTheme = () => {
+    setTheme("modus-classic-light");
+  };
+
+  return (
+    <div className="space-y-4">
+      <div className="text-foreground">Current theme: {theme}</div>
+
+      <div className="flex space-x-2">
+        <button
+          onClick={() => saveThemePreference("modus-modern-dark")}
+          className="px-4 py-2 bg-primary text-primary-foreground rounded hover:bg-primary/90"
+        >
+          Set Modern Dark
+        </button>
+
+        <button
+          onClick={() => saveThemePreference("connect-light")}
+          className="px-4 py-2 bg-secondary text-secondary-foreground rounded hover:bg-secondary/90"
+        >
+          Set Connect Light
+        </button>
+
+        <button
+          onClick={resetTheme}
+          className="px-4 py-2 bg-muted text-muted-foreground rounded hover:bg-muted/90"
+        >
+          Reset
+        </button>
+      </div>
+    </div>
+  );
+}
+```
+
+### ✅ **Theme Validation**
+
+```tsx
+// ✅ CORRECT: Theme validation
+function ThemeValidation() {
+  const { theme } = useTheme();
+
+  const validateTheme = (themeToCheck: string) => {
+    const validThemes = [
+      "modus-classic-light",
+      "modus-classic-dark",
+      "modus-modern-light",
+      "modus-modern-dark",
+      "connect-light",
+      "connect-dark",
+    ];
+
+    return validThemes.includes(themeToCheck);
+  };
+
+  const isValidTheme = validateTheme(theme);
+
+  return (
+    <div className="bg-background text-foreground p-4 rounded border border-border">
+      <div className="text-lg font-semibold">Theme Validation</div>
+      <div className="text-sm text-muted-foreground">
+        Current theme: {theme}
+      </div>
+      <div
+        className={`text-sm ${
+          isValidTheme ? "text-success" : "text-destructive"
+        }`}
+      >
+        {isValidTheme ? "Valid theme" : "Invalid theme"}
+      </div>
+    </div>
+  );
+}
+```
+
+## 🔧 **Theme Testing**
+
+### ✅ **Theme Testing Component**
+
+```tsx
+// ✅ CORRECT: Theme testing component
+function ThemeTest() {
+  const { theme, setTheme } = useTheme();
+
+  const testThemes = [
+    "modus-classic-light",
+    "modus-classic-dark",
+    "modus-modern-light",
+    "modus-modern-dark",
+    "connect-light",
+    "connect-dark",
+  ];
+
+  const testAllThemes = () => {
+    testThemes.forEach((testTheme, index) => {
+      setTimeout(() => {
+        setTheme(testTheme as Theme);
+        console.log(`Testing theme: ${testTheme}`);
+      }, index * 1000);
+    });
+  };
+
+  return (
+    <div className="space-y-4">
+      <div className="text-foreground">Current theme: {theme}</div>
+
+      <button
+        onClick={testAllThemes}
+        className="px-4 py-2 bg-primary text-primary-foreground rounded hover:bg-primary/90"
+      >
+        Test All Themes
+      </button>
+
+      <div className="grid grid-cols-2 gap-2">
+        {testThemes.map((testTheme) => (
+          <button
+            key={testTheme}
+            onClick={() => setTheme(testTheme as Theme)}
+            className={`px-3 py-2 rounded text-sm ${
+              theme === testTheme
+                ? "bg-primary text-primary-foreground"
+                : "bg-muted text-muted-foreground hover:bg-muted/80"
+            }`}
+          >
+            {testTheme}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+```
+
+## 🚫 **Common Anti-Patterns**
+
+### ❌ **Don't Use Hardcoded Themes**
+
+```tsx
+// ❌ WRONG: Hardcoded theme values
+const theme = "modus-classic-light"; // ❌ Hardcoded
+const isDark = theme.includes("dark"); // ❌ Hardcoded logic
+
+// ✅ CORRECT: Use theme context
+const { theme, isDark } = useTheme();
+```
+
+### ❌ **Don't Use Custom Theme Attributes**
+
+```tsx
+// ❌ WRONG: Using custom theme attributes
+html.setAttribute("data-theme", theme);
+html.setAttribute("data-mode", isDark ? "dark" : "light"); // ❌ Custom attribute
+html.classList.add(isDark ? "dark" : "light"); // ❌ Custom classes
+
+// ✅ CORRECT: Use only official data-theme attribute
+html.setAttribute("data-theme", theme);
+```
+
+### ❌ **Don't Ignore Hydration Safety**
+
+```tsx
+// ❌ WRONG: Ignoring hydration safety
+function BadThemeComponent() {
+  const { theme } = useTheme();
+
+  // ❌ This will cause hydration mismatch
+  return <div>Theme: {theme}</div>;
+}
+
+// ✅ CORRECT: Handle hydration safety
+function GoodThemeComponent() {
+  const { theme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return <div>Loading...</div>;
+  }
+
+  return <div>Theme: {theme}</div>;
+}
+```
+
+### ❌ **Don't Use Invalid Theme Values**
+
+```tsx
+// ❌ WRONG: Invalid theme values
+setTheme("invalid-theme"); // ❌ Invalid theme
+setTheme("modus-light"); // ❌ Invalid theme format
+
+// ✅ CORRECT: Valid theme values
+setTheme("modus-classic-light"); // ✅ Valid
+setTheme("connect-dark"); // ✅ Valid
+```
+
+## 🎯 **Key Takeaways**
+
+1. **Use Theme Context**: Always use `useTheme` hook for theme access
+2. **Official Theme Application**: Use only `data-theme` attribute (no custom attributes)
+3. **Hydration Safety**: Handle hydration mismatches properly
+4. **Valid Themes**: Only use the 6 valid theme values
+5. **Persistence**: Themes are automatically persisted to localStorage
+6. **Testing**: Test all themes to ensure proper functionality
+
+## 🔍 **Theme Implementation Checklist**
+
+- [ ] ✅ **ThemeProvider**: Properly configured in App.tsx
+- [ ] ✅ **Theme Context**: Theme context with hydration safety
+- [ ] ✅ **Valid Themes**: Using only the 6 valid theme values
+- [ ] ✅ **Theme Application**: Using only `data-theme` attribute (no custom attributes)
+- [ ] ✅ **Theme Switching**: Proper theme switching functionality
+- [ ] ✅ **Persistence**: Theme persistence with localStorage
+- [ ] ✅ **Testing**: Testing all themes for proper functionality
+- [ ] ✅ **Hydration Safety**: Proper hydration mismatch handling
+
+---
+
+**Remember: This React + Vite application supports 6 Modus themes with proper theme switching, persistence, and hydration safety. Always use the theme context for theme access and handle hydration mismatches properly. Test all themes to ensure proper functionality.**

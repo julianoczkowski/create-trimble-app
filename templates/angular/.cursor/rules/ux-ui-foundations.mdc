@@ -1,0 +1,236 @@
+---
+alwaysApply: true
+---
+
+---
+
+Title: UI/UX Foundations for AI Agents (Validated Modus 2 + Tailwind v4)
+Scope: **Modus 2 Angular Components + Tailwind v4 (Real Config Alignment)**
+
+---
+
+> This file is grounded in your **real Modus 2 Angular + Tailwind v4 setup**. It uses the exact variables, color tokens, and CSS conventions from your implementation (`--modus-wc-color-*`, `--background`, etc.). All colors are defined locally in `src/styles.css` for LLM context awareness.
+
+---
+
+# Foundation & Setup
+
+## 1 Color System — From Angular Design System
+
+### Semantic Mapping
+
+Use Tailwind v4 tokens defined in your `src/styles.css`. **Do not use arbitrary colors.**
+
+| Purpose    | Tailwind Token                               | CSS Variable (from src/styles.css)                         |
+| ---------- | -------------------------------------------- | ---------------------------------------------------------- |
+| Background | `bg-background`                              | `--background` → `var(--modus-wc-color-base-page)`         |
+| Foreground | `text-foreground`                            | `--foreground` → `var(--modus-wc-color-base-content)`      |
+| Card       | `bg-card`                                    | `--card` → `var(--modus-wc-color-base-100)`                |
+| Card Text  | `text-card-foreground`                       | `--card-foreground` → `var(--modus-wc-color-base-content)` |
+| Primary    | `bg-primary` / `text-primary-foreground`     | `--primary` → `var(--modus-wc-color-info)`                 |
+| Secondary  | `bg-secondary` / `text-secondary-foreground` | `--secondary` → `var(--modus-wc-color-base-300)`           |
+| Muted      | `bg-muted` / `text-muted-foreground`         | `--muted` → `var(--modus-wc-color-base-200)`               |
+| Success    | `bg-success` / `text-success-foreground`     | `--success` → `var(--modus-wc-color-success)`              |
+| Warning    | `bg-warning` / `text-warning-foreground`     | `--warning` → `var(--modus-wc-color-warning)`              |
+| Error      | `bg-error` / `text-error-foreground`         | `--error` → `var(--modus-wc-color-error)`                  |
+| Border     | `border-border`                              | `--border` → `var(--modus-wc-color-base-200)`              |
+| Ring       | `ring`                                       | `--ring` → `var(--modus-wc-color-info)`                    |
+
+**Rules:**
+
+- Never use `#hex`, RGB, or inline color CSS.
+- All visual hierarchy comes from semantic tokens.
+- Respect light/dark context (CSS variables auto-handle switching).
+- Use custom border utilities (`.border-default`, `.border-primary`, etc.) for Tailwind v4 compatibility.
+- Use opacity utilities (`.text-foreground-80`, `.bg-primary-20`, etc.) for transparency.
+
+## 2 Tailwind v4 Configuration
+
+Tailwind v4 reads CSS variables directly from `src/styles.css`. No separate `tailwind.config.js` is required.
+
+All colors are defined in `src/styles.css` under `:root`:
+
+```css
+:root {
+  --background: var(--modus-wc-color-base-page);
+  --foreground: var(--modus-wc-color-base-content);
+  --card: var(--modus-wc-color-base-100);
+  --card-foreground: var(--modus-wc-color-base-content);
+  --muted: var(--modus-wc-color-base-200);
+  --muted-foreground: var(--modus-wc-color-base-content);
+  --secondary: var(--modus-wc-color-base-300);
+  --secondary-foreground: var(--modus-wc-color-base-content);
+  --primary: var(--modus-wc-color-info);
+  --primary-foreground: var(--modus-wc-color-base-page);
+  --success: var(--modus-wc-color-success);
+  --success-foreground: var(--modus-wc-color-base-page);
+  --warning: var(--modus-wc-color-warning);
+  --warning-foreground: var(--modus-wc-color-base-content);
+  --error: var(--modus-wc-color-error);
+  --error-foreground: var(--modus-wc-color-base-page);
+  --border: var(--modus-wc-color-base-200);
+  --ring: var(--modus-wc-color-info);
+}
+```
+
+**Custom Utilities Available:**
+
+- Border utilities: `.border-default`, `.border-thick`, `.border-primary`, `.border-success`, `.border-warning`, `.border-error`
+- Opacity utilities: `.text-foreground-80`, `.bg-primary-20`, etc. (20%, 40%, 60%, 80% variants for all colors)
+
+---
+
+# Component System
+
+## 3 Example Component System — Modus 2 Angular Wrappers
+
+**REFERENCE**: For more information reference `docs/angular-design-system.mdc`
+
+| Component | Angular Component    | Inputs/Props                       | Usage Rule                                                                 |
+| --------- | -------------------- | ---------------------------------- | -------------------------------------------------------------------------- |
+| Button    | `<modus-button>`     | `color`, `variant`, `size`, `icon` | One primary action per surface. Use `color="primary"` for primary actions. |
+| Card      | `<modus-card>`       | `bordered`, `padding`, `layout`    | For grouping or sectioning. Use `bg-card` + `border-border` in slots.      |
+| Input     | `<modus-text-input>` | `label`, `error`, `disabled`       | Must have a visible `label`. Use error state + ARIA bindings.              |
+| Select    | `<modus-select>`     | `options`, `placeholder`           | Never rely on placeholder as label.                                        |
+| Table     | `<modus-table>`      | `columns`, `data`, `sortable`      | Include empty and loading states.                                          |
+| Modal     | `<modus-modal>`      | `isOpen`, `onClose`, `title`       | Trap focus. ESC closes. Max 3 actions.                                     |
+| Tabs      | `<modus-tabs>`       | `tabs`, `activeKey`                | Keyboard accessible.                                                       |
+| Tooltip   | `<modus-tooltip>`    | `text`, `position`                 | Short contextual hints only.                                               |
+| Icon      | `<modus-icon>`       | `name`, `size`, `variant`          | Follows real Modus naming (kebab-case, outlined default).                  |
+
+## 4 Iconography
+
+**REFERENCE**: For complete icon usage guidelines see `docs/angular-design-system.mdc`
+
+### Import (already handled globally)
+
+Modus icons are imported via the Modus Web Components CDN in `src/styles.css`:
+
+```css
+@import '@trimble-oss/moduswebcomponents/modus-wc-styles.css';
+```
+
+### Supported Usage Patterns
+
+#### A) Angular Component (preferred)
+
+```html
+<!-- Informational icon (announced by screen reader) -->
+<modus-icon name="user-add" size="lg" [decorative]="false" ariaLabel="Add user" />
+
+<!-- Decorative icon (not announced) -->
+<modus-icon name="chevron-right" size="md" [decorative]="true" />
+```
+
+- **Inputs:** `name` (kebab-case), `size`: `'sm' | 'md' | 'lg'`, `decorative`: boolean.
+- **Accessibility:** If `[decorative]="false"`, include `ariaLabel`.
+- **Do not** pass numeric pixel sizes.
+
+#### B) Bare `<i>` Glyph (CDN font)
+
+```html
+<!-- Decorative icon -->
+<i class="modus-icons text-lg" aria-hidden="true">user-add</i>
+
+<!-- Informational icon -->
+<i class="modus-icons text-md" role="img" aria-label="Settings">settings</i>
+```
+
+- Size using Tailwind text utilities (`text-sm`, `text-md`, `text-lg`).
+- Keep color semantic (`text-foreground`, `text-muted-foreground`, etc.).
+
+### Rules
+
+- Naming: **kebab-case** (`file-upload`, `user-add`).
+- Style: outlined default; filled for active/selected states only.
+- One icon per control.
+- In buttons: icon left, `mr-2` or `ml-2` between icon and label, aligned baseline.
+
+---
+
+# Design Principles
+
+## 5 Gestalt Laws in Practice (UI Layout Rules)
+
+**REFERENCE**: For more information referance `.cursor/rules/ux/gestalt-laws-detailed.mdc`
+
+| Law                 | Implementation                                                                 |
+| ------------------- | ------------------------------------------------------------------------------ |
+| **Proximity**       | `gap-2` within a group; `gap-6`–`gap-8` between groups.                        |
+| **Similarity**      | Same purpose = same variant, same size.                                        |
+| **Common Region**   | Group with `<modus-card>` and `class="p-6 bg-card border-default rounded-lg"`. |
+| **Figure/Ground**   | Use `bg-card` over `bg-background` with shadow or border.                      |
+| **Continuity**      | Maintain alignment using `flex`, `items-start`, `justify-between`.             |
+| **Hick's**          | Max 3 visible CTAs per context. Overflow extra in menu.                        |
+| **Fitts's**         | Keep primary CTAs near edited content, 44×44px minimum.                        |
+| **Serial Position** | Primary actions at start or end of flow.                                       |
+| **Prägnanz**        | Remove unnecessary divs, borders, or text. Prefer whitespace.                  |
+
+---
+
+# Implementation Examples
+
+## 6 Example Snippets
+
+### Form Card
+
+```html
+<modus-card class="bg-card border-default rounded-lg">
+  <div slot="title" class="text-foreground text-lg font-medium">Profile</div>
+  <div slot="actions">
+    <modus-button color="primary">Save</modus-button>
+  </div>
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+    <div class="flex flex-col gap-2">
+      <label for="email" class="text-sm text-muted-foreground">Email</label>
+      <modus-text-input id="email" name="email" type="email" required />
+      <div class="text-xs text-muted-foreground">Used for notifications</div>
+    </div>
+  </div>
+</modus-card>
+```
+
+### Toolbar
+
+```html
+<div class="flex items-center justify-between gap-4 border-bottom-default pb-4">
+  <div class="flex items-center gap-2">
+    <modus-icon name="filter-list" size="md" [decorative]="true" />
+    <modus-select placeholder="Sort by" [options]="sortOptions" />
+  </div>
+  <modus-button color="primary" icon="plus" iconPosition="left">New</modus-button>
+</div>
+```
+
+---
+
+# AI Guidelines
+
+## 7 AI Output Contract
+
+- Use `<modus-icon size="sm|md|lg">`, never numeric.
+- Use `[decorative]` and `ariaLabel` correctly in Angular templates.
+- Accept either `<modus-icon>` or `<i class="modus-icons">` per context.
+- All Tailwind utilities must use semantic tokens from `src/styles.css`.
+- Use custom border utilities (`.border-default`, `.border-primary`, etc.) for Tailwind v4 compatibility.
+- Use opacity utilities (`.text-foreground-80`, `.bg-primary-20`, etc.) instead of arbitrary values.
+- Accessibility attributes required for all interactive elements.
+- All motion ≤250ms; respect `prefers-reduced-motion`.
+- Use Tailwind classes (`mr-2`, `ml-2`) instead of inline styles (`[style.margin-right.px]`).
+
+## 8 PR / QA Checklist
+
+- [ ] All UI uses `<modus-*>` Angular components.
+- [ ] Tailwind tokens match design system in `src/styles.css`.
+- [ ] Custom border utilities used for borders (`.border-default`, `.border-primary`, etc.).
+- [ ] Opacity utilities used for transparency (`.text-foreground-80`, `.bg-primary-20`, etc.).
+- [ ] No inline styles except for truly dynamic values.
+- [ ] ARIA, labels, keyboard, and focus verified.
+- [ ] Empty/loading/error states present.
+- [ ] Only one primary CTA per surface.
+- [ ] Spacing follows 4/8 rhythm (`gap-2`, `gap-4`, `gap-8`).
+- [ ] Colors from design system variables only (`--background`, `--primary`, etc. from `src/styles.css`).
+- [ ] No raw Modus variables (`var(--modus-wc-color-*)`) used directly in templates.
+- [ ] No theme attributes; dark/light handled via root vars.
+
+---

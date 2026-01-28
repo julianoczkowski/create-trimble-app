@@ -1,0 +1,803 @@
+---
+alwaysApply: false
+---
+
+# Modus React Key Warnings - Essential Rules
+
+## 🚨 CRITICAL: React Key Props with Modus Web Components
+
+When using Modus Web Components in React, proper key handling is essential to prevent React warnings and ensure optimal performance.
+
+## ❌ NEVER Do These
+
+### 1. Missing Key Props on Mapped Components
+
+```tsx
+// ❌ WRONG - No key prop
+{
+  items.map((item) => (
+    <ModusWcMenuItem label={item.label} value={item.value} />
+  ));
+}
+
+// ❌ WRONG - Using index only as key
+{
+  items.map((item, index) => (
+    <ModusWcMenuItem key={index} label={item.label} value={item.value} />
+  ));
+}
+```
+
+### 2. Using Slots Instead of Props for Icons
+
+```tsx
+// ❌ WRONG - Using slot content causes key issues
+<ModusWcMenuItem label={item.label} value={item.value}>
+  {item.startIcon && (
+    <i className="modus-icons" slot="start-icon">
+      {item.startIcon}
+    </i>
+  )}
+</ModusWcMenuItem>
+```
+
+### 3. Wrapping Web Components in Divs
+
+```tsx
+// ❌ WRONG - Div wrapper interferes with web component
+{
+  items.map((item) => (
+    <div key={item.value}>
+      <ModusWcMenuItem label={item.label} value={item.value} />
+    </div>
+  ));
+}
+```
+
+## ✅ ALWAYS Do These
+
+### 1. Use Composite Keys for Web Components
+
+```tsx
+// ✅ CORRECT - Composite key ensures uniqueness
+{
+  items.map((item, index) => (
+    <ModusWcMenuItem
+      key={`${item.value}-${index}`}
+      label={item.label}
+      value={item.value}
+      start-icon={item.startIcon}
+    />
+  ));
+}
+```
+
+### 2. Use Props Instead of Slots for Modus Components
+
+```tsx
+// ✅ CORRECT - Use start-icon prop
+<ModusWcMenuItem
+  key={`${item.value}-${index}`}
+  label={item.label}
+  value={item.value}
+  start-icon={item.startIcon}
+  sub-label={item.subLabel}
+  selected={item.selected}
+  disabled={item.disabled}
+  bordered={item.bordered}
+/>
+```
+
+### 3. Handle Dynamic Content Properly
+
+```tsx
+// ✅ CORRECT - Safe key generation
+const generateKey = (item: MenuItem, index: number) => {
+  return item.value ? `${item.value}-${index}` : `item-${index}`;
+};
+
+{
+  items.map((item, index) => (
+    <ModusWcMenuItem
+      key={generateKey(item, index)}
+      label={item.label}
+      value={item.value}
+    />
+  ));
+}
+```
+
+## 🎯 Key Patterns for Different Modus Components
+
+### ModusWcMenuItem
+
+```tsx
+// ✅ CORRECT
+{
+  menuItems.map((item, index) => (
+    <ModusWcMenuItem
+      key={`${item.value}-${index}`}
+      label={item.label}
+      value={item.value}
+      start-icon={item.startIcon}
+      sub-label={item.subLabel}
+    />
+  ));
+}
+```
+
+### ModusWcTabs
+
+```tsx
+// ✅ CORRECT
+{
+  panels.map((panel, index) => (
+    <div key={index} slot={`tab-${index}`}>
+      {panel}
+    </div>
+  ));
+}
+```
+
+### ModusWcDropdownMenu
+
+```tsx
+// ✅ CORRECT
+{
+  menuItems.map((item, index) => (
+    <ModusWcMenuItem
+      key={`${item.value}-${index}`}
+      label={item.label}
+      value={item.value}
+      start-icon={item.startIcon}
+    />
+  ));
+}
+```
+
+## 🚨 Common Warning Messages
+
+### React Key Warning
+
+```text
+Each child in a list should have a unique "key" prop.
+Check the render method of `ModusWcMenu2`. It was passed a child from ModusMenu.
+```
+
+**Solution**: Use composite keys and props instead of slots.
+
+### Web Component Slot Issues
+
+```text
+Warning: React does not recognize the `slot` prop on a DOM element.
+```
+
+**Solution**: Use component props instead of slot attributes.
+
+### Common Pitfalls and Solutions
+
+#### ❌ Pitfall: Using Array Index as Key
+
+```tsx
+// ❌ PROBLEMATIC - Can cause issues with reordering
+{
+  items.map((item, index) => <ModusWcMenuItem key={index} {...item} />);
+}
+```
+
+#### ✅ Solution: Use Stable Identifiers
+
+```tsx
+// ✅ CORRECT - Use unique, stable identifier
+{
+  items.map((item) => <ModusWcMenuItem key={item.id} {...item} />);
+}
+```
+
+#### ❌ Pitfall: Missing Event Cleanup
+
+```tsx
+// ❌ PROBLEMATIC - Memory leaks
+useEffect(() => {
+  const element = ref.current;
+  element?.addEventListener("itemSelect", handler);
+  // Missing cleanup!
+}, []);
+```
+
+#### ✅ Solution: Proper Cleanup
+
+```tsx
+// ✅ CORRECT - Clean up event listeners
+useEffect(() => {
+  const element = ref.current;
+  if (!element) return;
+
+  element.addEventListener("itemSelect", handler);
+
+  return () => {
+    element.removeEventListener("itemSelect", handler);
+  };
+}, [handler]);
+```
+
+#### ❌ Pitfall: Inconsistent Key Generation
+
+```tsx
+// ❌ PROBLEMATIC - Keys can collide
+{
+  items.map((item) => <ModusWcMenuItem key={item.value} {...item} />);
+}
+```
+
+#### ✅ Solution: Composite Keys
+
+```tsx
+// ✅ CORRECT - Composite keys prevent collisions
+{
+  items.map((item, index) => (
+    <ModusWcMenuItem key={`${item.value}-${index}`} {...item} />
+  ));
+}
+```
+
+## 🔧 Debugging Steps
+
+1. **Check Console**: Look for React key warnings
+2. **Use Chrome DevTools**: Inspect component structure
+3. **Verify Keys**: Ensure each mapped item has a unique key
+4. **Test Props**: Use component props instead of slots when possible
+
+## 📚 Reference Components
+
+**Working Examples:**
+
+- `ModusDropdownMenu.tsx` - Uses `start-icon={item.startIcon}` prop
+- `ThemeSwitcherDropdown.tsx` - Proper key handling
+- `ModusTabs.tsx` - Correct slot usage for tab panels
+
+**Problematic Patterns:**
+
+- Slot-based icon rendering
+- Missing or duplicate keys
+- Wrapping web components unnecessarily
+
+## 🔗 Modus Web Components React Integration
+
+### Official Documentation Patterns
+
+Based on the [Modus Web Components React Documentation](https://trimble-oss.github.io/modus-wc-2.0/main/?path=/docs/documentation-frameworks-react--docs), follow these patterns:
+
+#### ✅ Proper List Rendering
+
+```tsx
+// ✅ CORRECT - Use unique identifiers as keys
+{
+  items.map((item) => (
+    <ModusWcMenuItem
+      key={item.id}
+      label={item.label}
+      value={item.value}
+      start-icon={item.startIcon}
+    />
+  ));
+}
+```
+
+#### ✅ Required Props Configuration
+
+```tsx
+// ✅ CORRECT - Provide all required props
+<ModusWcMenuItem
+  label="Menu Item"
+  value="menu-item"
+  start-icon="icon-name"
+  disabled={false}
+  selected={false}
+/>
+```
+
+#### ❌ Avoid Index-Based Keys for Dynamic Lists
+
+```tsx
+// ❌ WRONG - Index can cause issues with reordering
+{
+  items.map((item, index) => <ModusWcMenuItem key={index} {...item} />);
+}
+
+// ✅ CORRECT - Use stable identifier
+{
+  items.map((item) => <ModusWcMenuItem key={item.id} {...item} />);
+}
+```
+
+### Key Integration Principles
+
+1. **Stable Keys**: Use data-based identifiers, not array indices
+2. **Complete Props**: Provide all required web component props
+3. **Event Handling**: Use proper React event handlers for web component events
+4. **Type Safety**: Leverage TypeScript interfaces for web component props
+5. **Performance**: Avoid unnecessary re-renders with proper key usage
+
+### TypeScript Integration Patterns
+
+```tsx
+// ✅ CORRECT - Type-safe interface
+interface MenuItem {
+  id: string;
+  label: string;
+  value: string;
+  startIcon?: string;
+  disabled?: boolean;
+  selected?: boolean;
+}
+
+// ✅ CORRECT - Proper event handling
+const handleItemSelect = (event: CustomEvent<{ value: string }>) => {
+  const selectedValue = event.detail.value;
+  // Handle selection
+};
+
+// ✅ CORRECT - Type-safe component usage
+{
+  menuItems.map((item: MenuItem) => (
+    <ModusWcMenuItem
+      key={item.id}
+      label={item.label}
+      value={item.value}
+      start-icon={item.startIcon}
+      disabled={item.disabled}
+      selected={item.selected}
+      onItemSelect={handleItemSelect}
+    />
+  ));
+}
+```
+
+### Event Handling Best Practices
+
+```tsx
+// ✅ CORRECT - Proper event listener setup
+useEffect(() => {
+  const menuElement = menuRef.current;
+  if (!menuElement) return;
+
+  const handleItemSelect = (event: CustomEvent<{ value: string }>) => {
+    onItemSelect?.(event.detail);
+  };
+
+  menuElement.addEventListener("itemSelect", handleItemSelect);
+
+  return () => {
+    menuElement.removeEventListener("itemSelect", handleItemSelect);
+  };
+}, [onItemSelect]);
+```
+
+## 🎯 Key Rules Summary
+
+1. **Always use composite keys**: `${value}-${index}`
+2. **Use props over slots**: `start-icon={icon}` not `<i slot="start-icon">`
+3. **Avoid div wrappers**: Let web components render directly
+4. **Test in Chrome DevTools**: Verify no React warnings
+5. **Follow Modus patterns**: Use established component patterns
+6. **Use unique identifiers**: Never use array index as key when items can reorder
+7. **Provide all required props**: Ensure web components have proper configuration
+8. **Handle dynamic content safely**: Use stable identifiers for keys
+
+## 🚀 Performance Benefits
+
+- **Faster re-renders**: React can efficiently track component changes
+- **No console warnings**: Clean development experience
+- **Better debugging**: Clear component hierarchy
+- **Optimal performance**: Proper React reconciliation
+
+## 📝 Quick Checklist
+
+- [ ] ✅ All mapped components have unique keys
+- [ ] ✅ Using composite keys (`${value}-${index}`)
+- [ ] ✅ Using props instead of slots for icons
+- [ ] ✅ No unnecessary div wrappers
+- [ ] ✅ No React warnings in console
+- [ ] ✅ Components render correctly
+- [ ] ✅ Following Modus Web Components patterns
+
+# Modus React Key Warnings - Essential Rules
+
+## 🚨 CRITICAL: React Key Props with Modus Web Components
+
+When using Modus Web Components in React, proper key handling is essential to prevent React warnings and ensure optimal performance.
+
+## ❌ NEVER Do These
+
+### 1. Missing Key Props on Mapped Components
+
+```tsx
+// ❌ WRONG - No key prop
+{
+  items.map((item) => (
+    <ModusWcMenuItem label={item.label} value={item.value} />
+  ));
+}
+
+// ❌ WRONG - Using index only as key
+{
+  items.map((item, index) => (
+    <ModusWcMenuItem key={index} label={item.label} value={item.value} />
+  ));
+}
+```
+
+### 2. Using Slots Instead of Props for Icons
+
+```tsx
+// ❌ WRONG - Using slot content causes key issues
+<ModusWcMenuItem label={item.label} value={item.value}>
+  {item.startIcon && (
+    <i className="modus-icons" slot="start-icon">
+      {item.startIcon}
+    </i>
+  )}
+</ModusWcMenuItem>
+```
+
+### 3. Wrapping Web Components in Divs
+
+```tsx
+// ❌ WRONG - Div wrapper interferes with web component
+{
+  items.map((item) => (
+    <div key={item.value}>
+      <ModusWcMenuItem label={item.label} value={item.value} />
+    </div>
+  ));
+}
+```
+
+## ✅ ALWAYS Do These
+
+### 1. Use Composite Keys for Web Components
+
+```tsx
+// ✅ CORRECT - Composite key ensures uniqueness
+{
+  items.map((item, index) => (
+    <ModusWcMenuItem
+      key={`${item.value}-${index}`}
+      label={item.label}
+      value={item.value}
+      start-icon={item.startIcon}
+    />
+  ));
+}
+```
+
+### 2. Use Props Instead of Slots for Modus Components
+
+```tsx
+// ✅ CORRECT - Use start-icon prop
+<ModusWcMenuItem
+  key={`${item.value}-${index}`}
+  label={item.label}
+  value={item.value}
+  start-icon={item.startIcon}
+  sub-label={item.subLabel}
+  selected={item.selected}
+  disabled={item.disabled}
+  bordered={item.bordered}
+/>
+```
+
+### 3. Handle Dynamic Content Properly
+
+```tsx
+// ✅ CORRECT - Safe key generation
+const generateKey = (item: MenuItem, index: number) => {
+  return item.value ? `${item.value}-${index}` : `item-${index}`;
+};
+
+{
+  items.map((item, index) => (
+    <ModusWcMenuItem
+      key={generateKey(item, index)}
+      label={item.label}
+      value={item.value}
+    />
+  ));
+}
+```
+
+## 🎯 Key Patterns for Different Modus Components
+
+### ModusWcMenuItem
+
+```tsx
+// ✅ CORRECT
+{
+  menuItems.map((item, index) => (
+    <ModusWcMenuItem
+      key={`${item.value}-${index}`}
+      label={item.label}
+      value={item.value}
+      start-icon={item.startIcon}
+      sub-label={item.subLabel}
+    />
+  ));
+}
+```
+
+### ModusWcTabs
+
+```tsx
+// ✅ CORRECT
+{
+  panels.map((panel, index) => (
+    <div key={index} slot={`tab-${index}`}>
+      {panel}
+    </div>
+  ));
+}
+```
+
+### ModusWcDropdownMenu
+
+```tsx
+// ✅ CORRECT
+{
+  menuItems.map((item, index) => (
+    <ModusWcMenuItem
+      key={`${item.value}-${index}`}
+      label={item.label}
+      value={item.value}
+      start-icon={item.startIcon}
+    />
+  ));
+}
+```
+
+## 🚨 Common Warning Messages
+
+### React Key Warning
+
+```text
+Each child in a list should have a unique "key" prop.
+Check the render method of `ModusWcMenu2`. It was passed a child from ModusMenu.
+```
+
+**Solution**: Use composite keys and props instead of slots.
+
+### Web Component Slot Issues
+
+```text
+Warning: React does not recognize the `slot` prop on a DOM element.
+```
+
+**Solution**: Use component props instead of slot attributes.
+
+### Common Pitfalls and Solutions
+
+#### ❌ Pitfall: Using Array Index as Key
+
+```tsx
+// ❌ PROBLEMATIC - Can cause issues with reordering
+{
+  items.map((item, index) => <ModusWcMenuItem key={index} {...item} />);
+}
+```
+
+#### ✅ Solution: Use Stable Identifiers
+
+```tsx
+// ✅ CORRECT - Use unique, stable identifier
+{
+  items.map((item) => <ModusWcMenuItem key={item.id} {...item} />);
+}
+```
+
+#### ❌ Pitfall: Missing Event Cleanup
+
+```tsx
+// ❌ PROBLEMATIC - Memory leaks
+useEffect(() => {
+  const element = ref.current;
+  element?.addEventListener("itemSelect", handler);
+  // Missing cleanup!
+}, []);
+```
+
+#### ✅ Solution: Proper Cleanup
+
+```tsx
+// ✅ CORRECT - Clean up event listeners
+useEffect(() => {
+  const element = ref.current;
+  if (!element) return;
+
+  element.addEventListener("itemSelect", handler);
+
+  return () => {
+    element.removeEventListener("itemSelect", handler);
+  };
+}, [handler]);
+```
+
+#### ❌ Pitfall: Inconsistent Key Generation
+
+```tsx
+// ❌ PROBLEMATIC - Keys can collide
+{
+  items.map((item) => <ModusWcMenuItem key={item.value} {...item} />);
+}
+```
+
+#### ✅ Solution: Composite Keys
+
+```tsx
+// ✅ CORRECT - Composite keys prevent collisions
+{
+  items.map((item, index) => (
+    <ModusWcMenuItem key={`${item.value}-${index}`} {...item} />
+  ));
+}
+```
+
+## 🔧 Debugging Steps
+
+1. **Check Console**: Look for React key warnings
+2. **Use Chrome DevTools**: Inspect component structure
+3. **Verify Keys**: Ensure each mapped item has a unique key
+4. **Test Props**: Use component props instead of slots when possible
+
+## 📚 Reference Components
+
+**Working Examples:**
+
+- `ModusDropdownMenu.tsx` - Uses `start-icon={item.startIcon}` prop
+- `ThemeSwitcherDropdown.tsx` - Proper key handling
+- `ModusTabs.tsx` - Correct slot usage for tab panels
+
+**Problematic Patterns:**
+
+- Slot-based icon rendering
+- Missing or duplicate keys
+- Wrapping web components unnecessarily
+
+## 🔗 Modus Web Components React Integration
+
+### Official Documentation Patterns
+
+Based on the [Modus Web Components React Documentation](https://trimble-oss.github.io/modus-wc-2.0/main/?path=/docs/documentation-frameworks-react--docs), follow these patterns:
+
+#### ✅ Proper List Rendering
+
+```tsx
+// ✅ CORRECT - Use unique identifiers as keys
+{
+  items.map((item) => (
+    <ModusWcMenuItem
+      key={item.id}
+      label={item.label}
+      value={item.value}
+      start-icon={item.startIcon}
+    />
+  ));
+}
+```
+
+#### ✅ Required Props Configuration
+
+```tsx
+// ✅ CORRECT - Provide all required props
+<ModusWcMenuItem
+  label="Menu Item"
+  value="menu-item"
+  start-icon="icon-name"
+  disabled={false}
+  selected={false}
+/>
+```
+
+#### ❌ Avoid Index-Based Keys for Dynamic Lists
+
+```tsx
+// ❌ WRONG - Index can cause issues with reordering
+{
+  items.map((item, index) => <ModusWcMenuItem key={index} {...item} />);
+}
+
+// ✅ CORRECT - Use stable identifier
+{
+  items.map((item) => <ModusWcMenuItem key={item.id} {...item} />);
+}
+```
+
+### Key Integration Principles
+
+1. **Stable Keys**: Use data-based identifiers, not array indices
+2. **Complete Props**: Provide all required web component props
+3. **Event Handling**: Use proper React event handlers for web component events
+4. **Type Safety**: Leverage TypeScript interfaces for web component props
+5. **Performance**: Avoid unnecessary re-renders with proper key usage
+
+### TypeScript Integration Patterns
+
+```tsx
+// ✅ CORRECT - Type-safe interface
+interface MenuItem {
+  id: string;
+  label: string;
+  value: string;
+  startIcon?: string;
+  disabled?: boolean;
+  selected?: boolean;
+}
+
+// ✅ CORRECT - Proper event handling
+const handleItemSelect = (event: CustomEvent<{ value: string }>) => {
+  const selectedValue = event.detail.value;
+  // Handle selection
+};
+
+// ✅ CORRECT - Type-safe component usage
+{
+  menuItems.map((item: MenuItem) => (
+    <ModusWcMenuItem
+      key={item.id}
+      label={item.label}
+      value={item.value}
+      start-icon={item.startIcon}
+      disabled={item.disabled}
+      selected={item.selected}
+      onItemSelect={handleItemSelect}
+    />
+  ));
+}
+```
+
+### Event Handling Best Practices
+
+```tsx
+// ✅ CORRECT - Proper event listener setup
+useEffect(() => {
+  const menuElement = menuRef.current;
+  if (!menuElement) return;
+
+  const handleItemSelect = (event: CustomEvent<{ value: string }>) => {
+    onItemSelect?.(event.detail);
+  };
+
+  menuElement.addEventListener("itemSelect", handleItemSelect);
+
+  return () => {
+    menuElement.removeEventListener("itemSelect", handleItemSelect);
+  };
+}, [onItemSelect]);
+```
+
+## 🎯 Key Rules Summary
+
+1. **Always use composite keys**: `${value}-${index}`
+2. **Use props over slots**: `start-icon={icon}` not `<i slot="start-icon">`
+3. **Avoid div wrappers**: Let web components render directly
+4. **Test in Chrome DevTools**: Verify no React warnings
+5. **Follow Modus patterns**: Use established component patterns
+6. **Use unique identifiers**: Never use array index as key when items can reorder
+7. **Provide all required props**: Ensure web components have proper configuration
+8. **Handle dynamic content safely**: Use stable identifiers for keys
+
+## 🚀 Performance Benefits
+
+- **Faster re-renders**: React can efficiently track component changes
+- **No console warnings**: Clean development experience
+- **Better debugging**: Clear component hierarchy
+- **Optimal performance**: Proper React reconciliation
+
+## 📝 Quick Checklist
+
+- [ ] ✅ All mapped components have unique keys
+- [ ] ✅ Using composite keys (`${value}-${index}`)
+- [ ] ✅ Using props instead of slots for icons
+- [ ] ✅ No unnecessary div wrappers
+- [ ] ✅ No React warnings in console
+- [ ] ✅ Components render correctly
+- [ ] ✅ Following Modus Web Components patterns

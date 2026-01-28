@@ -1,0 +1,444 @@
+---
+description: State management for Modus accordion components in React
+alwaysApply: false
+---
+
+# Modus Accordion State Management in React
+
+## 🚨 **IMPORTANT: Accordion State Management Guidelines**
+
+**Key Principle**: Modus Web Components (`ModusWcAccordion`, `ModusWcCollapse`) are designed to manage their own state, but they DO support controlled state when needed.
+
+**Best Practice**: Use the `expanded` attribute on `ModusWcCollapse` components for initial state or programmatic control, but avoid trying to synchronize React state with Modus state in real-time.
+
+## ❌ **Common Anti-Patterns**
+
+### ❌ **Real-time State Synchronization**
+
+```tsx
+// ❌ WRONG: Trying to sync React state with Modus state in real-time
+function AccordionComponent() {
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  return (
+    <ModusWcAccordion
+      onExpandedChange={(e) => setIsExpanded(e.detail.expanded)} // ❌ Creates state loop
+    >
+      <ModusWcCollapse expanded={isExpanded}>
+        {" "}
+        {/* ❌ This causes conflicts */}
+        <div slot="content">Content</div>
+      </ModusWcCollapse>
+    </ModusWcAccordion>
+  );
+}
+```
+
+### ❌ **Complex State Synchronization**
+
+```tsx
+// ❌ WRONG: Complex state synchronization that can cause loops
+function MyComponent() {
+  const [accordionStates, setAccordionStates] = useState({
+    accordion1: false,
+    accordion2: true,
+    accordion3: false,
+  });
+
+  const toggleAccordion = (id: string) => {
+    setAccordionStates((prev) => ({
+      ...prev,
+      [id]: !prev[id],
+    }));
+  };
+
+  return (
+    <div>
+      {Object.entries(accordionStates).map(([id, isExpanded]) => (
+        <ModusWcAccordion
+          key={id}
+          onExpandedChange={() => toggleAccordion(id)} // ❌ Creates state loops
+        >
+          <ModusWcCollapse expanded={isExpanded}>
+            {" "}
+            {/* ❌ This can cause conflicts */}
+            <div slot="content">Content for {id}</div>
+          </ModusWcCollapse>
+        </ModusWcAccordion>
+      ))}
+    </div>
+  );
+}
+```
+
+## ✅ **Correct Patterns**
+
+### ✅ **Let Modus Components Manage Their Own State**
+
+```tsx
+// ✅ CORRECT: Let Modus accordion manage its own state
+function AccordionComponent() {
+  return (
+    <ModusWcAccordion>
+      <ModusWcCollapse
+        collapse-id="item1"
+        options={{
+          title: "Item One",
+          description: "First accordion item",
+          icon: "star",
+        }}
+      >
+        <div slot="content">Content for item one.</div>
+      </ModusWcCollapse>
+    </ModusWcAccordion>
+  );
+}
+```
+
+### ✅ **Initial State Control (Recommended)**
+
+```tsx
+// ✅ CORRECT: Set initial state without real-time synchronization
+function AccordionComponent() {
+  return (
+    <ModusWcAccordion>
+      <ModusWcCollapse
+        collapse-id="item1"
+        expanded={true} // ✅ CORRECT: Initial state is fine
+        options={{
+          title: "Initially Open",
+          description: "This item starts expanded",
+        }}
+      >
+        <div slot="content">Content for item one.</div>
+      </ModusWcCollapse>
+    </ModusWcAccordion>
+  );
+}
+```
+
+### ✅ **Listen to Events for Tracking (Not Control)**
+
+```tsx
+// ✅ CORRECT: Listen to events for tracking, don't control state
+function AccordionComponent() {
+  const [trackingData, setTrackingData] = useState({
+    accordionOpened: false,
+    openCount: 0,
+  });
+
+  const handleAccordionChange = (
+    event: CustomEvent<{ expanded: boolean; index: number }>
+  ) => {
+    const { expanded, index } = event.detail;
+
+    // ✅ CORRECT: Use for tracking/analytics, not state control
+    setTrackingData((prev) => ({
+      accordionOpened: expanded,
+      openCount: expanded ? prev.openCount + 1 : prev.openCount,
+    }));
+
+    // ✅ CORRECT: Log for analytics
+    console.log(
+      `Accordion item ${index} is now ${expanded ? "open" : "closed"}`
+    );
+  };
+
+  return (
+    <ModusWcAccordion onExpandedChange={handleAccordionChange}>
+      <ModusWcCollapse
+        collapse-id="item1"
+        options={{
+          title: "Item One",
+          description: "First accordion item",
+        }}
+      >
+        <div slot="content">Content for item one.</div>
+      </ModusWcCollapse>
+    </ModusWcAccordion>
+  );
+}
+```
+
+### ✅ **Programmatic Control When Needed**
+
+```tsx
+// ✅ CORRECT: Use refs for programmatic control
+function AccordionComponent() {
+  const collapseRef = useRef<ModusWcCollapse>(null);
+
+  const openAccordion = () => {
+    // ✅ CORRECT: Use ref to control collapse programmatically
+    if (collapseRef.current) {
+      collapseRef.current.expanded = true;
+    }
+  };
+
+  const closeAccordion = () => {
+    // ✅ CORRECT: Use ref to control collapse programmatically
+    if (collapseRef.current) {
+      collapseRef.current.expanded = false;
+    }
+  };
+
+  return (
+    <div>
+      <button onClick={openAccordion}>Open Accordion</button>
+      <button onClick={closeAccordion}>Close Accordion</button>
+
+      <ModusWcAccordion>
+        <ModusWcCollapse
+          ref={collapseRef}
+          collapse-id="item1"
+          options={{
+            title: "Controllable Item",
+            description: "This can be controlled programmatically",
+          }}
+        >
+          <div slot="content">Content for controllable item.</div>
+        </ModusWcCollapse>
+      </ModusWcAccordion>
+    </div>
+  );
+}
+```
+
+## 🎯 **Best Practices**
+
+### ✅ **State Management Strategy**
+
+1. **Let Modus Components Own Their State**
+
+   - Don't try to control `expanded` from React
+   - Use events to track state changes
+   - Use refs for programmatic control when needed
+
+2. **Event-Driven Architecture**
+
+   ```tsx
+   // ✅ CORRECT: Event-driven approach
+   function MyComponent() {
+     const handleAccordionChange = (event: CustomEvent) => {
+       // Handle the event for tracking, analytics, or side effects
+       // Don't try to control the accordion state
+       console.log("Accordion expanded:", event.detail);
+     };
+
+     return (
+       <ModusWcAccordion onExpandedChange={handleAccordionChange}>
+         <div slot="header">Header</div>
+         <div slot="body">Body</div>
+       </ModusWcAccordion>
+     );
+   }
+   ```
+
+3. **Use Refs for Programmatic Control**
+
+   ```tsx
+   // ✅ CORRECT: Ref-based control
+   const accordionRef = useRef<ModusWcAccordion>(null);
+
+   const toggleAccordion = () => {
+     if (accordionRef.current) {
+       accordionRef.current.expanded = !accordionRef.current.expanded;
+     }
+   };
+   ```
+
+### ✅ **Multiple Accordions Pattern**
+
+```tsx
+// ✅ CORRECT: Multiple accordions with independent state
+function MultipleAccordions() {
+  const accordionRefs = useRef<(ModusWcAccordion | null)[]>([]);
+
+  const openAllAccordions = () => {
+    accordionRefs.current.forEach((ref) => {
+      if (ref) ref.expanded = true;
+    });
+  };
+
+  const closeAllAccordions = () => {
+    accordionRefs.current.forEach((ref) => {
+      if (ref) ref.expanded = false;
+    });
+  };
+
+  return (
+    <div>
+      <button onClick={openAllAccordions}>Open All</button>
+      <button onClick={closeAllAccordions}>Close All</button>
+
+      {accordionData.map((item, index) => (
+        <ModusWcAccordion
+          key={item.id}
+          ref={(el) => (accordionRefs.current[index] = el)}
+        >
+          <div slot="header">{item.title}</div>
+          <div slot="body">{item.content}</div>
+        </ModusWcAccordion>
+      ))}
+    </div>
+  );
+}
+```
+
+## 🔧 **Advanced Patterns**
+
+### ✅ **Accordion with External State Tracking**
+
+```tsx
+// ✅ CORRECT: Track accordion state without controlling it
+function AccordionWithTracking() {
+  const [accordionStates, setAccordionStates] = useState<
+    Record<string, boolean>
+  >({});
+
+  const handleAccordionChange = (id: string) => (event: CustomEvent) => {
+    const isExpanded = event.detail;
+
+    // ✅ CORRECT: Track state for analytics/UI updates
+    setAccordionStates((prev) => ({
+      ...prev,
+      [id]: isExpanded,
+    }));
+
+    // ✅ CORRECT: Use for conditional rendering or analytics
+    if (isExpanded) {
+      console.log(`Accordion ${id} opened`);
+    }
+  };
+
+  return (
+    <div>
+      {accordionData.map((item) => (
+        <ModusWcAccordion
+          key={item.id}
+          onExpandedChange={handleAccordionChange(item.id)}
+        >
+          <div slot="header">
+            {item.title}
+            {accordionStates[item.id] && <span> (Open)</span>}
+          </div>
+          <div slot="body">{item.content}</div>
+        </ModusWcAccordion>
+      ))}
+    </div>
+  );
+}
+```
+
+### ✅ **Accordion with Conditional Content**
+
+```tsx
+// ✅ CORRECT: Use events to show/hide related content
+function AccordionWithConditionalContent() {
+  const [activeAccordion, setActiveAccordion] = useState<string | null>(null);
+
+  const handleAccordionChange = (id: string) => (event: CustomEvent) => {
+    const isExpanded = event.detail;
+    setActiveAccordion(isExpanded ? id : null);
+  };
+
+  return (
+    <div>
+      {accordionData.map((item) => (
+        <div key={item.id}>
+          <ModusWcAccordion onExpandedChange={handleAccordionChange(item.id)}>
+            <div slot="header">{item.title}</div>
+            <div slot="body">{item.content}</div>
+          </ModusWcAccordion>
+
+          {/* ✅ CORRECT: Show additional content based on accordion state */}
+          {activeAccordion === item.id && (
+            <div className="mt-4 p-4 bg-muted rounded">
+              Additional content for {item.title}
+            </div>
+          )}
+        </div>
+      ))}
+    </div>
+  );
+}
+```
+
+## 🚫 **What NOT to Do**
+
+### ❌ **Don't Control State from React**
+
+```tsx
+// ❌ WRONG: Don't do this
+const [isExpanded, setIsExpanded] = useState(false);
+
+<ModusWcAccordion
+  expanded={isExpanded}  // ❌ This causes conflicts
+  onExpandedChange={(e) => setIsExpanded(e.detail)}  // ❌ Creates loops
+>
+```
+
+### ❌ **Don't Use React State for Accordion Logic**
+
+```tsx
+// ❌ WRONG: Don't manage accordion state in React
+const [accordionState, setAccordionState] = useState({
+  accordion1: false,
+  accordion2: true,
+});
+```
+
+### ❌ **Don't Try to Sync React and Modus State**
+
+```tsx
+// ❌ WRONG: Don't try to sync states
+useEffect(() => {
+  // This will cause infinite loops
+  if (reactState !== modusState) {
+    setReactState(modusState);
+  }
+}, [reactState, modusState]);
+```
+
+## 🎯 **Key Takeaways**
+
+1. **Initial State is Fine**: Setting `expanded={true}` for initial state is perfectly acceptable
+2. **Avoid Real-time Sync**: Don't try to synchronize React state with Modus state in real-time
+3. **Use Events for Tracking**: Listen to `onExpandedChange` for analytics and side effects
+4. **Use Refs for Control**: When you need programmatic control, use refs on `ModusWcCollapse`
+5. **Trust the Component**: Modus Web Components handle their own state changes after initial render
+6. **Proper Structure**: Use `ModusWcAccordion` with `ModusWcCollapse` components and `options` for headers
+
+## 🔍 **Testing Accordion State**
+
+```tsx
+// ✅ CORRECT: Test accordion behavior
+function TestAccordion() {
+  const accordionRef = useRef<ModusWcAccordion>(null);
+
+  const testAccordion = () => {
+    if (accordionRef.current) {
+      // Test opening
+      accordionRef.current.expanded = true;
+
+      setTimeout(() => {
+        // Test closing
+        accordionRef.current!.expanded = false;
+      }, 1000);
+    }
+  };
+
+  return (
+    <div>
+      <button onClick={testAccordion}>Test Accordion</button>
+      <ModusWcAccordion ref={accordionRef}>
+        <div slot="header">Test Header</div>
+        <div slot="body">Test Body</div>
+      </ModusWcAccordion>
+    </div>
+  );
+}
+```
+
+---
+
+**Remember: Modus accordion components support controlled initial state but avoid real-time synchronization. Use `expanded` for initial state, `onExpandedChange` for tracking, and refs for programmatic control. This approach prevents conflicts and ensures reliable behavior.**

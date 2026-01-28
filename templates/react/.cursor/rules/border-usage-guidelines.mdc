@@ -1,0 +1,374 @@
+# Border Usage Guidelines - Modus Design System
+
+## 🎨 CRITICAL: Use Design System Border Utilities
+
+When working with borders in this Vite + React app, always use our custom design system border utilities instead of Tailwind color classes or inline styles.
+
+## ❌ NEVER Do These
+
+### 1. Tailwind Color Classes in Borders
+
+```tsx
+// ❌ WRONG - Tailwind color classes
+<div className="border border-red-500">Error message</div>
+<div className="border-2 border-green-500">Success message</div>
+<div className="border border-blue-500">Info message</div>
+<div className="border border-yellow-500">Warning message</div>
+```
+
+### 2. Inline Border Styles
+
+```tsx
+// ❌ WRONG - Inline styles
+<div style={{ border: "1px solid var(--border)" }}>Content</div>
+<div style={{ border: "2px solid var(--modus-wc-color-success)" }}>Content</div>
+<div style={{ border: "1px dashed var(--modus-wc-color-warning)" }}>Content</div>
+```
+
+### 3. Generic Tailwind Border Classes
+
+```tsx
+// ❌ WRONG - Generic Tailwind classes
+<div className="border border-gray-300">Content</div>
+<div className="border-2 border-slate-400">Content</div>
+<div className="border border-zinc-500">Content</div>
+```
+
+## ✅ ALWAYS Do These
+
+### 1. Use Design System Border Utilities
+
+```tsx
+// ✅ CORRECT - Design system utilities
+<div className="border-default">Default border</div>
+<div className="border-success">Success border</div>
+<div className="border-warning">Warning border</div>
+<div className="border-destructive">Error border</div>
+<div className="border-primary">Primary border</div>
+```
+
+### 2. Use Thick Border Utilities for Emphasis
+
+```tsx
+// ✅ CORRECT - Thick borders for emphasis
+<div className="border-thick-border">Default thick border</div>
+<div className="border-thick-success">Success thick border</div>
+<div className="border-thick-warning">Warning thick border</div>
+<div className="border-thick-destructive">Error thick border</div>
+<div className="border-thick-primary">Primary thick border</div>
+```
+
+### 3. Use Directional Border Utilities
+
+```tsx
+// ✅ CORRECT - Directional borders
+<div className="border-top-default">Top border only</div>
+<div className="border-bottom-default">Bottom border only</div>
+<div className="border-left-default">Left border only</div>
+<div className="border-right-default">Right border only</div>
+```
+
+### 4. Use Dashed Border Utilities
+
+```tsx
+// ✅ CORRECT - Dashed borders
+<div className="border-dashed">1px dashed border</div>
+<div className="border-thick-dashed">2px dashed border</div>
+```
+
+## 🎯 Available Border Utilities
+
+### Standard Borders (1px)
+
+```tsx
+// Default borders
+border-default          // 1px solid var(--border)
+border-success          // 1px solid var(--modus-wc-color-success)
+border-warning          // 1px solid var(--modus-wc-color-warning)
+border-destructive      // 1px solid var(--modus-wc-color-error)
+border-primary          // 1px solid var(--modus-wc-color-info)
+
+// Dashed borders
+border-dashed           // 1px dashed var(--border)
+```
+
+### Thick Borders (2px)
+
+```tsx
+// Thick borders
+border - thick - border; // 2px solid var(--border)
+border - thick - success; // 2px solid var(--modus-wc-color-success)
+border - thick - warning; // 2px solid var(--modus-wc-color-warning)
+border - thick - destructive; // 2px solid var(--modus-wc-color-error)
+border - thick - primary; // 2px solid var(--modus-wc-color-info)
+
+// Thick dashed borders
+border - thick - dashed; // 2px dashed var(--border)
+```
+
+### Directional Borders
+
+```tsx
+// Directional borders (1px)
+border-top-default      // border-top: 1px solid var(--border)
+border-bottom-default   // border-bottom: 1px solid var(--border)
+border-left-default     // border-left: 1px solid var(--border)
+border-right-default    // border-right: 1px solid var(--border)
+```
+
+## 🎨 Context-Specific Usage
+
+### Success States
+
+```tsx
+// ✅ CORRECT - Success borders
+<div className="border-success">Success message</div>
+<div className="border-thick-success">Important success</div>
+<div className="border-top-success">Success indicator</div>
+```
+
+### Warning States
+
+```tsx
+// ✅ CORRECT - Warning borders
+<div className="border-warning">Warning message</div>
+<div className="border-thick-warning">Important warning</div>
+<div className="border-dashed border-warning">Dashed warning</div>
+```
+
+### Error States
+
+```tsx
+// ✅ CORRECT - Error borders
+<div className="border-destructive">Error message</div>
+<div className="border-thick-destructive">Critical error</div>
+<div className="border-bottom-destructive">Error indicator</div>
+```
+
+### Primary/Info States
+
+```tsx
+// ✅ CORRECT - Primary borders
+<div className="border-primary">Info message</div>
+<div className="border-thick-primary">Important info</div>
+<div className="border-left-primary">Info indicator</div>
+```
+
+### Default/Neutral States
+
+```tsx
+// ✅ CORRECT - Default borders
+<div className="border-default">Default content</div>
+<div className="border-thick-border">Emphasized content</div>
+<div className="border-dashed">Dashed content</div>
+```
+
+## 🚨 Common Violations and Fixes
+
+### ❌ Violation: Tailwind Color Classes
+
+```tsx
+// ❌ WRONG
+<div className="border border-red-500">Error</div>
+<div className="border-2 border-green-500">Success</div>
+<div className="border border-blue-500">Info</div>
+```
+
+### ✅ Fix: Use Design System Colors
+
+```tsx
+// ✅ CORRECT
+<div className="border-destructive">Error</div>
+<div className="border-thick-success">Success</div>
+<div className="border-primary">Info</div>
+```
+
+### ❌ Violation: Inline Styles
+
+```tsx
+// ❌ WRONG
+<div style={{ border: "1px solid var(--border)" }}>Content</div>
+<div style={{ border: "2px solid var(--modus-wc-color-success)" }}>Content</div>
+```
+
+### ✅ Fix: Use Utility Classes
+
+```tsx
+// ✅ CORRECT
+<div className="border-default">Content</div>
+<div className="border-thick-success">Content</div>
+```
+
+### ❌ Violation: Generic Tailwind Classes
+
+```tsx
+// ❌ WRONG
+<div className="border border-gray-300">Content</div>
+<div className="border-2 border-slate-400">Content</div>
+```
+
+### ✅ Fix: Use Design System Utilities
+
+```tsx
+// ✅ CORRECT
+<div className="border-default">Content</div>
+<div className="border-thick-border">Content</div>
+```
+
+## 🔧 Linting and Validation
+
+### Pre-commit Hooks
+
+The project includes pre-commit hooks that automatically check for border violations:
+
+```bash
+# Manual linting
+npm run lint:borders
+
+# All linting checks
+npm run lint:all
+```
+
+### Common Linter Messages
+
+```text
+❌ Found: className="border border-red-500"
+✅ Use instead: className="border-destructive"
+
+❌ Found: className="border-2 border-green-500"
+✅ Use instead: className="border-thick-success"
+
+❌ Found: style={{ border: "1px solid var(--border)" }}
+✅ Use instead: className="border-default"
+```
+
+## 🎯 Design System Benefits
+
+### 1. Theme Consistency
+
+```tsx
+// ✅ Automatically adapts to light/dark themes
+<div className="border-success">Always uses design system colors</div>
+```
+
+### 2. Brand Compliance
+
+```tsx
+// ✅ Uses official Modus color variables
+<div className="border-primary">Uses var(--modus-wc-color-info)</div>
+```
+
+### 3. Maintainability
+
+```tsx
+// ✅ Easy to update globally
+// Change border thickness in index.css affects all components
+```
+
+### 4. Performance
+
+```tsx
+// ✅ No inline styles, better performance
+<div className="border-default">Optimized rendering</div>
+```
+
+## 📚 Reference Implementation
+
+### Card Components
+
+```tsx
+// ✅ CORRECT - Card with proper borders
+<div className="bg-card border-default rounded-lg p-4">
+  <h3 className="text-lg font-semibold">Card Title</h3>
+  <p className="text-muted-foreground">Card content</p>
+</div>
+```
+
+### Alert Components
+
+```tsx
+// ✅ CORRECT - Alert with contextual borders
+<div className="bg-success/5 border border-success rounded-lg p-4">
+  <div className="flex items-center">
+    <i className="modus-icons text-success mr-2">check_circle</i>
+    <span className="text-success font-medium">Success message</span>
+  </div>
+</div>
+```
+
+### Form Components
+
+```tsx
+// ✅ CORRECT - Form field with error border
+<div className="border-destructive rounded-md p-3">
+  <input
+    className="w-full bg-transparent outline-none"
+    placeholder="Enter value"
+  />
+</div>
+```
+
+## 🚀 Quick Reference
+
+### Most Common Patterns
+
+```tsx
+// Default content
+className = "border-default";
+
+// Success states
+className = "border-success";
+className = "border-thick-success";
+
+// Warning states
+className = "border-warning";
+className = "border-thick-warning";
+
+// Error states
+className = "border-destructive";
+className = "border-thick-destructive";
+
+// Primary states
+className = "border-primary";
+className = "border-thick-primary";
+
+// Dashed borders
+className = "border-dashed";
+className = "border-thick-dashed";
+
+// Directional borders
+className = "border-top-default";
+className = "border-bottom-default";
+className = "border-left-default";
+className = "border-right-default";
+```
+
+## 📝 Quick Checklist
+
+- [ ] ✅ Using design system border utilities
+- [ ] ✅ No Tailwind color classes in borders
+- [ ] ✅ No inline border styles
+- [ ] ✅ Using appropriate border thickness (default vs thick)
+- [ ] ✅ Using contextual colors (success, warning, error, primary)
+- [ ] ✅ Passing border linting checks
+- [ ] ✅ Following design system patterns
+- [ ] ✅ Using directional borders when appropriate
+
+## 🔗 Related Documentation
+
+- **Border Utilities**: Defined in `src/index.css`
+- **Linting Script**: `scripts/check-border-violations.js`
+- **Design System Colors**: `src/index.css` CSS variables
+- **Pre-commit Hooks**: `.husky/pre-commit`
+
+## 🎨 Design System Integration
+
+All border utilities are defined in `src/index.css` and use the official Modus design system color variables:
+
+- `var(--border)` - Default border color
+- `var(--modus-wc-color-success)` - Success color
+- `var(--modus-wc-color-warning)` - Warning color
+- `var(--modus-wc-color-error)` - Error color
+- `var(--modus-wc-color-info)` - Primary/Info color
+
+This ensures consistent theming and automatic adaptation to light/dark modes.

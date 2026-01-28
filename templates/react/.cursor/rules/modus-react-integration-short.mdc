@@ -1,0 +1,21 @@
+---
+alwaysApply: true
+---
+
+# Modus React Integration - Short
+
+Essential integration patterns for Modus Web Components with React + Vite.
+
+## Key Rules
+
+- **Proper ModusProvider setup** - Wrap app with ModusProvider for theme and component support
+- **Event handling with refs** - Use refs and event listeners for web component events
+- **State management patterns** - Let Modus components manage their own state
+- **CSS import order** - Import Modus CSS before Tailwind CSS
+- **TypeScript integration** - Use proper types for web component props and events
+- **Vite-specific patterns** - Use environment variables and dynamic imports
+- **Performance optimization** - Use memoization and lazy loading
+
+## Reference
+
+For detailed integration patterns, event handling, and advanced React techniques, fetch the full rule: `modus-react-integration`

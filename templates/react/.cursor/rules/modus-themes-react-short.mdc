@@ -1,0 +1,21 @@
+---
+alwaysApply: true
+---
+
+# Modus Themes - Short
+
+6 Modus themes with proper switching and persistence.
+
+## Key Rules
+
+- **6 Modus themes supported** - Classic Light/Dark, Modern Light/Dark, Connect Light/Dark
+- **Use ThemeProvider and useTheme hook** - Proper theme context setup
+- **Hydration safety** - Handle SSR/hydration with `mounted` state
+- **Theme persistence** - Save to localStorage and restore on page load
+- **Official data-theme attribute** - Use `data-theme` for theme switching
+- **Theme-aware components** - Use theme context for conditional styling
+- **Test all themes** - Verify components work in all 6 themes
+
+## Reference
+
+For detailed theme implementation, context patterns, and advanced theming techniques, fetch the full rule: `modus-themes-react`

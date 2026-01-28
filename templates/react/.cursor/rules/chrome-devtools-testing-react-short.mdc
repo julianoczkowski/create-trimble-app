@@ -1,0 +1,21 @@
+---
+alwaysApply: true
+---
+
+# Chrome DevTools Testing - Short
+
+Mandatory Chrome DevTools MCP usage for comprehensive React + Vite testing.
+
+## Key Rules
+
+- **Always use Chrome DevTools MCP** - Never skip browser testing
+- **Test before completion** - Validate all implementations in browser
+- **Check console for errors** - Look for JavaScript errors and warnings
+- **Inspect DOM structure** - Verify proper semantic HTML and component rendering
+- **Test interactive elements** - Verify Modus Web Components work correctly
+- **Performance testing** - Use DevTools for performance analysis
+- **Cross-browser validation** - Test in Chrome, Firefox, Safari
+
+## Reference
+
+For detailed testing workflows, patterns, and comprehensive checklists, fetch the full rule: `chrome-devtools-testing-react`

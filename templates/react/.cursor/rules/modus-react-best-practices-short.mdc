@@ -1,0 +1,21 @@
+---
+alwaysApply: true
+---
+
+# Modus React Best Practices - Short
+
+Core React best practices for Modus Design System integration.
+
+## Key Rules
+
+- **Single configurable components** - One component with variants, not multiple specific components
+- **Use design system colors only** - Never use generic Tailwind colors or hardcoded values
+- **Component composition pattern** - Build complex components from smaller, reusable pieces
+- **Event handling with refs** - Use refs and event listeners for Modus Web Components
+- **Theme-aware components** - Use theme context for conditional styling and content
+- **Performance optimization** - Use memoization and lazy loading where appropriate
+- **Vite-specific patterns** - Use environment variables, dynamic imports, and asset imports
+
+## Reference
+
+For detailed component patterns, styling architecture, and advanced React techniques, fetch the full rule: `modus-react-best-practices`

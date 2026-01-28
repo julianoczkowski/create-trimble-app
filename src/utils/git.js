@@ -1,103 +1,52 @@
-import degit from "degit";
-import { logger } from "./logger.js";
-import { cwd } from "process";
-import { join } from "path";
+import { join, dirname } from "path";
+import { fileURLToPath } from "url";
 
-export async function cloneTemplate(
-  repository,
-  projectName,
-  isCurrentFolder = false
-) {
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+/**
+ * Copy bundled template to target directory
+ * @param {string} templateName - Name of the template (react, angular)
+ * @param {string} targetPath - Target directory path
+ * @returns {Promise<boolean>}
+ */
+export async function copyTemplate(templateName, targetPath) {
+  const fs = await import("fs/promises");
+  const path = await import("path");
+
+  const bundledPath = path.join(
+    __dirname,
+    "..",
+    "..",
+    "templates",
+    templateName,
+  );
+
   try {
-    const emitter = degit(repository, {
-      cache: false,
-      force: true,
-      verbose: false,
-    });
-
-    if (isCurrentFolder) {
-      // Clone to current directory
-      await emitter.clone(".");
-    } else {
-      // Clone to new directory
-      await emitter.clone(projectName);
-    }
-    return true;
-  } catch (error) {
-    throw new Error(`Provide this error to the developer: ${error.message}.`);
-  }
-}
-
-export async function cloneDemoContent(projectPath) {
-  try {
-    // Download demos directly to a subfolder first, then we'll move the contents
-    const demosPath = join(projectPath, "demos-temp");
-    const emitter = degit("julianoczkowski/modus-nextjs-demos/demos", {
-      cache: false,
-      force: true,
-      verbose: false,
-    });
-
-    await emitter.clone(demosPath);
-
-    // Now copy the contents to the app/demos folder using Node.js built-in modules
-    const fs = await import("fs/promises");
-    const path = await import("path");
-    const targetPath = join(projectPath, "app", "demos");
-
-    // Recursively copy files from demos-temp to app/demos folder
-    await copyDirectory(demosPath, targetPath);
-
-    // Clean up the temporary demos folder
-    await fs.rm(demosPath, { recursive: true, force: true });
-
-    return true;
-  } catch (error) {
-    throw new Error(`Failed to download demo content: ${error.message}`);
-  }
-}
-
-export async function cloneReactDemoContent(projectPath) {
-  try {
-    // Download demos directly to a subfolder first, then we'll move the contents
-    const demosPath = join(projectPath, "demos-temp");
-    const emitter = degit(
-      "https://github.com/julianoczkowski/modus-react-demo",
-      {
-        cache: false,
-        force: true,
-        verbose: false,
-      }
+    await fs.access(bundledPath);
+  } catch {
+    throw new Error(
+      `Template "${templateName}" not found.\n` +
+        `Expected at: ${bundledPath}\n\n` +
+        `This is a bug in create-modus-app. Please report it at:\n` +
+        `https://github.com/julianoczkowski/create-modus-app/issues`,
     );
-
-    await emitter.clone(demosPath);
-
-    // Now copy the contents to the src/demos folder using Node.js built-in modules
-    const fs = await import("fs/promises");
-    const path = await import("path");
-    const targetPath = join(projectPath, "src", "demos");
-
-    // Recursively copy files from demos-temp to src/demos folder
-    await copyDirectory(demosPath, targetPath);
-
-    // Clean up the temporary demos folder
-    await fs.rm(demosPath, { recursive: true, force: true });
-
-    return true;
-  } catch (error) {
-    throw new Error(`Failed to download React demo content: ${error.message}`);
   }
+
+  await copyDirectory(bundledPath, targetPath);
+  return true;
 }
 
+/**
+ * Copy directory recursively
+ * @param {string} src - Source directory
+ * @param {string} dest - Destination directory
+ */
 async function copyDirectory(src, dest) {
   const fs = await import("fs/promises");
   const path = await import("path");
 
-  try {
-    await fs.mkdir(dest, { recursive: true });
-  } catch (error) {
-    // Directory might already exist, that's fine
-  }
+  await fs.mkdir(dest, { recursive: true });
 
   const entries = await fs.readdir(src, { withFileTypes: true });
 
@@ -108,14 +57,84 @@ async function copyDirectory(src, dest) {
     if (entry.isDirectory()) {
       await copyDirectory(srcPath, destPath);
     } else {
-      // Only copy if the file doesn't already exist
-      try {
-        await fs.access(destPath);
-        // File exists, skip it
-      } catch {
-        // File doesn't exist, copy it
-        await fs.copyFile(srcPath, destPath);
-      }
+      await fs.copyFile(srcPath, destPath);
     }
   }
+}
+
+/**
+ * Check if a template exists
+ * @param {string} templateName - Name of the template
+ * @returns {Promise<boolean>}
+ */
+export async function hasTemplate(templateName) {
+  const fs = await import("fs/promises");
+  const path = await import("path");
+
+  const bundledPath = path.join(
+    __dirname,
+    "..",
+    "..",
+    "templates",
+    templateName,
+  );
+
+  try {
+    await fs.access(bundledPath);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Get detailed error message based on error type
+ * @param {Error} error - Original error
+ * @returns {string}
+ */
+export function getDetailedErrorMessage(error) {
+  const message = error.message || "";
+
+  if (message.includes("ENOENT") || message.includes("no such file")) {
+    return (
+      `Failed to create project directory.\n\n` +
+      `Possible causes:\n` +
+      `  • Invalid project name\n` +
+      `  • Permission denied\n` +
+      `  • Disk full\n\n` +
+      `Try a different project name or check disk permissions.`
+    );
+  }
+
+  if (message.includes("EACCES") || message.includes("permission denied")) {
+    return (
+      `Permission denied when creating project.\n\n` +
+      `Try:\n` +
+      `  • Running from a directory you have write access to\n` +
+      `  • Checking folder permissions`
+    );
+  }
+
+  if (message.includes("ENOSPC")) {
+    return (
+      `Not enough disk space to create project.\n\n` +
+      `Free up some disk space and try again.`
+    );
+  }
+
+  if (message.includes("EEXIST")) {
+    return (
+      `Directory already exists.\n\n` +
+      `Try:\n` +
+      `  • Using a different project name\n` +
+      `  • Using --current-folder to install in the current directory`
+    );
+  }
+
+  // Default error message
+  return (
+    `Failed to create project: ${message}\n\n` +
+    `If this problem persists, please report it at:\n` +
+    `https://github.com/julianoczkowski/create-modus-app/issues`
+  );
 }

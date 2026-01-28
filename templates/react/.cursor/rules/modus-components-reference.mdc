@@ -1,0 +1,360 @@
+# Modus Components Reference
+
+Comprehensive reference guide for all Modus Design System components available in this React + Vite application.
+
+## Component Categories
+
+### Layout & Navigation Components
+
+#### ModusAccordion
+
+- **Location**: `src/components/ModusAccordion.tsx`
+- **Purpose**: Collapsible content sections with expandable/collapsible panels
+- **Key Features**: Multiple accordion items, custom headers, bordered options, expand/collapse events
+- **Usage**: FAQ sections, content organization, collapsible forms
+
+#### ModusBreadcrumbs
+
+- **Location**: `src/components/ModusBreadcrumbs.tsx`
+- **Purpose**: Navigation breadcrumb trail showing current page hierarchy
+- **Key Features**: Clickable breadcrumb items, customizable size, aria-label support
+- **Usage**: Page navigation, showing user location in site hierarchy
+
+#### ModusNavbar
+
+- **Location**: `src/components/ModusNavbar.tsx`
+- **Purpose**: Main application navigation bar with user controls and menus
+- **Key Features**: User card, search, notifications, apps menu, condensed mode, multiple slots
+- **Usage**: Primary application header, user account management, global navigation
+
+#### ModusSideNavigation
+
+- **Location**: `src/components/ModusSideNavigation.tsx`
+- **Purpose**: Collapsible sidebar navigation menu
+- **Key Features**: Expandable/collapsible, auto-collapse on select, custom width, menu integration
+- **Usage**: Main application navigation, sidebar menus, mobile navigation
+
+#### ModusTabs
+
+- **Location**: `src/components/ModusTabs.tsx`
+- **Purpose**: Tabbed interface for organizing content into panels
+- **Key Features**: Multiple tab styles, icon support, disabled tabs, tab change events
+- **Usage**: Content organization, multi-step forms, settings panels
+
+#### ModusToolbar
+
+- **Location**: `src/components/ModusToolbar.tsx`
+- **Purpose**: Toolbar container with start, center, and end content slots
+- **Key Features**: Flexible content slots, accessibility support, custom styling
+- **Usage**: Action toolbars, form controls, content management interfaces
+
+#### ModusUtilityPanel
+
+- **Location**: `src/components/ModusUtilityPanel.tsx`
+- **Purpose**: Slide-out utility panel for additional content or controls
+- **Key Features**: Left/right positioning, push content option, custom width, header/footer slots
+- **Usage**: Settings panels, additional information, secondary content
+
+### Form & Input Components
+
+#### ModusAutocomplete
+
+- **Location**: `src/components/ModusAutocomplete.tsx`
+- **Purpose**: Text input with dropdown suggestions and multi-select capability
+- **Key Features**: Debounced search, multi-select, custom items, no results handling
+- **Usage**: Search inputs, tag selection, data filtering
+
+#### ModusCheckbox
+
+- **Location**: `src/components/ModusCheckbox.tsx`
+- **Purpose**: Checkbox input with label and validation support
+- **Key Features**: Indeterminate state, size variants, value inversion bug handling
+- **Usage**: Form checkboxes, agreement toggles, multi-select lists
+
+#### ModusDate
+
+- **Location**: `src/components/ModusDate.tsx`
+- **Purpose**: Date input with calendar picker and validation
+- **Key Features**: Min/max date constraints, feedback system, size variants
+- **Usage**: Date selection, birth date inputs, appointment scheduling
+
+#### ModusDropdownMenu
+
+- **Location**: `src/components/ModusDropdownMenu.tsx`
+- **Purpose**: Dropdown menu with button trigger and menu items
+- **Key Features**: Customizable button, menu positioning, item selection events
+- **Usage**: Action menus, option selection, context menus
+
+#### ModusNumberInput
+
+- **Location**: `src/components/ModusNumberInput.tsx`
+- **Purpose**: Number input with validation and currency support
+- **Key Features**: Min/max constraints, step values, currency symbols, feedback system
+- **Usage**: Quantity inputs, price fields, numeric data entry
+
+#### ModusRadio
+
+- **Location**: `src/components/ModusRadio.tsx`
+- **Purpose**: Radio button input for single selection from options
+- **Key Features**: Grouped selection, size variants, validation support
+- **Usage**: Single-choice forms, option selection, preference settings
+
+#### ModusSelect
+
+- **Location**: `src/components/ModusSelect.tsx`
+- **Purpose**: Dropdown select input with options list
+- **Key Features**: Option management, validation feedback, size variants
+- **Usage**: Country selection, category selection, option lists
+
+#### ModusSlider
+
+- **Location**: `src/components/ModusSlider.tsx`
+- **Purpose**: Range slider input for numeric value selection
+- **Key Features**: Min/max/step values, size variants, accessibility support
+- **Usage**: Volume controls, price ranges, preference sliders
+
+#### ModusSwitch
+
+- **Location**: `src/components/ModusSwitch.tsx`
+- **Purpose**: Toggle switch for boolean values
+- **Key Features**: On/off states, indeterminate state, size variants
+- **Usage**: Settings toggles, feature enable/disable, boolean preferences
+
+#### ModusTextarea
+
+- **Location**: `src/components/ModusTextarea.tsx`
+- **Purpose**: Multi-line text input with validation and feedback
+- **Key Features**: Row configuration, character limits, feedback system, size variants
+- **Usage**: Comments, descriptions, long-form text input
+
+#### ModusTextInput
+
+- **Location**: `src/components/ModusTextInput.tsx`
+- **Purpose**: Single-line text input with various types and features
+- **Key Features**: Multiple input types, clear/search buttons, validation, mobile optimization
+- **Usage**: Username, email, search, general text input
+
+#### ModusTimeInput
+
+- **Location**: `src/components/ModusTimeInput.tsx`
+- **Purpose**: Time input with time picker and validation
+- **Key Features**: 12/24 hour format, seconds support, datalist options, feedback system
+- **Usage**: Time selection, appointment times, duration inputs
+
+### Display & Feedback Components
+
+#### ModusAlert
+
+- **Location**: `src/components/ModusAlert.tsx`
+- **Purpose**: Alert messages with different severity levels
+- **Key Features**: Info/success/warning/error variants, dismissible option, custom icons
+- **Usage**: Notifications, validation messages, system alerts
+
+#### ModusBadge
+
+- **Location**: `src/components/ModusBadge.tsx`
+- **Purpose**: Small status indicators and labels
+- **Key Features**: Color variants, size options, filled/text/counter styles
+- **Usage**: Status indicators, notification counts, category labels
+
+#### ModusCard
+
+- **Location**: `src/components/ModusCard.tsx`
+- **Purpose**: Content container with header, body, and footer sections
+- **Key Features**: Multiple layouts, padding options, bordered styling, slot-based content
+- **Usage**: Content cards, product displays, information panels
+
+#### ModusChip
+
+- **Location**: `src/components/ModusChip.tsx`
+- **Purpose**: Small interactive elements for tags and selections
+- **Key Features**: Active/disabled states, remove functionality, size variants
+- **Usage**: Tags, filters, removable items, selection indicators
+
+#### ModusDivider
+
+- **Location**: `src/components/ModusDivider.tsx`
+- **Purpose**: Visual separator between content sections
+- **Key Features**: Horizontal/vertical orientation, thickness options, color variants
+- **Usage**: Content separation, visual hierarchy, layout structure
+
+#### ModusInputFeedback
+
+- **Location**: `src/components/ModusInputFeedback.tsx`
+- **Purpose**: Feedback messages for form inputs
+- **Key Features**: Error/info/success/warning levels, custom icons, size variants
+- **Usage**: Form validation, input guidance, status messages
+
+#### ModusInputLabel
+
+- **Location**: `src/components/ModusInputLabel.tsx`
+- **Purpose**: Label component for form inputs
+- **Key Features**: Required indicator, sub-label support, size variants
+- **Usage**: Form field labels, input descriptions, accessibility
+
+#### ModusLoader
+
+- **Location**: `src/components/ModusLoader.tsx`
+- **Purpose**: Loading indicators with various animations
+- **Key Features**: Multiple variants (spinner, ball, bars, dots, infinity, ring), color options
+- **Usage**: Loading states, async operations, progress indication
+
+#### ModusProgress
+
+- **Location**: `src/components/ModusProgress.tsx`
+- **Purpose**: Progress bars for showing completion status
+- **Key Features**: Linear/radial variants, indeterminate mode, custom labels
+- **Usage**: File uploads, process completion, step indicators
+
+#### ModusSkeleton
+
+- **Location**: `src/components/ModusSkeleton.tsx`
+- **Purpose**: Placeholder content while loading
+- **Key Features**: Circle/rectangle shapes, customizable dimensions
+- **Usage**: Loading placeholders, content previews, skeleton screens
+
+#### ModusToast
+
+- **Location**: `src/components/ModusToast.tsx`
+- **Purpose**: Temporary notification messages
+- **Key Features**: Multiple positions, auto-dismiss, action buttons, severity variants
+- **Usage**: Success messages, error notifications, temporary alerts
+
+#### ModusTooltip
+
+- **Location**: `src/components/ModusTooltip.tsx`
+- **Purpose**: Hover tooltips for additional information
+- **Key Features**: Multiple positions, disabled state, force open option
+- **Usage**: Help text, additional information, accessibility support
+
+### Data & Table Components
+
+#### ModusTable
+
+- **Location**: `src/components/ModusTable.tsx`
+- **Purpose**: Data table with sorting, pagination, and editing capabilities
+- **Key Features**: Column configuration, row selection, inline editing, pagination
+- **Usage**: Data display, data management, admin interfaces
+
+#### ModusPagination
+
+- **Location**: `src/components/ModusPagination.tsx`
+- **Purpose**: Page navigation for large datasets
+- **Key Features**: Page size options, custom button text, accessibility support
+- **Usage**: Table pagination, content pagination, data navigation
+
+### Interactive Components
+
+#### ModusButton
+
+- **Location**: `src/components/ModusButton.tsx`
+- **Purpose**: Interactive button with various styles and states
+- **Key Features**: Color variants, size options, icon support, disabled states
+- **Usage**: Actions, form submissions, navigation, user interactions
+
+#### ModusMenu
+
+- **Location**: `src/components/ModusMenu.tsx`
+- **Purpose**: Menu container with menu items
+- **Key Features**: Vertical/horizontal orientation, item selection, bordered styling
+- **Usage**: Navigation menus, context menus, option lists
+
+#### ModusMenuItem
+
+- **Location**: `src/components/ModusMenuItem.tsx`
+- **Purpose**: Individual menu item with selection and interaction
+- **Key Features**: Icons, sub-labels, disabled state, selection handling
+- **Usage**: Menu options, dropdown items, navigation links
+
+#### ModusRating
+
+- **Location**: `src/components/ModusRating.tsx`
+- **Purpose**: Star or emoji rating input
+- **Key Features**: Multiple variants (star, heart, smiley, thumb), half ratings, custom labels
+- **Usage**: Product ratings, feedback collection, satisfaction surveys
+
+#### ModusStepper
+
+- **Location**: `src/components/ModusStepper.tsx`
+- **Purpose**: Step indicator for multi-step processes
+- **Key Features**: Horizontal/vertical orientation, color variants, custom content
+- **Usage**: Multi-step forms, process indicators, workflow navigation
+
+### Media & Icon Components
+
+#### ModusAvatar
+
+- **Location**: `src/components/ModusAvatar.tsx`
+- **Purpose**: User profile image or initials display
+- **Key Features**: Image support, fallback to initials, size variants, shape options
+- **Usage**: User profiles, contact lists, user identification
+
+#### ModusIcon
+
+- **Location**: `src/components/ModusIcon.tsx`
+- **Purpose**: Icon display using Modus icon system
+- **Key Features**: Size variants, decorative/informative modes, custom colors
+- **Usage**: UI icons, status indicators, visual elements
+
+### System & Utility Components
+
+#### ModusProvider
+
+- **Location**: `src/components/ModusProvider.tsx`
+- **Purpose**: Root provider for Modus Design System integration
+- **Key Features**: CSS imports, theme support, component registration
+- **Usage**: App root wrapper, design system initialization
+
+#### ModusThemeSwitcher
+
+- **Location**: `src/components/ModusThemeSwitcher.tsx`
+- **Purpose**: Theme switching control for light/dark modes
+- **Key Features**: Theme configuration, change events, accessibility support
+- **Usage**: Theme controls, user preferences, dark mode toggle
+
+## Component Usage Patterns
+
+### Event Handling
+
+- Most components use `useEffect` with `useRef` for event listener management
+- Custom events are properly typed with TypeScript interfaces
+- Event cleanup is handled in useEffect return functions
+
+### State Management
+
+- Components follow controlled/uncontrolled patterns as appropriate
+- Modus Web Components manage their own internal state
+- React state is used for external control when needed
+
+### Accessibility
+
+- All components include proper ARIA attributes
+- Keyboard navigation is supported where applicable
+- Screen reader compatibility is maintained
+
+### Styling
+
+- Components use Modus Design System colors and utilities
+- Custom classes can be applied via `customClass` prop
+- Theme-aware styling is built-in
+
+## Import Pattern
+
+```typescript
+import ModusComponentName from "./components/ModusComponentName";
+```
+
+## Common Props
+
+- `customClass`: Additional CSS classes
+- `ariaLabel`: Accessibility label
+- `disabled`: Disabled state
+- `size`: Size variant (sm, md, lg)
+- Event handlers: `onEventName` pattern
+
+## Notes
+
+- All components are TypeScript-enabled with proper type definitions
+- Components follow React best practices and hooks patterns
+- Integration with Modus Web Components is handled through proper event binding
+- Components are designed to be composable and reusable

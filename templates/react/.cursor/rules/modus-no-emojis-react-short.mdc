@@ -1,0 +1,21 @@
+---
+alwaysApply: true
+---
+
+# Modus No Emojis - Short
+
+Strict prohibition of emojis in React + Vite application.
+
+## Key Rules
+
+- **Never use emojis in code** - No emoji characters in any code files
+- **Never use emojis in components** - No emoji in JSX, content, or UI elements
+- **Never use emojis in content** - No emoji in text, descriptions, or user-facing content
+- **Use Modus icons instead** - Replace emojis with appropriate Modus icons
+- **Use Unicode characters for symbols** - Use proper Unicode symbols when needed
+- **Check all content** - Verify no emojis in comments, strings, or documentation
+- **Use linting to catch violations** - Automated checks for emoji usage
+
+## Reference
+
+For detailed emoji prohibition guidelines, icon replacement patterns, and linting setup, fetch the full rule: `modus-no-emojis-react`
