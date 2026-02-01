@@ -1,0 +1,151 @@
+---
+description: Modus Table component usage patterns for Angular
+globs: ["**/*.ts", "**/*.html", "**/*.scss", "**/*.css"]
+alwaysApply: false
+---
+
+# Modus Table Usage Rules
+
+Comprehensive guide for using the Modus Table component in Angular applications.
+
+## Basic Usage
+
+```typescript
+import { ModusTableComponent } from '../modus-table.component';
+import type { ITableColumn } from '@trimble-oss/moduswebcomponents';
+
+const columns: ITableColumn[] = [
+  { id: 'name', header: 'Name', accessor: 'name', width: '40%' },
+  { id: 'role', header: 'Role', accessor: 'role' },
+  { id: 'status', header: 'Status', accessor: 'status' },
+];
+
+const data = [
+  { id: '1', name: 'Alex Rivera', role: 'Lead', status: 'Active' },
+  { id: '2', name: 'Chris Patel', role: 'Developer', status: 'Active' },
+];
+```
+
+```html
+<modus-table
+  [columns]="columns"
+  [data]="data"
+  density="comfortable"
+  [zebra]="true"
+  [hover]="true"
+/>
+```
+
+## CRITICAL: Editable Tables with Custom Editors
+
+For editable tables, you MUST use `editor: 'custom'` with `customEditorRenderer` functions.
+
+### DO: Use Custom Editor Renderer Functions
+
+```typescript
+function createTextEditor(value: unknown, onCommit: (value: unknown) => void): HTMLElement {
+  const input = document.createElement('input');
+  input.type = 'text';
+  input.value = String(value || '');
+  input.style.width = '100%';
+  input.style.border = '1px solid var(--border)';
+  input.style.padding = '4px 8px';
+  input.style.borderRadius = '4px';
+  input.style.fontSize = '14px';
+  input.style.backgroundColor = 'var(--background)';
+  input.style.color = 'var(--foreground)';
+
+  setTimeout(() => {
+    input.focus();
+    input.select();
+  }, 0);
+
+  const commitValue = () => onCommit(input.value);
+
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      commitValue();
+    }
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      onCommit(value);
+    }
+  });
+  input.addEventListener('blur', commitValue);
+
+  return input;
+}
+
+const taskColumns: ITableColumn[] = [
+  { id: 'id', header: 'ID', accessor: 'id', width: '60px' },
+  {
+    id: 'task',
+    header: 'Task',
+    accessor: 'task',
+    editor: 'custom',
+    customEditorRenderer: (value, onCommit) => createTextEditor(value, onCommit),
+  },
+];
+```
+
+## Event Handling
+
+### Cell Edit Events
+
+```typescript
+readonly taskData = signal<Record<string, unknown>[]>([...initialTaskData]);
+
+handleCellEditCommit(event: {
+  rowIndex: number;
+  colId: string;
+  newValue: unknown;
+  updatedRow: Record<string, unknown>;
+}): void {
+  this.taskData.update((prevData) => {
+    const newData = [...prevData];
+    newData[event.rowIndex] = { ...newData[event.rowIndex], [event.colId]: event.newValue };
+    return newData;
+  });
+}
+```
+
+```html
+<modus-table
+  [columns]="taskColumns"
+  [data]="taskData()"
+  [editable]="true"
+  (cellEditCommit)="handleCellEditCommit($event)"
+/>
+```
+
+## Selection Events
+
+```typescript
+readonly selectedIds = signal<string[]>([]);
+
+handleRowSelectionChange(event: {
+  selectedRows: Record<string, unknown>[];
+  selectedRowIds: string[];
+}): void {
+  this.selectedIds.set(event.selectedRowIds);
+}
+```
+
+```html
+<modus-table
+  [columns]="columns"
+  [data]="data"
+  selectable="multi"
+  [selectedRowIds]="selectedIds()"
+  (rowSelectionChange)="handleRowSelectionChange($event)"
+/>
+```
+
+## Key Takeaways
+
+1. **Custom editors are required** for reliable cell editing
+2. **Use design system CSS variables** in custom editors (`--border`, `--background`, `--foreground`)
+3. **Handle keyboard events** (Enter to commit, Escape to cancel)
+4. **Use immutable updates** with signals for change detection
+5. **Import types** from `@trimble-oss/moduswebcomponents`

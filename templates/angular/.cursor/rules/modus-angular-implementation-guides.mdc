@@ -1,0 +1,301 @@
+---
+description: Create comprehensive implementation guides for major feature development in Angular + Vite
+globs: ["**/.cursor/rules/implementation-guides/**/*.md"]
+alwaysApply: false
+---
+
+# Implementation Guide Documentation Rules for Angular + Vite
+
+## Pre-Development Documentation Requirements
+
+### MANDATORY: Implementation Guide Creation
+
+**BEFORE starting ANY major feature development, you MUST:**
+
+1. **Create a comprehensive implementation guide** in `/implementation_guides/`
+2. **Document the complete approach** before writing any code
+3. **Get stakeholder review** of the implementation plan
+4. **Update guides with lessons learned** during and after implementation
+
+### What Constitutes a "Major Feature"
+
+**Always create implementation guides for:**
+
+- New page/view components with complex functionality
+- New reusable component libraries or design system additions
+- Integration with external APIs or services
+- Authentication, authorization, or security features
+- Data management patterns (stores, state management)
+- Routing or navigation changes
+- Performance optimization initiatives
+- Accessibility improvements or compliance work
+- Build process, tooling, or infrastructure changes
+- Any feature requiring more than 2 hours of development time
+
+**Skip implementation guides for:**
+
+- Simple bug fixes (< 30 minutes)
+- Minor text or styling tweaks
+- Documentation updates
+- Dependency version updates (unless breaking changes)
+
+## Implementation Guide Structure
+
+### File Location & Naming
+
+```text
+implementation_guides/
+├── feature-name-YYYY-MM-DD.md          # New feature guides
+├── integration-api-name-YYYY-MM-DD.md  # API integration guides
+├── component-library-YYYY-MM-DD.md     # Component development guides
+└── performance-optimization-YYYY-MM-DD.md # Performance guides
+```
+
+**Naming Convention:**
+
+- Use kebab-case for file names
+- Include date for chronological tracking
+- Be descriptive but concise
+
+### Required Implementation Guide Template
+
+```markdown
+# [Feature Name] Implementation Guide
+
+**Date:** YYYY-MM-DD  
+**Author:** [Your Name]  
+**Status:** [Planning | In Progress | Complete | Archived]
+
+## Overview & Objectives
+
+### Problem Statement
+
+- What problem are we solving?
+- Why is this feature needed?
+- What are the success criteria?
+
+### Goals & Requirements
+
+- [ ] Functional requirement 1
+- [ ] Functional requirement 2
+- [ ] Non-functional requirement 1 (performance, accessibility, etc.)
+
+## Technical Architecture
+
+### Component Architecture
+
+- High-level component structure
+- Data flow diagrams
+- State management approach (signals, services)
+
+### Angular-Specific Patterns
+
+- Standalone components used
+- Signal-based state management
+- Service patterns
+- Routing configuration
+
+### Dependencies & Integrations
+
+- New dependencies required
+- External API integrations
+- Modus Web Components usage
+
+### File Structure Changes
+
+```text
+src/app/
+├── components/
+│   └── new-component.component.ts
+├── pages/
+│   └── new-page/
+│       └── new-page.component.ts
+├── services/
+│   └── new-feature.service.ts
+└── app.routes.ts
+```
+
+## Design System Integration
+
+### Modus Components Used
+
+- List specific Modus Web Components
+- Color variables and theming approach
+- Accessibility considerations
+
+## Implementation Plan
+
+### Phase 1: Foundation
+
+- [ ] Task 1
+- [ ] Task 2
+- [ ] Task 3
+
+### Phase 2: Core Features
+
+- [ ] Task 1
+- [ ] Task 2
+
+### Phase 3: Polish & Testing
+
+- [ ] Task 1
+- [ ] Task 2
+
+## Testing Strategy
+
+### Unit Testing
+
+- Components to test
+- Test scenarios
+- Mock requirements
+
+### Integration Testing
+
+- API integration tests
+- Component interaction tests
+
+### Accessibility Testing
+
+- WCAG compliance checklist
+- Screen reader testing
+- Keyboard navigation testing
+
+## Post-Implementation Review
+
+### Lessons Learned
+
+_[Update this section during/after implementation]_
+
+#### What Went Well
+
+-
+
+#### Challenges Encountered
+
+-
+
+#### Solutions & Workarounds
+
+-
+
+#### Future Improvements
+
+-
+```
+
+## Implementation Guide Lifecycle
+
+### Pre-Development Phase
+
+1. **Create Implementation Guide**
+
+   ```bash
+   # Create new guide with proper naming
+   touch implementation_guides/feature-name-$(date +%Y-%m-%d).md
+   ```
+
+2. **Fill Out Complete Template**
+
+   - All sections must be completed before coding begins
+   - Get team/stakeholder review of the plan
+
+### During Implementation Phase
+
+#### Update guides in real-time as you encounter issues
+
+#### When You Encounter Problems
+
+1. **Document the Issue**
+
+   ```markdown
+   #### Challenge: [Brief Description]
+
+   **Date:** YYYY-MM-DD
+   **Problem:** Detailed description of what went wrong
+   **Impact:** How this affected the implementation
+   ```
+
+2. **Document the Solution**
+
+   ```markdown
+   **Solution:** Step-by-step solution implemented
+   **Code Changes:** Link to commits or describe changes
+   **Time Impact:** Additional time required
+   **Prevention:** How to avoid this in future implementations
+   ```
+
+### Quality Standards
+
+**Every implementation guide must:**
+
+- [ ] **Complete Template**: All required sections filled out
+- [ ] **Technical Accuracy**: Architecture matches actual implementation
+- [ ] **Lessons Learned**: Post-implementation section completed
+- [ ] **Performance Data**: Actual metrics recorded
+- [ ] **Accessibility Results**: WCAG compliance documented
+
+## Angular + Vite Specific Considerations
+
+### Component Architecture Patterns
+
+```typescript
+@Component({
+  selector: 'app-new-component',
+  template: `
+    <div class="bg-background text-foreground">
+      @if (isLoading()) {
+        <modus-loader />
+      } @else {
+        <div>{{ content() }}</div>
+      }
+    </div>
+  `,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class NewComponent {
+  private service = inject(NewFeatureService);
+  
+  readonly isLoading = signal(false);
+  readonly content = signal('');
+}
+```
+
+### State Management Patterns
+
+```typescript
+@Injectable({ providedIn: 'root' })
+export class FeatureService {
+  private readonly featureState = signal(initialState);
+  
+  readonly state = this.featureState.asReadonly();
+  
+  updateState(newState: Partial<FeatureState>): void {
+    this.featureState.update(current => ({ ...current, ...newState }));
+  }
+}
+```
+
+### Routing Patterns
+
+```typescript
+export const routes: Routes = [
+  {
+    path: 'feature',
+    loadComponent: () => import('./feature/feature.component').then(m => m.FeatureComponent),
+  },
+];
+```
+
+## Common Anti-Patterns to Avoid
+
+### Don't Skip Implementation Guides
+
+- **Never start major development without a guide**
+- **Don't create guides after the fact** - they lose their planning value
+- **Don't leave guides incomplete** - they become technical debt
+
+### Don't Create Shallow Guides
+
+- **Avoid vague descriptions** - be specific about technical approaches
+- **Don't skip the architecture section** - future developers need this context
+- **Don't ignore lessons learned** - this is the most valuable section

@@ -1,0 +1,51 @@
+---
+description: Comprehensive rules for opening and closing Modus modals in Angular
+globs: ["**/*.ts", "**/*.html", "**/*.scss", "**/*.css"]
+alwaysApply: true
+---
+
+# Modus Modal Usage - Short
+
+Critical implementation patterns for Modus modals in Angular.
+
+## Key Rules
+
+- **Use document.getElementById for modal access** - Get the dialog element by ID
+- **Type-safe access** - Cast to `HTMLDialogElement | null`
+- **Check method existence** - `typeof dialog.showModal === 'function'`
+- **Use native dialog API** - `dialog.showModal()` and `dialog.close()`
+- **Never use querySelector with web component selectors**
+- **Use descriptive, kebab-case modal IDs**
+
+## Correct Pattern
+
+```typescript
+openModal(): void {
+  const dialog = document.getElementById('modal-id') as HTMLDialogElement | null;
+  if (dialog && typeof dialog.showModal === 'function') {
+    dialog.showModal();
+  }
+}
+
+closeModal(): void {
+  const dialog = document.getElementById('modal-id') as HTMLDialogElement | null;
+  if (dialog && typeof dialog.close === 'function') {
+    dialog.close();
+  }
+}
+```
+
+```html
+<modus-button (buttonClick)="openModal()">Open</modus-button>
+<modus-modal modalId="modal-id" [showClose]="true">
+  <h3 slot="header">Title</h3>
+  <div slot="content">Content</div>
+  <div slot="footer">
+    <modus-button (buttonClick)="closeModal()">Close</modus-button>
+  </div>
+</modus-modal>
+```
+
+## Reference
+
+For detailed modal patterns and advanced usage, fetch the full rule: `modus-angular-modal-usage`

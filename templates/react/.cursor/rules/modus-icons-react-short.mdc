@@ -1,0 +1,24 @@
+---
+description: Essential icon usage rules for Modus Design System
+globs: ["**/*.tsx", "**/*.ts"]
+alwaysApply: true
+---
+
+# Modus Icons - Short
+
+Essential icon usage rules for Modus Design System.
+**REFERENCE**: For allowed list of Modus icon names see `.cursor/rules/modus-icon-names.mdc`
+
+## Key Rules
+
+- **Use Modus icons exclusively** - `<i className="modus-icons">icon-name</i>`
+- **Never use other icon libraries** - No Font Awesome, Material Icons, Heroicons, etc.
+- **Use valid icon names only** - Check Modus Icons documentation for valid names
+- **Size with Tailwind classes** - `text-sm`, `text-lg`, `text-xl` for sizing
+- **Color with design system** - `text-primary`, `text-foreground`, `text-muted-foreground`
+- **Use CDN import** - Ensure Modus Icons CDN is loaded
+- **Test icon rendering** - Verify icons display correctly in all themes
+
+## Reference
+
+For detailed icon usage patterns, sizing guidelines, and advanced icon techniques, fetch the full rule: `modus-icons-react`

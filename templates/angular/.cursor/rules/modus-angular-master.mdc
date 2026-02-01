@@ -1,0 +1,164 @@
+---
+description: Master rule providing overview and references to all Modus Angular rules
+globs: ["**/*.ts", "**/*.html", "**/*.scss", "**/*.css"]
+alwaysApply: true
+---
+
+# Modus Angular Rules - Master Reference
+
+This master rule provides an overview of all available rules and serves as an entry point for understanding the Modus Angular development patterns.
+
+## Rule Structure
+
+This project uses a **short/full rule pattern**:
+
+- **Short Rules** (`*-short.mdc`): Always applied, concise summaries
+- **Full Rules** (`*.mdc`): Apply intelligently, detailed patterns
+
+## Essential Rules (Always Applied)
+
+These short rules are always included in chat context:
+
+### Design System
+
+- `modus-angular-design-system.mdc` - 9-color design system with Tailwind v4
+- `modus-angular-color-usage-short.mdc` - Color system usage
+- `modus-angular-icons-short.mdc` - Icon usage patterns
+- `modus-angular-semantic-html-short.mdc` - HTML element usage (div-only)
+- `modus-angular-border-usage-short.mdc` - Border utilities
+- `modus-angular-opacity-utilities-short.mdc` - Opacity utilities
+- `modus-angular-tailwind-usage-short.mdc` - Tailwind v4 integration
+- `modus-angular-themes-short.mdc` - Theme implementation
+
+### Component Patterns
+
+- `modus-angular-button-group-usage-short.mdc` - Button group patterns
+- `modus-angular-checkbox-value-inversion-short.mdc` - Checkbox bug handling
+- `modus-angular-modal-usage-short.mdc` - Modal patterns
+- `modus-angular-accordion-state-management-short.mdc` - Accordion state
+- `modus-angular-select-vs-dropdown-menu-short.mdc` - Dropdown patterns
+- `modus-angular-navbar-usage-short.mdc` - Navbar integration
+- `modus-angular-side-navigation-usage-short.mdc` - Side navigation patterns
+- `modus-angular-table-usage-short.mdc` - Table patterns
+- `modus-angular-utility-panel-usage-short.mdc` - Utility panel patterns
+
+### Angular Integration
+
+- `modus-angular-integration-short.mdc` - Angular + Modus integration
+- `modus-angular-essentials.mdc` - Comprehensive essentials
+- `modus-angular-best-practices.mdc` - Best practices
+- `modus-angular-forms-validation-short.mdc` - Forms and validation
+
+### Workflow
+
+- `modus-angular-development-workflow-short.mdc` - Linting and quality checks
+- `modus-angular-chrome-devtools-testing-short.mdc` - Browser testing
+- `modus-angular-implementation-guides-short.mdc` - Feature development guides
+
+## Detailed Rules (Apply Intelligently)
+
+For detailed patterns, examples, and advanced techniques, reference these full rules:
+
+### Component-Specific Details
+
+- `modus-angular-button-group-usage.mdc` - Complete button group patterns
+- `modus-angular-checkbox-value-inversion.mdc` - Checkbox bug details
+- `modus-angular-modal-usage.mdc` - Complete modal implementation
+- `modus-angular-accordion-state-management.mdc` - Accordion state management
+- `modus-angular-select-vs-dropdown-menu.mdc` - Dropdown comparison
+- `modus-angular-navbar-usage.mdc` - Navbar integration details
+- `modus-angular-side-navigation-usage.mdc` - Side navigation details
+- `modus-angular-table-usage.mdc` - Table implementation
+- `modus-angular-utility-panel-usage.mdc` - Utility panel details
+- `modus-angular-divider-usage.mdc` - Divider patterns
+
+### Design System Details
+
+- `modus-angular-color-usage.mdc` - Complete color system guide
+- `modus-angular-icons.mdc` - Complete icon usage guide
+- `modus-angular-semantic-html.mdc` - HTML patterns guide
+- `modus-angular-border-usage.mdc` - Complete border utilities guide
+- `modus-angular-opacity-utilities.mdc` - Complete opacity utilities guide
+- `modus-angular-tailwind-usage.mdc` - Complete Tailwind integration guide
+- `modus-angular-themes.mdc` - Complete theme implementation guide
+
+### Workflow & Testing
+
+- `modus-angular-development-workflow.mdc` - Complete workflow guide
+- `modus-angular-chrome-devtools-testing.mdc` - Complete testing guide
+- `modus-angular-implementation-guides.mdc` - Complete implementation guide structure
+
+### UX Foundations
+
+- `ux/ux-ui-foundations.mdc` - UI/UX foundations with Modus 2 + Tailwind
+- `ux/gestalt-laws-detailed.mdc` - Gestalt Laws implementation guide
+
+## Quick Start Guide
+
+### Working with Components
+
+1. Check component-specific short rule (always applied)
+2. For details, reference full rule: `@modus-angular-[component]`
+3. Use wrapper components, not web components directly
+
+### Working with Design System
+
+1. Short rules provide essential patterns (always applied)
+2. For details, reference full rule: `@modus-angular-[topic]`
+3. For icon names: `@modus-angular-icons`
+
+### Common Patterns
+
+**Colors**: Always use design system colors (`bg-background`, `text-foreground`, etc.)
+
+**Icons**: Use Modus icons exclusively (`<i class="modus-icons">icon_name</i>`)
+- Icon names use underscores: `save_disk`, `arrow_left`
+
+**Components**: Use wrapper components (`<modus-button>` not `<modus-wc-button>`)
+
+**State Management**: Let Modus components manage their own state where appropriate
+
+**Angular Patterns**:
+- Use `input()`, `output()`, `signal()`, `computed()`
+- Use `inject()` for dependency injection
+- Use `ChangeDetectionStrategy.OnPush`
+- Use `@if`, `@for`, `@switch` control flow
+
+## Rule Application
+
+Rules are applied automatically based on:
+
+1. **Always Apply**: Short rules with `alwaysApply: true`
+2. **File Patterns**: Rules activate when working with matching files (`globs`)
+3. **Context Matching**: Agent applies rules based on description relevance
+4. **Manual Reference**: Use `@rule-name` to explicitly reference a rule
+
+## Best Practices
+
+When working with Modus Angular:
+
+1. **Follow Short Rules**: Essential patterns are always available
+2. **Reference Full Rules**: Use `@rule-name` for detailed guidance
+3. **Run Linting**: Use `npm run lint:all` before committing
+4. **Test All Themes**: Verify components work in all 6 themes
+5. **Use DevTools**: Test implementations in browser
+
+## Getting Help
+
+- **Rule Documentation**: See rules in `.cursor/rules/` directory
+- **Project Guide**: See `CLAUDE.md` in project root
+- **Component Reference**: See `modus-angular-essentials.mdc`
+
+## Rule Maintenance
+
+When adding or updating rules:
+
+1. Create/update short rule with `alwaysApply: true`
+2. Create/update full rule with `alwaysApply: false`
+3. Ensure descriptions match between short and full
+4. Add appropriate `globs:` patterns
+5. Use consistent naming: `modus-angular-[topic].mdc`
+
+---
+
+**Note**: This master rule is always applied to provide rule overview. For specific guidance, reference the appropriate detailed rule using `@rule-name` syntax.

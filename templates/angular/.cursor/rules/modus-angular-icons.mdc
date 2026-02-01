@@ -1,0 +1,137 @@
+---
+description: Modus Icons usage guide for Angular applications
+globs: ["**/*.ts", "**/*.html", "**/*.scss", "**/*.css"]
+alwaysApply: false
+---
+
+# Modus Icons Usage Guide for Angular Applications
+
+## Overview
+
+Modus Icons use **icon font ligatures** with **underscore naming convention**.
+
+## Icon Naming Convention
+
+**CRITICAL: Modus Icons use UNDERSCORES (\_), not hyphens (-)**
+
+### CORRECT Icon Names
+
+```html
+<i class="modus-icons">save_disk</i>
+<i class="modus-icons">arrow_left</i>
+<i class="modus-icons">arrow_right</i>
+<i class="modus-icons">add_circle</i>
+<i class="modus-icons">user_permissions</i>
+```
+
+### INCORRECT Icon Names
+
+```html
+<!-- Don't use hyphens -->
+<i class="modus-icons">save-disk</i>
+<i class="modus-icons">arrow-left</i>
+```
+
+## Usage Patterns
+
+### Angular Component Integration
+
+```html
+<!-- Icon with text (left position) -->
+<modus-button icon="save_disk" iconPosition="left">Save File</modus-button>
+
+<!-- Icon with text (right position) -->
+<modus-button icon="download" iconPosition="right">Download</modus-button>
+
+<!-- Icon only (requires aria-label) -->
+<modus-button icon="settings" iconPosition="only" ariaLabel="Open settings"></modus-button>
+```
+
+### Direct HTML Usage
+
+```html
+<!-- Decorative icon (not announced by screen readers) -->
+<i class="modus-icons text-lg" aria-hidden="true">user_add</i>
+
+<!-- Informational icon (announced by screen readers) -->
+<i class="modus-icons text-base" role="img" aria-label="Settings">settings</i>
+```
+
+### Sizing Icons
+
+Use Tailwind text utilities mapped to Modus font sizes:
+
+| Tailwind Class | Size | Usage                  |
+| -------------- | ---- | ---------------------- |
+| `text-2xs`     | 8px  | Micro icons, badges    |
+| `text-xs`      | 10px | Small labels, captions |
+| `text-sm`      | 12px | Secondary icons        |
+| `text-base`    | 14px | **Modus default size** |
+| `text-lg`      | 16px | Body text icons        |
+| `text-xl`      | 18px | Large icons            |
+| `text-2xl`     | 20px | Prominent icons        |
+| `text-3xl`     | 24px | Display icons          |
+| `text-4xl`     | 30px | Hero icons             |
+
+### Coloring Icons
+
+Use design system color classes:
+
+```html
+<i class="modus-icons text-primary">info</i>
+<i class="modus-icons text-success">check_circle</i>
+<i class="modus-icons text-warning">warning</i>
+<i class="modus-icons text-error">error</i>
+<i class="modus-icons text-muted-foreground">help</i>
+```
+
+## Common Icon Names
+
+### Navigation Icons
+
+`arrow_left`, `arrow_right`, `arrow_up`, `arrow_down`, `chevron_left`, `chevron_right`, `menu`, `close`
+
+### Action Icons
+
+`add`, `add_circle`, `edit`, `delete`, `save_disk`, `download`, `upload`, `copy`, `cut`, `paste`
+
+### Status Icons
+
+`check`, `check_circle`, `error`, `warning`, `info`, `help`
+
+### File Icons
+
+`file`, `file_upload`, `file_download`, `folder`, `image`, `document`
+
+## Accessibility Guidelines
+
+### Decorative Icons
+
+```html
+<button>
+  <i class="modus-icons mr-2" aria-hidden="true">save_disk</i>
+  Save Document
+</button>
+```
+
+### Informational Icons
+
+```html
+<i class="modus-icons" role="img" aria-label="Warning">warning</i>
+```
+
+### Icon-Only Buttons
+
+```html
+<modus-button icon="settings" iconPosition="only" ariaLabel="Open settings menu"></modus-button>
+```
+
+---
+
+**Key Takeaways:**
+
+1. **Always use underscores** in icon names (`save_disk`, not `save-disk`)
+2. **Load font via HTML link**, not CSS import
+3. **Use `modus-icons` class** with icon name as text content
+4. **Provide accessibility labels** for informational and icon-only usage
+5. **Test visually** to ensure icons render as glyphs, not text

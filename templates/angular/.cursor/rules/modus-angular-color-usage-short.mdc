@@ -1,0 +1,56 @@
+---
+description: Essential color usage rules for Modus Design System integration in Angular + Vite
+globs: ["**/*.ts", "**/*.html", "**/*.scss", "**/*.css"]
+alwaysApply: true
+---
+
+# Modus Color Usage - Short
+
+Essential color usage rules for Modus Design System integration.
+
+## Key Rules
+
+- **Use design system colors only** - `bg-background`, `text-foreground`, `bg-primary`, etc.
+- **Never use generic Tailwind colors** - No `bg-blue-500`, `text-gray-600`, etc.
+- **Never use hardcoded values** - No hex colors, RGB values, or CSS variables directly
+- **Use semantic color names** - `bg-destructive`, `text-warning`, `bg-success`
+- **Follow color hierarchy** - Background > Card > Primary > Secondary > Muted
+- **Test in all themes** - Ensure colors work in light and dark modes
+
+## 9 Core Colors
+
+- **background** - `bg-background` (page background)
+- **foreground** - `text-foreground` (primary text)
+- **card** - `bg-card` (card backgrounds)
+- **muted** - `bg-muted` (subtle backgrounds)
+- **secondary** - `bg-secondary` (secondary UI)
+- **primary** - `bg-primary` (primary actions)
+- **success** - `bg-success` (success states)
+- **warning** - `bg-warning` (warning states)
+- **destructive** - `bg-destructive` (error states)
+
+## Correct Patterns
+
+```html
+<!-- CORRECT: Design system colors -->
+<div class="bg-background text-foreground"></div>
+<div class="bg-card text-card-foreground border-default"></div>
+<div class="bg-primary text-primary-foreground"></div>
+```
+
+## Forbidden Patterns
+
+```html
+<!-- WRONG: Generic Tailwind colors -->
+<div class="bg-blue-500 text-white"></div>
+
+<!-- WRONG: Hardcoded colors -->
+<div [style.background-color]="'#ffffff'"></div>
+
+<!-- WRONG: Raw Modus variables -->
+<div class="bg-[var(--modus-wc-color-base-page)]"></div>
+```
+
+## Reference
+
+For detailed color system guide and patterns, fetch the full rule: `modus-angular-color-usage`

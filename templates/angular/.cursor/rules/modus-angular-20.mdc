@@ -1,0 +1,82 @@
+---
+description: Angular 20 best practices and coding standards with signals, standalone components, and modern patterns
+globs: ["**/*.ts", "**/*.html", "**/*.scss", "**/*.css"]
+alwaysApply: true
+---
+
+# Angular 20 Best Practices
+
+This project adheres to modern Angular best practices, emphasizing maintainability, performance, accessibility, and scalability.
+
+## TypeScript Best Practices
+
+* **Strict Type Checking:** Always enable and adhere to strict type checking.
+* **Prefer Type Inference:** Allow TypeScript to infer types when they are obvious from the context.
+* **Avoid `any`:** Do not use the `any` type unless absolutely necessary. Prefer `unknown` when a type is uncertain.
+
+## Angular Best Practices
+
+* **Standalone Components:** Always use standalone components, directives, and pipes. Avoid using `NgModules` for new features.
+* **Implicit Standalone:** Do not explicitly set `standalone: true` inside the `@Component`, `@Directive` and `@Pipe` decorators, as it is implied by default.
+* **Signals for State Management:** Utilize Angular Signals for reactive state management within components and services.
+* **Lazy Loading:** Implement lazy loading for feature routes to improve initial load times.
+* **NgOptimizedImage:** Use `NgOptimizedImage` for all static images to automatically optimize image loading and performance.
+* **Host bindings:** Do NOT use the `@HostBinding` and `@HostListener` decorators. Put host bindings inside the `host` object of the `@Component` or `@Directive` decorator instead.
+
+## Components
+
+* **Single Responsibility:** Keep components small, focused, and responsible for a single piece of functionality.
+* **`input()` and `output()` Functions:** Prefer `input()` and `output()` functions over the `@Input()` and `@Output()` decorators:
+    ```typescript
+    import { input, output } from '@angular/core';
+
+    userId = input<string>('');
+    userSelected = output<string>();
+    ```
+* **`computed()` for Derived State:** Use the `computed()` function from `@angular/core` for derived state based on signals.
+* **`ChangeDetectionStrategy.OnPush`:** Always set `changeDetection: ChangeDetectionStrategy.OnPush` in the `@Component` decorator.
+* **Inline Templates:** Prefer inline templates (template: `...`) for small components. For larger templates, use external HTML files.
+* **Reactive Forms:** Prefer Reactive forms over Template-driven forms for complex forms.
+* **No `ngClass` / `NgClass`:** Do not use the `ngClass` directive. Instead, use native `class` bindings:
+    ```html
+    <section [class.active]="isActive"></section>
+    <section [class]="{'active': isActive}"></section>
+    ```
+* **No `ngStyle` / `NgStyle`:** Do not use the `ngStyle` directive. Instead, use native `style` bindings:
+    ```html
+    <section [style.font-size.px]="fontSize"></section>
+    ```
+
+## State Management
+
+* **Signals for Local State:** Use signals for managing local component state.
+* **`computed()` for Derived State:** Leverage `computed()` for any state that can be derived from other signals.
+* **Pure and Predictable Transformations:** Ensure state transformations are pure functions (no side effects) and predictable.
+* **Signal value updates:** Do NOT use `mutate` on signals, use `update` or `set` instead.
+
+## Templates
+
+* **Simple Templates:** Keep templates as simple as possible, avoiding complex logic directly in the template.
+* **Native Control Flow:** Use the new built-in control flow syntax (`@if`, `@for`, `@switch`) instead of the older structural directives (`*ngIf`, `*ngFor`, `*ngSwitch`):
+    ```html
+    @if (isVisible) {
+      <section>Content</section>
+    }
+    @for (item of items; track item.id) {
+      <section>{{ item }}</section>
+    }
+    ```
+* **Async Pipe:** Use the `async` pipe to handle observables in templates.
+
+## Services
+
+* **Single Responsibility:** Design services around a single, well-defined responsibility.
+* **`providedIn: 'root'`:** Use the `providedIn: 'root'` option when declaring injectable services to ensure they are singletons and tree-shakable.
+* **`inject()` Function:** Prefer the `inject()` function over constructor injection:
+    ```typescript
+    import { inject } from '@angular/core';
+
+    export class MyComponent {
+      private myService = inject(MyService);
+    }
+    ```

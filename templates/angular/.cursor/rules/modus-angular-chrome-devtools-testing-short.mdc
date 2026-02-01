@@ -1,0 +1,34 @@
+---
+description: Chrome DevTools MCP usage for comprehensive Angular + Vite testing
+globs: ["**/*.ts", "**/*.html", "**/*.scss", "**/*.css"]
+alwaysApply: true
+---
+
+# Chrome DevTools Testing - Short
+
+Mandatory Chrome DevTools MCP usage for comprehensive Angular + Vite testing.
+
+## Key Rules
+
+- **Always use Chrome DevTools MCP** - Never skip browser testing
+- **Test before completion** - Validate all implementations in browser
+- **Check console for errors** - Look for JavaScript errors and warnings
+- **Inspect DOM structure** - Verify proper HTML structure and component rendering
+- **Test interactive elements** - Verify Modus Web Components work correctly
+- **Performance testing** - Use DevTools for performance analysis
+- **Test all 6 themes** - Verify components work in all Modus themes
+
+## Testing Checklist
+
+- [ ] No console errors or warnings
+- [ ] Components render correctly
+- [ ] Events fire and handle properly
+- [ ] Forms validate correctly
+- [ ] Modals open/close with native dialog API
+- [ ] All 6 themes display correctly
+- [ ] Keyboard navigation works
+- [ ] Accessibility attributes present
+
+## Reference
+
+For detailed testing workflows and checklists, fetch the full rule: `modus-angular-chrome-devtools-testing`

@@ -1,0 +1,146 @@
+---
+description: Comprehensive guide for using the Modus Navbar component in Angular
+globs: ["**/*.ts", "**/*.html", "**/*.scss", "**/*.css"]
+alwaysApply: false
+---
+
+# Navbar Usage Rules
+
+Comprehensive guide for using the Modus Navbar component in Angular, covering search expansion, button visibility, event handling, and state management.
+
+## CRITICAL: Search Input Expansion
+
+### DO: Set Both `search` and `searchInput` in Visibility
+
+**For search to expand, you MUST set both visibility flags:**
+
+```typescript
+<modus-navbar
+  [userCard]="userCard"
+  [visibility]="{ user: true, search: true, searchInput: true }"
+  [searchInputOpen]="searchInputOpen()"
+  (searchClick)="handleSearchClick($event)"
+  (searchInputOpenChange)="handleSearchInputOpenChange($event)"
+/>
+```
+
+### DO: Two-Way Bind Search State
+
+```typescript
+readonly searchInputOpen = signal<boolean>(false);
+
+handleSearchClick(event: MouseEvent | KeyboardEvent): void {
+  this.searchInputOpen.set(!this.searchInputOpen());
+}
+
+handleSearchInputOpenChange(event: boolean): void {
+  if (this.searchInputOpen() !== event) {
+    this.searchInputOpen.set(event);
+  }
+}
+```
+
+## Button Visibility Patterns
+
+### DO: Set Visibility for Each Button
+
+```typescript
+<modus-navbar
+  [userCard]="userCard"
+  [visibility]="{
+    user: true,
+    search: true,
+    searchInput: true,
+    help: true,
+    apps: true,
+    notifications: true,
+    mainMenu: true
+  }"
+/>
+```
+
+**Default visibility settings:**
+
+```typescript
+readonly visibility = input<INavbarVisibility | undefined>({
+  ai: false,
+  apps: false,
+  help: false,
+  mainMenu: false,
+  notifications: false,
+  search: false,
+  searchInput: false,
+  user: true,
+});
+```
+
+## Event Handling Patterns
+
+### DO: Handle Events with Correct Types
+
+```typescript
+handleSearchClick(event: MouseEvent | KeyboardEvent): void {
+  this.searchInputOpen.set(!this.searchInputOpen());
+}
+
+handleMainMenuOpenChange(event: boolean): void {
+  this.mainMenuOpen.set(event);
+}
+
+handleSearchChange(event: { value: string }): void {
+  this.lastSearch.set(event.value);
+}
+```
+
+## State Management Patterns
+
+### DO: Use Signals for Navbar State
+
+```typescript
+export class NavbarComponent {
+  readonly searchInputOpen = signal<boolean>(false);
+  readonly lastSearch = signal<string>('');
+  readonly mainMenuOpen = signal<boolean>(false);
+  readonly notificationsMenuOpen = signal<boolean>(false);
+  readonly appsMenuOpen = signal<boolean>(false);
+}
+```
+
+### DO: Two-Way Bind Menu States
+
+```typescript
+<modus-navbar
+  [mainMenuOpen]="mainMenuOpen()"
+  [notificationsMenuOpen]="notificationsMenuOpen()"
+  [appsMenuOpen]="appsMenuOpen()"
+  (mainMenuOpenChange)="handleMainMenuOpenChange($event)"
+  (notificationsMenuOpenChange)="handleNotificationsMenuOpenChange($event)"
+  (appsMenuOpenChange)="handleAppsMenuOpenChange($event)"
+/>
+```
+
+## User Card Requirements
+
+### DO: Always Provide User Card
+
+```typescript
+readonly userCard: INavbarUserCard = {
+  name: 'John Doe',
+  email: 'john.doe@example.com',
+  avatarSrc: 'https://via.placeholder.com/64',
+  avatarAlt: 'User avatar',
+};
+```
+
+## Key Takeaways
+
+1. **Search Expansion**: Requires both `search: true` AND `searchInput: true` in visibility
+2. **State Management**: Always use signals for navbar state
+3. **Two-Way Binding**: Bind both property and event for search and menu states
+4. **Button Visibility**: Explicitly set all buttons you want visible in `visibility` object
+5. **Event Types**: Button clicks = `MouseEvent | KeyboardEvent`, state changes = `boolean`
+6. **User Card**: Always required - provide `userCard` input
+
+---
+
+**Remember**: The navbar component requires explicit configuration for all features. Nothing works by default except the user button!

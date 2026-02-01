@@ -1,0 +1,51 @@
+---
+description: ModusSelect vs ModusDropdownMenu reliability comparison in Angular
+globs: ["**/*.ts", "**/*.html", "**/*.scss", "**/*.css"]
+alwaysApply: true
+---
+
+# Modus Select vs Dropdown Menu - Short
+
+Use ModusDropdownMenu instead of ModusSelect for reliable event handling.
+
+## Key Rules
+
+- **Use ModusDropdownMenu, not ModusSelect** - ModusSelect has unreliable event handling in some scenarios
+- **Reliable itemSelect events** - ModusDropdownMenu provides consistent event handling
+- **Proper state management** - Use Angular signals to track selected values and visibility
+- **Programmatic control** - Use `menuVisible` property for control
+- **Event handling patterns** - Handle `itemSelect` events for selection changes
+
+## Correct Pattern
+
+```typescript
+@Component({
+  template: `
+    <modus-dropdown-menu
+      [menuVisible]="isOpen()"
+      (itemSelect)="handleItemSelect($event)"
+      (menuVisibleChange)="isOpen.set($event)"
+    >
+      <modus-button slot="trigger" (buttonClick)="toggleDropdown()">
+        {{ selectedLabel() || 'Select an option' }}
+      </modus-button>
+      @for (item of menuItems(); track item.value) {
+        <modus-menu-item [value]="item.value">{{ item.label }}</modus-menu-item>
+      }
+    </modus-dropdown-menu>
+  `,
+})
+export class DropdownComponent {
+  readonly selectedValue = signal<string>('');
+  readonly isOpen = signal(false);
+
+  handleItemSelect(event: CustomEvent<{ value: string }>): void {
+    this.selectedValue.set(event.detail.value);
+    this.isOpen.set(false);
+  }
+}
+```
+
+## Reference
+
+For detailed component comparison and advanced usage, fetch the full rule: `modus-angular-select-vs-dropdown-menu`

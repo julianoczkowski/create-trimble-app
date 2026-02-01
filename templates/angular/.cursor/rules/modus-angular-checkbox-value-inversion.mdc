@@ -1,0 +1,92 @@
+---
+description: Critical bug fix for ModusWcCheckbox value property inversion in Angular
+globs: ["**/*.ts", "**/*.html", "**/*.scss", "**/*.css"]
+alwaysApply: false
+---
+
+# ModusWcCheckbox Value Inversion Bug in Angular
+
+## CRITICAL BUG: Checkbox Value Inversion
+
+**Problem**: The `modus-wc-checkbox` component has an inverted `value` property that causes unexpected behavior in Angular applications.
+
+**Bug Details**:
+
+- When checkbox is **checked**: `target.value` returns `false`
+- When checkbox is **unchecked**: `target.value` returns `true`
+- This is the **opposite** of what developers expect
+- The bug occurs in the `inputChange` event's `target.value` property
+
+## Solution: Invert the Value
+
+### Correct Pattern: Invert the Value
+
+```typescript
+// CORRECT: Always invert the value
+@Component({
+  template: `
+    <modus-checkbox
+      [value]="isChecked()"
+      (inputChange)="handleChange($event)"
+    >
+      Checkbox Label
+    </modus-checkbox>
+  `,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class CheckboxComponent {
+  readonly isChecked = signal(false);
+
+  handleChange(event: CustomEvent<InputEvent>): void {
+    const value = (event.target as HTMLModusWcCheckboxElement).value;
+    const actualChecked = !value; // CORRECT: Invert the value
+    this.isChecked.set(actualChecked);
+  }
+}
+```
+
+### Wrapper Component Pattern (Recommended)
+
+```typescript
+// CORRECT: Create a wrapper component that handles the inversion
+@Component({
+  selector: 'app-checkbox',
+  template: `
+    <modus-checkbox
+      [value]="value()"
+      [disabled]="disabled()"
+      [label]="label()"
+      (inputChange)="handleInputChange($event)"
+    >
+      <ng-content />
+    </modus-checkbox>
+  `,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class AppCheckboxComponent {
+  readonly value = input<boolean>(false);
+  readonly disabled = input<boolean>(false);
+  readonly label = input<string>('');
+  readonly valueChange = output<boolean>();
+
+  handleInputChange(event: CustomEvent<InputEvent>): void {
+    // CRITICAL: Handle the value inversion bug
+    const rawValue = (event.target as HTMLModusWcCheckboxElement).value;
+    const actualValue = !rawValue; // CORRECT: Invert the value
+
+    this.valueChange.emit(actualValue);
+  }
+}
+```
+
+## Key Takeaways
+
+1. **Always Invert the Value**: `const actualChecked = !value` where `value` comes from `event.target.value`
+2. **Use Correct Event**: Listen to `inputChange` event on the modus-checkbox
+3. **Access Target Value**: Use `(event.target as HTMLModusWcCheckboxElement).value`
+4. **Create Wrapper Components**: Best practice is to handle inversion in a wrapper component
+5. **Test the Inversion**: Always test checkbox behavior with state management
+
+---
+
+**Remember: This is a critical bug in the modus-wc-checkbox component. Always invert the value property to get the correct checked state.**

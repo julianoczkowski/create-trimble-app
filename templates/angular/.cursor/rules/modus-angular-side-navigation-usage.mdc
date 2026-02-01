@@ -1,0 +1,136 @@
+---
+description: Integration patterns for Modus Navbar with Side Navigation in Angular
+globs: ["**/*.ts", "**/*.html", "**/*.scss", "**/*.css"]
+alwaysApply: false
+---
+
+# Modus Navbar + Side Navigation Integration (Angular)
+
+Critical patterns for integrating `modus-navbar` with `modus-side-navigation` in Angular applications.
+
+## Key Rules
+
+- **Use Angular wrapper components** - Use `modus-navbar` and `modus-side-navigation`, not raw web components
+- **Pass props as native objects** - Angular handles binding automatically
+- **Listen for mainMenuOpenChange events** - Use DOM event listeners on container
+- **Position side navigation absolutely** - Required for proper layering
+- **Set explicit z-index** - Ensure side navigation renders above content
+
+## DO: Use Angular Wrapper Components
+
+```html
+<!-- DO: Use Angular wrapper components -->
+<modus-navbar [userCard]="userCardInfo()" [visibility]="{ mainMenu: true, user: true }" />
+
+<modus-side-navigation
+  [expanded]="false"
+  [collapseOnClickOutside]="true"
+  [maxWidth]="'256px'"
+  mode="push"
+  [targetContent]="'#panel-content'"
+/>
+```
+
+## DO: Setup Event Listeners in ngAfterViewInit
+
+```typescript
+export class SideNavigationDemoComponent implements AfterViewInit {
+  readonly navbarMenuExpanded = signal<boolean>(false);
+
+  constructor(private elementRef: ElementRef) {}
+
+  ngAfterViewInit(): void {
+    this.setupNavbarSideNavigationIntegration();
+  }
+
+  private setupNavbarSideNavigationIntegration(): void {
+    const container = this.elementRef.nativeElement.querySelector('.layout-with-navbar');
+
+    container.addEventListener('mainMenuOpenChange', (event: any) => {
+      const sideNav = container.querySelector('modus-wc-side-navigation');
+
+      if (sideNav) {
+        sideNav.expanded = event.detail;
+        this.navbarMenuExpanded.set(event.detail);
+      }
+    });
+
+    const sideNav = container.querySelector('modus-wc-side-navigation');
+    sideNav?.addEventListener('expandedChange', (event: any) => {
+      this.navbarMenuExpanded.set(event.detail);
+    });
+  }
+}
+```
+
+## DO: Position Side Navigation Absolutely with Z-Index
+
+```css
+.layout-with-navbar {
+  box-shadow: rgba(36, 35, 45, 0.3) 1px 0 4px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.layout-with-navbar .main-content-row {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+  min-height: 500px;
+}
+
+.layout-with-navbar .side-navigation,
+.layout-with-navbar modus-side-navigation {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  z-index: 999;
+}
+
+.layout-with-navbar .panel-content {
+  flex: 1;
+  padding: 1.5rem;
+  overflow: auto;
+  margin-left: 4rem;
+}
+```
+
+## Required Layout Structure
+
+```html
+<div class="layout-with-navbar h-[600px] flex flex-col" data-example="basic">
+  <modus-navbar [userCard]="userCardInfo()" [visibility]="{ mainMenu: true, user: true }" />
+
+  <div class="main-content-row flex flex-1 overflow-hidden">
+    <modus-side-navigation
+      [expanded]="false"
+      [collapseOnClickOutside]="true"
+      [maxWidth]="'256px'"
+      mode="push"
+      [targetContent]="'#panel-content'"
+      class="side-navigation h-full"
+    >
+      <modus-menu size="lg">
+        <modus-menu-item label="Home" value="home" [selected]="true">
+          <modus-icon slot="start-icon" name="home" [decorative]="true"></modus-icon>
+        </modus-menu-item>
+      </modus-menu>
+    </modus-side-navigation>
+
+    <div id="panel-content" class="panel-content flex-1 p-6">
+      <!-- Main content here -->
+    </div>
+  </div>
+</div>
+```
+
+## Common Pitfalls
+
+1. **Hamburger menu not visible** - Ensure `visibility.mainMenu: true` is set on navbar
+2. **Side nav expands then immediately collapses** - Set `expanded` property directly on web component ref
+3. **Side nav hidden by content** - Use `position: absolute` and `z-index: 999` in global CSS
+4. **Events not firing** - Use `addEventListener` on container, not Angular event binding
+5. **State not updating** - Set properties directly on the `modus-wc-side-navigation` element

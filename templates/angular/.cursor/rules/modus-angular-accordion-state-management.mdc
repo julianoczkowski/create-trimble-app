@@ -1,0 +1,322 @@
+---
+description: State management patterns for Modus accordion components in Angular
+globs: ["**/*.ts", "**/*.html", "**/*.scss", "**/*.css"]
+alwaysApply: false
+---
+
+# Modus Accordion State Management in Angular
+
+## IMPORTANT: Accordion State Management Guidelines
+
+**Key Principle**: Modus Web Components (`modus-wc-accordion`, `modus-wc-collapse`) are designed to manage their own state, but they DO support controlled state when needed.
+
+**Best Practice**: Use the `expanded` attribute on `modus-wc-collapse` components for initial state or programmatic control, but avoid trying to synchronize Angular state with Modus state in real-time.
+
+## Common Anti-Patterns
+
+### Real-time State Synchronization
+
+```typescript
+// WRONG: Trying to sync Angular state with Modus state in real-time
+@Component({
+  template: `
+    <modus-accordion
+      (expandedChange)="onExpandedChange($event)"
+    >
+      <modus-collapse
+        [expanded]="isExpanded()"  <!-- Creates state loop -->
+      >
+        <div slot="content">Content</div>
+      </modus-collapse>
+    </modus-accordion>
+  `,
+})
+export class AccordionComponent {
+  readonly isExpanded = signal(false);
+
+  onExpandedChange(event: CustomEvent): void {
+    this.isExpanded.set(event.detail.expanded); // Creates conflicts
+  }
+}
+```
+
+### Complex State Synchronization
+
+```typescript
+// WRONG: Complex state synchronization that can cause loops
+@Component({
+  template: `
+    @for (item of items(); track item.id) {
+      <modus-accordion
+        (expandedChange)="toggleAccordion(item.id)"  <!-- Creates loops -->
+      >
+        <modus-collapse
+          [expanded]="accordionStates()[item.id]"  <!-- Causes conflicts -->
+        >
+          <div slot="content">Content for {{ item.id }}</div>
+        </modus-collapse>
+      </modus-accordion>
+    }
+  `,
+})
+export class MyComponent {
+  readonly items = signal([{ id: 'item1' }, { id: 'item2' }]);
+  readonly accordionStates = signal<Record<string, boolean>>({
+    item1: false,
+    item2: true,
+  });
+
+  toggleAccordion(id: string): void {
+    this.accordionStates.update(states => ({
+      ...states,
+      [id]: !states[id],
+    }));
+  }
+}
+```
+
+## Correct Patterns
+
+### Let Modus Components Manage Their Own State
+
+```typescript
+// CORRECT: Let Modus accordion manage its own state
+@Component({
+  template: `
+    <modus-accordion>
+      <modus-collapse
+        collapse-id="item1"
+        [options]="{
+          title: 'Item One',
+          description: 'First accordion item',
+          icon: 'star'
+        }"
+      >
+        <div slot="content">Content for item one.</div>
+      </modus-collapse>
+    </modus-accordion>
+  `,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class AccordionComponent {}
+```
+
+### Initial State Control (Recommended)
+
+```typescript
+// CORRECT: Set initial state without real-time synchronization
+@Component({
+  template: `
+    <modus-accordion>
+      <modus-collapse
+        collapse-id="item1"
+        [expanded]="true"  <!-- CORRECT: Initial state is fine -->
+        [options]="{
+          title: 'Initially Open',
+          description: 'This item starts expanded'
+        }"
+      >
+        <div slot="content">Content for item one.</div>
+      </modus-collapse>
+    </modus-accordion>
+  `,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class AccordionComponent {}
+```
+
+### Listen to Events for Tracking (Not Control)
+
+```typescript
+// CORRECT: Listen to events for tracking, don't control state
+@Component({
+  template: `
+    <modus-accordion (expandedChange)="handleAccordionChange($event)">
+      <modus-collapse
+        collapse-id="item1"
+        [options]="{
+          title: 'Item One',
+          description: 'First accordion item'
+        }"
+      >
+        <div slot="content">Content for item one.</div>
+      </modus-collapse>
+    </modus-accordion>
+  `,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class AccordionComponent {
+  readonly trackingData = signal({
+    accordionOpened: false,
+    openCount: 0,
+  });
+
+  handleAccordionChange(event: CustomEvent<{ expanded: boolean; index: number }>): void {
+    const { expanded, index } = event.detail;
+
+    // CORRECT: Use for tracking/analytics, not state control
+    this.trackingData.update(data => ({
+      accordionOpened: expanded,
+      openCount: expanded ? data.openCount + 1 : data.openCount,
+    }));
+
+    // CORRECT: Log for analytics
+    console.log(`Accordion item ${index} is now ${expanded ? 'open' : 'closed'}`);
+  }
+}
+```
+
+### Programmatic Control When Needed
+
+```typescript
+// CORRECT: Use ViewChild for programmatic control
+@Component({
+  template: `
+    <div class="space-x-2">
+      <modus-button (buttonClick)="openAccordion()">Open Accordion</modus-button>
+      <modus-button (buttonClick)="closeAccordion()">Close Accordion</modus-button>
+    </div>
+
+    <modus-accordion>
+      <modus-collapse
+        #collapseRef
+        collapse-id="item1"
+        [options]="{
+          title: 'Controllable Item',
+          description: 'This can be controlled programmatically'
+        }"
+      >
+        <div slot="content">Content for controllable item.</div>
+      </modus-collapse>
+    </modus-accordion>
+  `,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class AccordionComponent {
+  readonly collapseRef = viewChild<ElementRef>('collapseRef');
+
+  openAccordion(): void {
+    const collapse = this.collapseRef()?.nativeElement;
+    if (collapse) {
+      collapse.expanded = true;
+    }
+  }
+
+  closeAccordion(): void {
+    const collapse = this.collapseRef()?.nativeElement;
+    if (collapse) {
+      collapse.expanded = false;
+    }
+  }
+}
+```
+
+## Best Practices
+
+### State Management Strategy
+
+1. **Let Modus Components Own Their State**
+
+   - Don't try to control `expanded` from Angular signals
+   - Use events to track state changes
+   - Use ViewChild for programmatic control when needed
+
+2. **Event-Driven Architecture**
+
+   ```typescript
+   // CORRECT: Event-driven approach
+   @Component({
+     template: `
+       <modus-accordion (expandedChange)="handleAccordionChange($event)">
+         <div slot="header">Header</div>
+         <div slot="body">Body</div>
+       </modus-accordion>
+     `,
+   })
+   export class MyComponent {
+     handleAccordionChange(event: CustomEvent): void {
+       // Handle the event for tracking, analytics, or side effects
+       // Don't try to control the accordion state
+       console.log('Accordion expanded:', event.detail);
+     }
+   }
+   ```
+
+3. **Use ViewChild for Programmatic Control**
+
+   ```typescript
+   // CORRECT: ViewChild-based control
+   readonly accordionRef = viewChild<ElementRef>('accordionRef');
+
+   toggleAccordion(): void {
+     const accordion = this.accordionRef()?.nativeElement;
+     if (accordion) {
+       accordion.expanded = !accordion.expanded;
+     }
+   }
+   ```
+
+### Multiple Accordions Pattern
+
+```typescript
+// CORRECT: Multiple accordions with independent state
+@Component({
+  template: `
+    <div class="space-x-2">
+      <modus-button (buttonClick)="openAllAccordions()">Open All</modus-button>
+      <modus-button (buttonClick)="closeAllAccordions()">Close All</modus-button>
+    </div>
+
+    @for (item of accordionData(); track item.id; let i = $index) {
+      <modus-accordion>
+        <modus-collapse
+          #accordionRefs
+          [collapse-id]="item.id"
+          [options]="{ title: item.title }"
+        >
+          <div slot="content">{{ item.content }}</div>
+        </modus-collapse>
+      </modus-accordion>
+    }
+  `,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class MultipleAccordionsComponent {
+  readonly accordionData = signal([
+    { id: 'acc1', title: 'Accordion 1', content: 'Content 1' },
+    { id: 'acc2', title: 'Accordion 2', content: 'Content 2' },
+    { id: 'acc3', title: 'Accordion 3', content: 'Content 3' },
+  ]);
+
+  readonly accordionRefs = viewChildren<ElementRef>('accordionRefs');
+
+  openAllAccordions(): void {
+    this.accordionRefs().forEach(ref => {
+      if (ref.nativeElement) {
+        ref.nativeElement.expanded = true;
+      }
+    });
+  }
+
+  closeAllAccordions(): void {
+    this.accordionRefs().forEach(ref => {
+      if (ref.nativeElement) {
+        ref.nativeElement.expanded = false;
+      }
+    });
+  }
+}
+```
+
+## Key Takeaways
+
+1. **Initial State is Fine**: Setting `[expanded]="true"` for initial state is perfectly acceptable
+2. **Avoid Real-time Sync**: Don't try to synchronize Angular state with Modus state in real-time
+3. **Use Events for Tracking**: Listen to `(expandedChange)` for analytics and side effects
+4. **Use ViewChild for Control**: When you need programmatic control, use ViewChild on `modus-collapse`
+5. **Trust the Component**: Modus Web Components handle their own state changes after initial render
+6. **Proper Structure**: Use `modus-accordion` with `modus-collapse` components and `options` for headers
+
+---
+
+**Remember: Modus accordion components support controlled initial state but avoid real-time synchronization. Use `expanded` for initial state, `(expandedChange)` for tracking, and ViewChild for programmatic control. This approach prevents conflicts and ensures reliable behavior.**

@@ -1,0 +1,130 @@
+---
+description: Correct implementation pattern for Modus Utility Panel in Angular
+globs: ["**/*.ts", "**/*.html", "**/*.scss", "**/*.css"]
+alwaysApply: false
+---
+
+## Correct Implementation Pattern Utility Panel
+
+### Demo Page Structure
+
+```typescript
+@Component({
+  selector: 'app-utility-panel-demo',
+  template: `
+    <!-- Main page content -->
+    <div class="p-6">
+      <modus-button (buttonClick)="togglePanel()">
+        {{ expanded() ? 'Close' : 'Open' }} Panel
+      </modus-button>
+
+      <div class="mt-4 bg-card p-4">Main workspace content here</div>
+    </div>
+
+    <!-- Panel OUTSIDE the content flow, at the end of the template -->
+    <modus-utility-panel
+      [expanded]="expanded()"
+      className="fixed-utility-panel"
+      position="right"
+      panelWidth="312px"
+      ariaLabel="Settings panel"
+    >
+      <div slot="header">
+        <div class="flex items-center justify-between w-full">
+          <div class="text-xl font-bold">Panel Title</div>
+          <modus-button
+            size="sm"
+            variant="borderless"
+            icon="close"
+            iconPosition="only"
+            ariaLabel="Close panel"
+            (buttonClick)="closePanel()"
+          />
+        </div>
+      </div>
+
+      <div class="space-y-4">
+        <!-- Panel body content -->
+      </div>
+
+      <div slot="footer" class="flex gap-2 justify-end">
+        <modus-button color="secondary" (buttonClick)="closePanel()"> Cancel </modus-button>
+        <modus-button color="primary" (buttonClick)="save()"> Save </modus-button>
+      </div>
+    </modus-utility-panel>
+  `,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class UtilityPanelDemoComponent {
+  readonly expanded = signal<boolean>(false);
+
+  togglePanel(): void {
+    this.expanded.set(!this.expanded());
+  }
+
+  closePanel(): void {
+    this.expanded.set(false);
+  }
+
+  save(): void {
+    // Save logic
+    this.closePanel();
+  }
+}
+```
+
+## What NOT to Do
+
+### Don't Nest Panel Inside Relative Containers
+
+```html
+<!-- WRONG: Causes layout issues -->
+<div class="relative">
+  <modus-utility-panel [expanded]="expanded()"> ... </modus-utility-panel>
+</div>
+```
+
+### Don't Forget the fixed-utility-panel className
+
+```html
+<!-- WRONG: Panel won't be full height or properly positioned -->
+<modus-utility-panel [expanded]="expanded()">
+
+<!-- CORRECT: Fixed positioning for overlay behavior -->
+<modus-utility-panel [expanded]="expanded()" className="fixed-utility-panel">
+```
+
+### Don't Place Panel in Middle of Template
+
+```html
+<!-- CORRECT: Panel at the END of the template -->
+<div class="header">...</div>
+<div class="content">...</div>
+<div class="footer">...</div>
+
+<modus-utility-panel [expanded]="expanded()" className="fixed-utility-panel"> </modus-utility-panel>
+```
+
+## Props Reference
+
+| Prop            | Type                | Default     | Description                              |
+| --------------- | ------------------- | ----------- | ---------------------------------------- |
+| `expanded`      | `boolean`           | `false`     | Controls panel visibility                |
+| `position`      | `'left' \| 'right'` | `'right'`   | Panel slide-in direction                 |
+| `panelWidth`    | `string`            | `undefined` | Panel width (e.g., '312px', '24rem')     |
+| `className`     | `string`            | `undefined` | CSS class applied to host element        |
+| `ariaLabel`     | `string`            | `undefined` | Accessibility label                      |
+| `pushContent`   | `boolean`           | `false`     | Push main content instead of overlay     |
+
+## Key Takeaways
+
+1. **Always use `className="fixed-utility-panel"`** for overlay panels
+2. **Place the panel at the END of the template**, outside content containers
+3. **Don't use `overflow-hidden`** on parent elements
+4. **Don't nest the panel** inside relative or positioned containers
+5. **Control state from your own buttons**, not from `panelToggle` events
+6. **Panel should be a sibling** of the main content, not a child
+
+---
+
+**Remember**: The utility panel is designed as a fixed overlay that slides in from the edge of the viewport. It must be positioned outside the normal document flow to work correctly.

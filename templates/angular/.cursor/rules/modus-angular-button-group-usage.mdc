@@ -1,0 +1,263 @@
+---
+description: Critical patterns for ModusButton usage inside ModusButtonGroup in Angular
+globs: ["**/*.ts", "**/*.html", "**/*.scss", "**/*.css"]
+alwaysApply: false
+---
+
+# Modus Button Group Usage in Angular
+
+Critical patterns for using ModusButton components inside ModusButtonGroup.
+
+## The Problem
+
+When `ModusButton` has default values for `variant` and `color`, these explicit values **override** the `ModusButtonGroup`'s settings. This causes all buttons to look the same regardless of the group's variant prop.
+
+## Root Cause
+
+The `modus-wc-button-group` web component uses `setAttribute()` to apply its `variant` and `color` to child buttons **after** they load. If Angular buttons have explicit defaults, they override the group's settings.
+
+## Correct Pattern
+
+### ModusButton Wrapper Component
+
+Do NOT set defaults for `variant` or `color` in the ModusButton wrapper:
+
+```typescript
+// CORRECT - No defaults, allows inheritance from button group
+@Component({
+  selector: 'modus-button',
+  template: `
+    <modus-wc-button
+      [color]="color() || null"
+      [variant]="variant() || null"
+      [size]="size()"
+      [disabled]="disabled()"
+      (buttonClick)="handleButtonClick($event)"
+    >
+      <ng-content />
+    </modus-wc-button>
+  `,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class ModusButtonComponent {
+  // No defaults for color and variant - allows group to control
+  readonly color = input<ButtonColor | undefined>();
+  readonly variant = input<ButtonVariant | undefined>();
+  readonly size = input<ButtonSize>('md');
+  readonly disabled = input<boolean>(false);
+
+  readonly buttonClick = output<MouseEvent | KeyboardEvent>();
+
+  handleButtonClick(event: CustomEvent<MouseEvent | KeyboardEvent>): void {
+    if (!this.disabled()) {
+      this.buttonClick.emit(event.detail);
+    }
+  }
+}
+```
+
+```typescript
+// WRONG - Defaults override button group settings
+@Component({
+  selector: 'modus-button',
+  // ...
+})
+export class ModusButtonComponent {
+  readonly color = input<ButtonColor>('primary'); // BAD: Will override group's color
+  readonly variant = input<ButtonVariant>('filled'); // BAD: Will override group's variant
+  // ...
+}
+```
+
+### Using ModusButton Standalone
+
+When using `ModusButton` outside a button group, explicitly set the props you need:
+
+```html
+<!-- Standalone button - explicitly set variant and color -->
+<modus-button variant="filled" color="primary" (buttonClick)="handleClick()">
+  Click Me
+</modus-button>
+```
+
+### Using ModusButton in a Button Group
+
+When inside a `ModusButtonGroup`, do NOT set variant/color on individual buttons:
+
+```html
+<!-- CORRECT - Group controls all button styling -->
+<modus-button-group variant="outlined" color="primary">
+  <modus-button (buttonClick)="handleClick1()">Button 1</modus-button>
+  <modus-button (buttonClick)="handleClick2()">Button 2</modus-button>
+  <modus-button (buttonClick)="handleClick3()">Button 3</modus-button>
+</modus-button-group>
+
+<!-- WRONG - Individual button props override group settings -->
+<modus-button-group variant="outlined" color="primary">
+  <modus-button variant="filled" (buttonClick)="handleClick1()">Button 1</modus-button>  <!-- BAD -->
+  <modus-button color="danger" (buttonClick)="handleClick2()">Button 2</modus-button>    <!-- BAD -->
+</modus-button-group>
+```
+
+## How ModusButtonGroup Works
+
+The web component applies styling to children via DOM manipulation:
+
+```typescript
+// Inside modus-wc-button-group.tsx
+private syncButtonStates(): void {
+  this.buttonElements = this.el.querySelectorAll('modus-wc-button');
+  this.setButtonAttribute('variant', this.variant);
+  this.setButtonAttribute('color', this.color || null);
+  this.setButtonAttribute('disabled', this.disabled ? 'true' : null);
+}
+```
+
+This only works if child buttons don't have explicit values that override the setAttribute calls.
+
+## Angular-Specific Implementation
+
+### Button Group Wrapper Component
+
+```typescript
+@Component({
+  selector: 'modus-button-group',
+  template: `
+    <modus-wc-button-group
+      [variant]="variant()"
+      [color]="color()"
+      [disabled]="disabled()"
+      [size]="size()"
+    >
+      <ng-content />
+    </modus-wc-button-group>
+  `,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class ModusButtonGroupComponent {
+  readonly variant = input<ButtonGroupVariant>('outlined');
+  readonly color = input<ButtonColor | undefined>();
+  readonly disabled = input<boolean>(false);
+  readonly size = input<ButtonSize>('md');
+}
+```
+
+### Usage in Demo Pages
+
+```typescript
+@Component({
+  template: `
+    <demo-example title="Button Group Variants">
+      <div class="space-y-4">
+        <div>
+          <div class="text-sm font-medium text-foreground mb-2">Outlined (default)</div>
+          <modus-button-group variant="outlined" color="primary">
+            <modus-button>Option 1</modus-button>
+            <modus-button>Option 2</modus-button>
+            <modus-button>Option 3</modus-button>
+          </modus-button-group>
+        </div>
+
+        <div>
+          <div class="text-sm font-medium text-foreground mb-2">Filled</div>
+          <modus-button-group variant="filled" color="primary">
+            <modus-button>Option 1</modus-button>
+            <modus-button>Option 2</modus-button>
+            <modus-button>Option 3</modus-button>
+          </modus-button-group>
+        </div>
+
+        <div>
+          <div class="text-sm font-medium text-foreground mb-2">Borderless</div>
+          <modus-button-group variant="borderless" color="primary">
+            <modus-button>Option 1</modus-button>
+            <modus-button>Option 2</modus-button>
+            <modus-button>Option 3</modus-button>
+          </modus-button-group>
+        </div>
+      </div>
+    </demo-example>
+  `,
+})
+export class ButtonGroupDemoComponent {}
+```
+
+### Selection State Pattern
+
+```typescript
+@Component({
+  template: `
+    <modus-button-group variant="outlined" color="primary">
+      @for (option of options(); track option.value) {
+        <modus-button
+          [class.bg-primary]="selectedValue() === option.value"
+          [class.text-white]="selectedValue() === option.value"
+          (buttonClick)="selectOption(option.value)"
+        >
+          {{ option.label }}
+        </modus-button>
+      }
+    </modus-button-group>
+  `,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class ButtonGroupSelectionComponent {
+  readonly options = signal([
+    { value: 'option1', label: 'Option 1' },
+    { value: 'option2', label: 'Option 2' },
+    { value: 'option3', label: 'Option 3' },
+  ]);
+
+  readonly selectedValue = signal<string | null>(null);
+
+  selectOption(value: string): void {
+    this.selectedValue.set(value);
+  }
+}
+```
+
+## Quick Reference
+
+| Context                        | variant                | color                  | Notes                            |
+| ------------------------------ | ---------------------- | ---------------------- | -------------------------------- |
+| Standalone button              | Set explicitly         | Set explicitly         | Button controls its own style    |
+| Inside button group            | Do NOT set             | Do NOT set             | Group controls all button styles |
+| Mixed (some grouped, some not) | Set only on standalone | Set only on standalone | Follow context rules             |
+
+## Testing Checklist
+
+- [ ] Outlined variant shows bordered buttons with transparent background
+- [ ] Filled variant shows solid colored buttons
+- [ ] Borderless variant shows text-only buttons without borders
+- [ ] Color prop applies consistently to all buttons in group
+- [ ] Individual buttons don't override group styling
+- [ ] Selection state works correctly (if applicable)
+- [ ] Disabled state propagates from group to buttons
+
+## Common Mistakes to Avoid
+
+```typescript
+// WRONG: Setting defaults in component
+readonly color = input<ButtonColor>('primary');
+readonly variant = input<ButtonVariant>('filled');
+
+// CORRECT: No defaults, use undefined
+readonly color = input<ButtonColor | undefined>();
+readonly variant = input<ButtonVariant | undefined>();
+```
+
+```html
+<!-- WRONG: Setting props on buttons inside group -->
+<modus-button-group variant="outlined">
+  <modus-button variant="filled">Button</modus-button>
+</modus-button-group>
+
+<!-- CORRECT: Let group control styling -->
+<modus-button-group variant="outlined">
+  <modus-button>Button</modus-button>
+</modus-button-group>
+```
+
+---
+
+**Remember: When using buttons inside a button group, never set `variant` or `color` on individual buttons. The group controls all button styling through DOM manipulation, and explicit values on buttons will override the group's settings.**

@@ -1,0 +1,49 @@
+---
+description: Comprehensive guide for using the Modus Navbar component in Angular
+globs: ["**/*.ts", "**/*.html", "**/*.scss", "**/*.css"]
+alwaysApply: true
+---
+
+# Modus Navbar Usage - Short
+
+Critical patterns for Modus Navbar component in Angular.
+
+## Key Rules
+
+- **Set both `search` and `searchInput` in visibility** - Required for search expansion
+- **Use signals for navbar state** - Track searchInputOpen, menuOpen states
+- **Two-way bind search and menu states** - Bind property and handle event
+- **Explicitly set button visibility** - Buttons default to hidden except user
+- **Always provide userCard** - Required input for navbar
+- **Handle correct event types** - Clicks = `MouseEvent | KeyboardEvent`, state changes = `boolean`
+
+## Search Expansion Pattern
+
+```typescript
+<modus-navbar
+  [userCard]="userCard"
+  [visibility]="{ user: true, search: true, searchInput: true }"
+  [searchInputOpen]="searchInputOpen()"
+  (searchClick)="searchInputOpen.set(!searchInputOpen())"
+  (searchInputOpenChange)="searchInputOpen.set($event)"
+/>
+```
+
+## State Management
+
+```typescript
+readonly searchInputOpen = signal<boolean>(false);
+readonly mainMenuOpen = signal<boolean>(false);
+
+handleSearchClick(event: MouseEvent | KeyboardEvent): void {
+  this.searchInputOpen.set(!this.searchInputOpen());
+}
+
+handleMainMenuOpenChange(event: boolean): void {
+  this.mainMenuOpen.set(event);
+}
+```
+
+## Reference
+
+For detailed patterns and event handling, fetch the full rule: `modus-angular-navbar-usage`

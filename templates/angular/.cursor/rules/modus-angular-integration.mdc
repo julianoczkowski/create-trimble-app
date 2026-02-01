@@ -1,0 +1,1096 @@
+---
+description: Integration patterns for Modus Web Components with Angular standalone wrapper components
+globs: ["**/*.ts", "**/*.html", "**/*.scss", "**/*.css"]
+alwaysApply: false
+---
+
+# Modus Web Components Angular Wrappers
+
+Comprehensive guide for Angular standalone wrapper components that wrap Modus Web Components, focusing on signal-based APIs, TypeScript interfaces, and Tailwind CSS integration.
+
+## Table of Contents
+
+1. [Overview](#overview)
+2. [Wrapper Component Pattern](#wrapper-component-pattern)
+3. [Signal-Based API](#signal-based-api)
+4. [Component Structure](#component-structure)
+5. [Icon Integration](#icon-integration)
+6. [Styling Guidelines](#styling-guidelines)
+7. [Best Practices](#best-practices)
+   - [Type Verification - Critical Rules](#6-type-verification---critical-rules)
+
+---
+
+## Overview
+
+### What Are These Components?
+
+This application uses **Angular standalone wrapper components** that wrap Modus Web Components (`modus-wc-*`). These wrappers:
+
+- Provide **Angular-native APIs** using signals (`input()`, `output()`)
+- Offer **TypeScript type safety** with exported interfaces
+- Maintain **consistency** across the application
+- Enable **future flexibility** to swap implementations
+- Follow **Angular 20+** best practices with modern control flow
+
+### Available Wrapper Components
+
+All wrapper components are located in `src/app/components/` and exported from `src/app/components/index.ts`:
+
+```typescript
+import {
+  ModusButtonComponent,
+  ModusAlertComponent,
+  ModusIconComponent,
+  ModusTextInputComponent,
+  ModusSelectComponent,
+  // ... and many more
+} from '@/app/components';
+```
+
+**Reference**: See `src/app/components/index.ts` for the complete list of available components.
+
+---
+
+## Wrapper Component Pattern
+
+### Standard Component Structure
+
+All wrapper components follow this consistent pattern:
+
+```typescript
+import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ModusWcButton } from '@trimble-oss/moduswebcomponents-angular';
+
+/**
+ * Type definitions for component props
+ */
+export type ButtonColor = 'primary' | 'secondary' | 'tertiary' | 'warning' | 'danger';
+export type ButtonVariant = 'filled' | 'outlined' | 'borderless';
+export type ButtonSize = 'xs' | 'sm' | 'md' | 'lg';
+
+/**
+ * Props interface (optional but recommended for documentation)
+ */
+export interface ModusButtonProps {
+  color?: ButtonColor;
+  variant?: ButtonVariant;
+  size?: ButtonSize;
+  disabled?: boolean;
+  // ... other props
+}
+
+@Component({
+  selector: 'modus-button', // ← Users invoke with <modus-button>, NOT <modus-wc-button>
+  standalone: true,
+  imports: [CommonModule, ModusWcButton],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  template: `
+    <!-- Inside the wrapper, we use modus-wc-button -->
+    <modus-wc-button
+      [color]="color()"
+      [variant]="variant()"
+      [size]="size()"
+      [disabled]="disabled()"
+      (buttonClick)="handleButtonClick($event)"
+    >
+      <ng-content></ng-content>
+    </modus-wc-button>
+  `,
+})
+export class ModusButtonComponent {
+  // Signal-based inputs
+  readonly color = input<ButtonColor>('primary');
+  readonly variant = input<ButtonVariant>('filled');
+  readonly size = input<ButtonSize>('md');
+  readonly disabled = input<boolean>(false);
+
+  // Signal-based output
+  readonly buttonClick = output<MouseEvent | KeyboardEvent>();
+
+  // Event handler
+  handleButtonClick(event: CustomEvent<MouseEvent | KeyboardEvent>): void {
+    if (!this.disabled()) {
+      this.buttonClick.emit(event.detail);
+    }
+  }
+}
+```
+
+**Important**:
+
+- **Users invoke wrapper components** with the wrapper selector: `<modus-button>`, `<modus-alert>`, `<modus-icon>`, etc.
+- **Inside wrapper templates**, the underlying web component is used: `<modus-wc-button>`, `<modus-wc-alert>`, `<modus-wc-icon>`, etc.
+- **Never use `<modus-wc-*>` directly** in application templates - always use the wrapper components.
+
+### Key Characteristics
+
+1. **Standalone Components**: All wrappers use `standalone: true`
+2. **Signal-Based API**: Use `input()` and `output()` instead of `@Input()` and `@Output()`
+3. **OnPush Change Detection**: Use `ChangeDetectionStrategy.OnPush` for performance
+4. **Type Exports**: Export types and interfaces for reuse
+5. **Direct Import**: Import Modus Web Components from `@trimble-oss/moduswebcomponents-angular`
+
+---
+
+## Signal-Based API
+
+### Input Signals
+
+Use `input()` for component properties:
+
+```typescript
+// Required input
+readonly alertTitle = input.required<string>();
+
+// Optional input with default
+readonly color = input<ButtonColor>('primary');
+
+// Optional input without default
+readonly icon = input<string | undefined>();
+
+// Optional callback input
+readonly onButtonClick = input<(() => void) | undefined>();
+```
+
+### Output Signals
+
+Use `output()` for component events:
+
+```typescript
+// Event output
+readonly buttonClick = output<MouseEvent | KeyboardEvent>();
+
+// Void event output
+readonly dismiss = output<void>();
+```
+
+### Template Usage
+
+```html
+<!-- ✅ CORRECT: Use wrapper component selectors -->
+<modus-button [color]="color()" [disabled]="disabled()" (buttonClick)="handleClick($event)">
+  Click Me
+</modus-button>
+
+<modus-alert alertTitle="Success" variant="success" [dismissible]="true" />
+
+<modus-icon name="add" size="md" [decorative]="false" ariaLabel="Add item" />
+```
+
+**Important**:
+
+- Always use **wrapper component selectors** (`<modus-button>`, `<modus-alert>`, etc.) in your templates
+- Never use the underlying web component selectors (`<modus-wc-button>`, `<modus-wc-alert>`, etc.) directly
+- Always call signal functions with `()` in templates: `color()`, `disabled()`, etc.
+
+**Reference**: See `src/app/components/theme-demo.component.ts` for complete usage examples.
+
+---
+
+## Component Structure
+
+### File Organization
+
+Each wrapper component follows this structure:
+
+```
+src/app/components/
+  ├── modus-button.component.ts    # Component implementation
+  ├── modus-alert.component.ts     # Another component
+  └── index.ts                     # Exports all components
+```
+
+### Component Template Pattern
+
+All wrapper templates follow this pattern (inside the wrapper component):
+
+1. **Wrap the Modus Web Component**: Use `<modus-wc-*>` internally
+2. **Bind Signal Inputs**: Use `[prop]="signal()"` syntax
+3. **Handle Events**: Use `(event)="handler($event)"`
+4. **Project Content**: Use `<ng-content>` for slots
+5. **Use Modern Control Flow**: Use `@if`, `@for`, `@switch` (Angular 17+)
+
+### Usage Pattern: Application Templates vs. Wrapper Templates
+
+**In Application Templates** (what you write in your components):
+
+```html
+<!-- ✅ CORRECT: Use wrapper component selectors -->
+<modus-button
+  [color]="color()"
+  [size]="size()"
+  icon="add"
+  iconPosition="left"
+  (buttonClick)="handleClick($event)"
+>
+  Click Me
+</modus-button>
+```
+
+**Inside Wrapper Component Templates** (internal implementation):
+
+```typescript
+template: `
+  <!-- Inside wrapper: use modus-wc-button -->
+  <modus-wc-button
+    [color]="color()"
+    [size]="size()"
+    (buttonClick)="handleButtonClick($event)"
+  >
+    @if (icon() && iconPosition() === 'left') {
+      <i class="modus-icons mr-2">{{ icon() }}</i>
+    }
+    <ng-content></ng-content>
+    @if (icon() && iconPosition() === 'right') {
+      <i class="modus-icons ml-2">{{ icon() }}</i>
+    }
+    @if (icon() && iconPosition() === 'only') {
+      <i class="modus-icons">{{ icon() }}</i>
+    }
+  </modus-wc-button>
+`,
+```
+
+**Key Distinction:**
+
+- **Application code**: Always use `<modus-button>`, `<modus-alert>`, `<modus-icon>`, etc.
+- **Wrapper implementation**: Uses `<modus-wc-button>`, `<modus-wc-alert>`, `<modus-wc-icon>`, etc.
+
+**Reference**:
+
+- See `src/app/components/modus-button.component.ts` for wrapper implementation
+- See `src/app/components/theme-demo.component.ts` for application usage examples
+
+---
+
+## Icon Integration
+
+### Using Modus Icons in Templates
+
+Use the `<modus-icon>` wrapper component or direct `<i>` tags:
+
+```html
+<!-- Using modus-icon wrapper component -->
+<modus-icon name="add" size="md" variant="outlined" [decorative]="false" ariaLabel="Add item" />
+
+<!-- Using direct icon tag (for simple cases) -->
+<i class="modus-icons mr-2">add</i>
+```
+
+### Icon Spacing with Tailwind
+
+Always use Tailwind classes for icon spacing, never inline styles:
+
+```html
+<!-- ✅ CORRECT: Use Tailwind classes -->
+<i class="modus-icons mr-2">add</i>
+<i class="modus-icons ml-2">chevron-right</i>
+
+<!-- ❌ WRONG: Inline styles -->
+<i class="modus-icons" [style.margin-right.px]="8">add</i>
+```
+
+### Icon Names
+
+- Use **kebab-case** for icon names (e.g., `check_circle`, `user_add`)
+- Refer to `data/modusIcons.ts` for all valid icon names
+- Never use other icon libraries (Font Awesome, Material Icons, etc.)
+
+**Reference**: See `src/app/components/modus-icon.component.ts` for the icon wrapper implementation.
+
+---
+
+## Styling Guidelines
+
+### Design System Colors
+
+Always use design system Tailwind classes from `src/styles.css`:
+
+```html
+<!-- ✅ CORRECT: Design system colors -->
+<div class="bg-background text-foreground">
+  <div class="bg-card text-card-foreground border-default">Content</div>
+</div>
+
+<!-- ❌ WRONG: Generic Tailwind colors -->
+<div class="bg-blue-500 text-white">Content</div>
+```
+
+### Border Utilities
+
+Use custom border utilities for Tailwind v4 compatibility:
+
+```html
+<!-- ✅ CORRECT: Custom border utilities -->
+<div class="border-default border-primary">
+  <div class="border-thick-success">
+    <div class="border-bottom-default">
+      <!-- ❌ WRONG: Tailwind border colors -->
+      <div class="border border-blue-500"></div>
+    </div>
+  </div>
+</div>
+```
+
+### Opacity Utilities
+
+Use custom opacity utilities instead of Tailwind's `/80` syntax:
+
+```html
+<!-- ✅ CORRECT: Custom opacity utilities -->
+<div class="text-foreground-80 bg-primary-20">
+  <!-- ❌ WRONG: Tailwind opacity syntax -->
+  <div class="text-foreground/80 bg-primary/20"></div>
+</div>
+```
+
+### Inline Styles
+
+**Never use inline styles** except for truly dynamic values:
+
+```html
+<!-- ❌ WRONG: Static inline styles -->
+<div style="padding: 1rem; margin: 0.5rem;">
+  <!-- ✅ CORRECT: Tailwind classes -->
+  <div class="p-4 m-2">
+    <!-- ✅ CORRECT: Dynamic values only -->
+    <div [style.width.px]="dynamicWidth"></div>
+  </div>
+</div>
+```
+
+**Reference**: See `src/styles.css` for all available design system utilities.
+
+---
+
+## Best Practices
+
+### 1. Component Patterns
+
+- ✅ **Use signals** (`input()`, `output()`) for all component APIs
+- ✅ **Export types and interfaces** for reuse across components
+- ✅ **Use OnPush change detection** for performance
+- ✅ **Keep components focused** - one responsibility per component
+- ✅ **Document with JSDoc** - provide examples in component doc comments
+
+### 2. Template Patterns
+
+- ✅ **Use modern control flow** (`@if`, `@for`, `@switch`)
+- ✅ **Bind to signals** with `()` syntax: `[prop]="signal()"`
+- ✅ **Use Tailwind classes** for all styling
+- ✅ **Project content** with `<ng-content>` for flexibility
+- ❌ **Never use inline styles** (except dynamic values)
+- ❌ **Never use old control flow** (`*ngIf`, `*ngFor`, etc.)
+
+### 3. Event Handling
+
+```typescript
+// ✅ CORRECT: Handle events properly
+handleButtonClick(event: CustomEvent<MouseEvent | KeyboardEvent>): void {
+  if (!this.disabled()) {
+    // Extract detail from CustomEvent
+    const actualEvent = event.detail;
+    this.buttonClick.emit(actualEvent);
+
+    // Call optional callback
+    const callback = this.onButtonClick();
+    if (callback) {
+      callback();
+    }
+  }
+}
+```
+
+### 4. Accessibility
+
+- ✅ **Always provide `ariaLabel`** for icon-only buttons or interactive elements without visible text
+- ✅ **Use semantic HTML** where possible
+- ✅ **Support keyboard navigation** - Modus components handle this, but verify in wrappers
+- ✅ **Test with screen readers** for critical components
+
+### 5. Type Safety
+
+- ✅ **Export type definitions** for component props
+- ✅ **Use TypeScript interfaces** for complex props
+- ✅ **Type event outputs** correctly: `output<MouseEvent>()`
+- ✅ **Use strict null checks** for optional props: `input<string | undefined>()`
+
+### 6. Type Verification - Critical Rules
+
+⚠️ **ALWAYS verify TypeScript types from `@trimble-oss/moduswebcomponents` package before using properties.**
+
+**Common Pitfalls to Avoid**:
+
+#### ❌ Don't Assume React Examples Match Angular Types
+
+React examples may show properties that don't exist in TypeScript interfaces:
+
+```typescript
+// ❌ WRONG: Assumed IBreadcrumb has 'current' property
+{ label: 'Home', url: '/', current: true } // ❌ Type error!
+
+// ✅ CORRECT: IBreadcrumb only has 'label' and optional 'url'
+{ label: 'Home', url: '/' } // ✅ Valid
+```
+
+**Always verify the actual type**:
+
+```typescript
+import type { IBreadcrumb } from '@trimble-oss/moduswebcomponents';
+
+// IBreadcrumb interface:
+interface IBreadcrumb {
+  label: string; // Required
+  url?: string; // Optional
+  // No 'current' property exists!
+}
+```
+
+#### ❌ Don't Assume Multi-Select Changes Value Type
+
+Even in multi-select mode, the `value` property remains a `string`, not `string[]`:
+
+```typescript
+// ❌ WRONG: Assumed multi-select means value is string[]
+<modus-autocomplete
+  [multiSelect]="true"
+  [value]="selectedItems()" // ❌ Type error! value expects string
+/>
+
+// ✅ CORRECT: Don't bind value for multi-select, let component manage state
+<modus-autocomplete
+  [multiSelect]="true"
+  [items]="items()" // items with selected: true handle multi-select
+  (itemSelect)="handleSelection($event)"
+/>
+```
+
+#### ❌ Don't Add Properties Not in Type Definitions
+
+Check the actual interface before using properties:
+
+```typescript
+// ❌ WRONG: Assumed IAutocompleteNoResults has 'severity'
+const noResults = {
+  label: 'No results',
+  subLabel: 'Try again',
+  severity: 'info', // ❌ Property doesn't exist!
+};
+
+// ✅ CORRECT: Check actual interface
+interface IAutocompleteNoResults {
+  label: string;
+  subLabel: string;
+  // No 'severity' property!
+}
+```
+
+#### ✅ Verification Checklist
+
+Before using any property or interface from Modus components:
+
+1. **Check the actual TypeScript type**:
+
+   ```typescript
+   import type {
+     IBreadcrumb,
+     IAutocompleteItem,
+     IAutocompleteNoResults,
+   } from '@trimble-oss/moduswebcomponents';
+   ```
+
+2. **Inspect existing implementations** in the codebase:
+
+   ```typescript
+   // Look at src/app/components/theme-demo.component.ts for examples
+   breadcrumbItems: IBreadcrumb[] = [
+     { label: 'Home', url: '/home' },
+     { label: 'Components' }, // No 'current' property
+   ];
+   ```
+
+3. **Read the wrapper component's interface** in `src/app/components/`:
+
+   ```typescript
+   // Check src/app/components/modus-breadcrumbs.component.ts
+   // to see the actual props interface
+   ```
+
+4. **Verify component documentation** - don't rely solely on React examples
+
+**Key Principle**: The TypeScript compiler will catch these errors, but always verify types from the source package (`@trimble-oss/moduswebcomponents`) rather than assuming React examples match Angular types exactly.
+
+### 7. Angular Signals - Common Pitfalls
+
+⚠️ **Always pass values directly to `signal()`, not functions.**
+
+#### ❌ Don't Use IIFE Pattern with `signal()`
+
+The `signal()` function expects a value, not a function. Using an IIFE (Immediately Invoked Function Expression) pattern inside `signal()` will cause TypeScript parsing errors:
+
+```typescript
+// ❌ WRONG: Passing a function to signal()
+readonly minDate = signal<string>(() => {
+  const today = new Date();
+  return today.toISOString().split('T')[0];
+});
+// Error: Argument of type '() => string' is not assignable to parameter of type 'string'
+
+// ❌ ALSO WRONG: IIFE syntax confuses the parser
+readonly minDate = signal<string>(() => {
+  const today = new Date();
+  return today.toISOString().split('T')[0];
+}()); // ← Still causes parsing errors!
+// Error: Expected "=>" but found ")"
+// Error: TS2345: Argument of type '() => string' is not assignable to parameter of type 'string'
+
+// ✅ CORRECT: Use helper methods to compute values
+private getTodayDate(): string {
+  const today = new Date();
+  return today.toISOString().split('T')[0];
+}
+readonly minDate = signal<string>(this.getTodayDate()); // ✅ Clean and readable
+
+// ✅ ALSO CORRECT: Compute inline if simple
+readonly today = signal<string>(new Date().toISOString().split('T')[0]);
+```
+
+#### ❌ Don't Omit Event Parameters
+
+Event handlers must accept the event parameter even if you don't use it:
+
+```typescript
+// ❌ WRONG: Missing event parameter
+handleCheckboxChange(): void {
+  this.featureEnabled.update((current) => !current);
+}
+// Error: Expected 1 arguments, but got 0
+
+// ✅ CORRECT: Accept the event parameter
+handleCheckboxChange(event: InputEvent): void {
+  this.featureEnabled.update((current) => !current);
+  // You can use the event if needed, or ignore it
+}
+```
+
+#### ✅ Signal Initialization Patterns
+
+**Pattern 1: Direct Value**
+
+```typescript
+readonly count = signal<number>(0);
+readonly name = signal<string>('John');
+readonly isActive = signal<boolean>(false);
+```
+
+**Pattern 2: Computed Initial Value (Helper Method)**
+
+```typescript
+private getTodayDate(): string {
+  const date = new Date();
+  return date.toISOString().split('T')[0];
+}
+readonly today = signal<string>(this.getTodayDate()); // ✅ Use helper method
+```
+
+**Pattern 3: Helper Function**
+
+```typescript
+private initializeDate(): string {
+  const today = new Date();
+  return today.toISOString().split('T')[0];
+}
+readonly minDate = signal<string>(this.initializeDate());
+```
+
+**Pattern 4: Computed Signal (for derived values)**
+
+```typescript
+readonly firstName = signal<string>('John');
+readonly lastName = signal<string>('Doe');
+readonly fullName = computed(() => `${this.firstName()} ${this.lastName()}`);
+```
+
+### 8. Modus Divider Component - Critical Usage Rules
+
+⚠️ **The divider component requires both property AND attribute bindings in the wrapper to work correctly.**
+
+#### ✅ CORRECT: How to Use Divider Component
+
+**Always use the Angular wrapper component (`modus-divider`), not the web component directly:**
+
+```html
+<!-- ✅ CORRECT: Use Angular wrapper with property bindings -->
+<modus-divider [orientation]="'horizontal'" />
+
+<!-- ✅ CORRECT: With color -->
+<modus-divider [orientation]="'horizontal'" color="primary" />
+
+<!-- ✅ CORRECT: With content -->
+<modus-divider [orientation]="'horizontal'" content="OR" />
+
+<!-- ✅ CORRECT: Vertical divider in flex container -->
+<div class="flex items-stretch gap-4 min-h-[60px]">
+  <div>Left Content</div>
+  <modus-divider [orientation]="'vertical'" />
+  <div>Right Content</div>
+</div>
+```
+
+#### ❌ INCORRECT: Don't Use Web Component Directly
+
+**Never use `modus-wc-divider` directly in application code:**
+
+```html
+<!-- ❌ WRONG: Don't use web component directly -->
+<modus-wc-divider orientation="horizontal"></modus-wc-divider>
+```
+
+**Why?**: The Angular wrapper (`modus-divider`) includes critical fixes for attribute binding that ensure the web component receives the correct attributes. Using the web component directly bypasses these fixes.
+
+#### ✅ Horizontal Divider Requirements
+
+Horizontal dividers work in any vertical layout:
+
+```html
+<!-- ✅ CORRECT: Horizontal divider in vertical flex container -->
+<div class="flex flex-col gap-2">
+  <p>Content above</p>
+  <modus-divider [orientation]="'horizontal'" />
+  <p>Content below</p>
+</div>
+
+<!-- ✅ CORRECT: Horizontal divider with color -->
+<modus-divider [orientation]="'horizontal'" color="primary" />
+
+<!-- ✅ CORRECT: Horizontal divider with content -->
+<modus-divider [orientation]="'horizontal'" content="OR" />
+```
+
+#### ✅ Vertical Divider Requirements
+
+**Critical**: Vertical dividers need a flex container with `items-stretch`:
+
+```html
+<!-- ✅ CORRECT: Vertical divider with items-stretch -->
+<div class="flex items-stretch gap-4 min-h-[60px]">
+  <div class="flex items-center">Left</div>
+  <modus-divider [orientation]="'vertical'" />
+  <div class="flex items-center">Right</div>
+</div>
+
+<!-- ✅ CORRECT: Vertical divider with explicit height -->
+<div class="flex items-stretch gap-4 min-h-[120px]">
+  <div class="flex-1">Left Section</div>
+  <modus-divider [orientation]="'vertical'" />
+  <div class="flex-1">Right Section</div>
+</div>
+```
+
+#### ❌ Vertical Divider Mistakes
+
+```html
+<!-- ❌ WRONG: Missing items-stretch -->
+<div class="flex items-center gap-4">
+  <div>Left</div>
+  <modus-divider [orientation]="'vertical'" />
+  <div>Right</div>
+</div>
+<!-- Vertical divider won't be visible - needs items-stretch -->
+
+<!-- ❌ WRONG: No explicit height -->
+<div class="flex gap-4">
+  <div>Left</div>
+  <modus-divider [orientation]="'vertical'" />
+  <div>Right</div>
+</div>
+<!-- Vertical divider might not have height to render -->
+
+<!-- ❌ WRONG: items-center prevents stretching -->
+<div class="flex items-center gap-4 min-h-[60px]">
+  <div>Left</div>
+  <modus-divider [orientation]="'vertical'" />
+  <div>Right</div>
+</div>
+<!-- items-center doesn't allow divider to stretch -->
+```
+
+#### ✅ Key Rules for Divider Visibility
+
+1. **Always use `modus-divider` (Angular wrapper), not `modus-wc-divider`**
+2. **Horizontal dividers**: Work in any vertical layout - no special requirements
+3. **Vertical dividers**: **MUST** use `items-stretch` in flex container:
+   - ✅ `class="flex items-stretch gap-4 min-h-[60px]"`
+   - ❌ `class="flex items-center gap-4"` (won't work)
+4. **Vertical dividers**: **MUST** have explicit height on parent:
+   - ✅ `min-h-[60px]` or `min-h-[120px]`
+   - ❌ No height specified (divider might not render)
+5. **Use property bindings**: `[orientation]="'horizontal'"` (not string attributes)
+
+#### Component Properties
+
+```typescript
+// All properties use signal-based API
+<modus-divider
+  [orientation]="'horizontal' | 'vertical'"  // Required: specifies divider direction
+  [color]="'primary' | 'secondary' | 'tertiary' | 'success' | 'warning' | 'danger' | 'high-contrast'"  // Optional
+  [content]="string"  // Optional: text to display on divider
+  [position]="'start' | 'center' | 'end'"  // Optional: where content appears (default: 'center')
+  [responsive]="boolean"  // Optional: responsive behavior (default: true)
+/>
+```
+
+#### Wrapper Component Implementation Details
+
+**Why the wrapper needs both property and attribute bindings:**
+
+The divider web component reads values from HTML attributes, not just properties. The wrapper component (`modus-divider`) includes both bindings to ensure attributes are set:
+
+```typescript
+// In modus-divider.component.ts template:
+<modus-wc-divider
+  [color]="color()"           // Property binding
+  [orientation]="orientation()" // Property binding
+  [attr.color]="color()"       // Attribute binding (critical!)
+  [attr.orientation]="orientation()" // Attribute binding (critical!)
+/>
+```
+
+**This dual binding is essential** - without attribute bindings, the web component won't receive the values and dividers won't be visible.
+
+#### Troubleshooting
+
+**Problem**: Dividers not visible
+
+- ✅ Check you're using `modus-divider` (wrapper), not `modus-wc-divider`
+- ✅ For vertical: Ensure parent has `items-stretch` and explicit height (`min-h-[...]`)
+- ✅ For horizontal: Works in any vertical layout
+
+**Problem**: Vertical divider not stretching
+
+- ✅ Use `items-stretch` (not `items-center`)
+- ✅ Add `min-h-[60px]` or similar to parent container
+- ✅ Ensure parent is a flex container (`flex`)
+
+**Problem**: Divider with content not showing text
+
+- ✅ Check `content` property is set: `[content]="'OR'"`
+- ✅ Check `position` is set if needed: `[position]="'center'"`
+
+### 9. Component Documentation
+
+All wrapper components should include:
+
+````typescript
+/**
+ * Angular wrapper for the Modus Web Component [component name].
+ *
+ * Provides a typed, signal-driven API that wraps the underlying
+ * Modus Web Component while maintaining full compatibility.
+ *
+ * @example
+ * ```html
+ * <modus-button color="primary" size="md">
+ *   Click Me
+ * </modus-button>
+ * ```
+ */
+@Component({ ... })
+export class ModusButtonComponent { ... }
+````
+
+---
+
+## Real-World Examples
+
+### Example 1: Simple Button Wrapper
+
+**Wrapper Implementation**: `src/app/components/modus-button.component.ts`
+
+```typescript
+@Component({
+  selector: 'modus-button', // ← Application uses <modus-button>
+  standalone: true,
+  imports: [CommonModule, ModusWcButton],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  template: `
+    <modus-wc-button <!-- ← Wrapper uses <modus-wc-button>
+      internally --> [color]="color()" [variant]="variant()" [size]="size()" [disabled]="disabled()"
+      (buttonClick)="handleButtonClick($event)" >
+      <ng-content></ng-content>
+    </modus-wc-button>
+  `,
+})
+export class ModusButtonComponent {
+  readonly color = input<ButtonColor>('primary');
+  readonly variant = input<ButtonVariant>('filled');
+  readonly size = input<ButtonSize>('md');
+  readonly disabled = input<boolean>(false);
+  readonly buttonClick = output<MouseEvent | KeyboardEvent>();
+
+  handleButtonClick(event: CustomEvent<MouseEvent | KeyboardEvent>): void {
+    if (!this.disabled()) {
+      this.buttonClick.emit(event.detail);
+    }
+  }
+}
+```
+
+**Application Usage** (in your component templates):
+
+```html
+<!-- ✅ CORRECT: Use the wrapper selector -->
+<modus-button [color]="'primary'" [size]="'md'" (buttonClick)="handleClick($event)">
+  Click Me
+</modus-button>
+
+<!-- ❌ WRONG: Never use modus-wc-button directly -->
+<modus-wc-button [color]="'primary'">Click Me</modus-wc-button>
+```
+
+**Reference**: See `src/app/components/theme-demo.component.ts` for real-world usage examples.
+
+### Example 2: Alert with Content Projection
+
+**Wrapper Implementation**: `src/app/components/modus-alert.component.ts`
+
+**Application Usage**:
+
+```html
+<!-- ✅ CORRECT: Use <modus-alert> in your templates -->
+<modus-alert
+  alertTitle="Success"
+  alertDescription="Changes saved successfully."
+  variant="success"
+  [dismissible]="true"
+  (dismiss)="handleDismiss()"
+/>
+```
+
+```typescript
+@Component({
+  selector: 'modus-alert',
+  standalone: true,
+  imports: [CommonModule, ModusWcAlert],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  template: `
+    <modus-wc-alert
+      [alertTitle]="alertTitle()"
+      [variant]="variant()"
+      [dismissible]="dismissible()"
+      (dismissClick)="handleDismissClick()"
+    >
+      <ng-content select="[slot='content']" slot="content" />
+      <ng-content select="[slot='button']" slot="button" />
+    </modus-wc-alert>
+  `,
+})
+export class ModusAlertComponent {
+  readonly alertTitle = input.required<string>();
+  readonly variant = input<'error' | 'info' | 'success' | 'warning'>('info');
+  readonly dismissible = input<boolean>(false);
+  readonly dismiss = output<void>();
+
+  handleDismissClick(): void {
+    this.dismiss.emit();
+  }
+}
+```
+
+### Example 3: Icon Component with Computed Properties
+
+**Wrapper Implementation**: `src/app/components/modus-icon.component.ts`
+
+**Application Usage**:
+
+```html
+<!-- ✅ CORRECT: Use <modus-icon> in your templates -->
+<modus-icon name="add" size="md" variant="outlined" [decorative]="false" ariaLabel="Add item" />
+```
+
+```typescript
+@Component({
+  selector: 'modus-icon',
+  standalone: true,
+  imports: [CommonModule, ModusWcIcon],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  template: `
+    <modus-wc-icon
+      [name]="name()"
+      [size]="size()"
+      [decorative]="decorative()"
+      [attr.aria-label]="computedAriaLabel()"
+    />
+  `,
+})
+export class ModusIconComponent {
+  readonly name = input.required<string>();
+  readonly size = input<ModusIconSize>('md');
+  readonly decorative = input<boolean>(true);
+  readonly ariaLabel = input<string | undefined>();
+
+  // Computed property for conditional aria-label
+  readonly computedAriaLabel = computed(() =>
+    this.decorative() ? undefined : this.ariaLabel() ?? `${this.name()} icon`
+  );
+}
+```
+
+---
+
+### Example 4: Navbar with Search Input Expansion
+
+**Wrapper Implementation**: `src/app/components/modus-navbar.component.ts`
+
+**Application Usage**: Managing navbar search input expansion requires proper state management.
+
+**⚠️ Important: Navbar Placement**
+The navbar **MUST** be placed in `app.html` (Angular component template), **NOT** in `index.html` (static HTML file). This is because:
+
+- `index.html` is static HTML that only loads the Angular app via `<app-root></app-root>`
+- Angular bindings (`[property]`, `(event)`), signals, and component state only work in component templates
+- The navbar needs access to component properties, methods, and reactive state
+- Placing it in `index.html` would break all Angular functionality (bindings, events, state management)
+
+```html
+<modus-navbar
+  [userCard]="userCard"
+  [searchInputOpen]="searchInputOpen()"
+  [visibility]="{
+    user: true,
+    search: true,
+    searchInput: true,
+    help: false,
+    apps: false,
+    notifications: false,
+    mainMenu: false
+  }"
+  (searchClick)="onSearchClick($event)"
+  (searchInputOpenChange)="onSearchInputOpenChange($event)"
+  (searchChange)="onSearchChange($event)"
+>
+</modus-navbar>
+```
+
+```typescript
+export class App implements OnInit {
+  // User card data for navbar (required)
+  readonly userCard: INavbarUserCard = {
+    name: 'John Doe',
+    email: 'john.doe@example.com',
+    avatarSrc: 'https://via.placeholder.com/64',
+    avatarAlt: 'User avatar',
+  };
+
+  // Search input state management
+  readonly searchInputOpen = signal(false);
+
+  /**
+   * Handle search button click - toggle search input manually
+   */
+  onSearchClick(event: MouseEvent | KeyboardEvent): void {
+    // Toggle the search input state
+    this.searchInputOpen.set(!this.searchInputOpen());
+  }
+
+  /**
+   * Handle search input open state change - sync our state with navbar
+   */
+  onSearchInputOpenChange(isOpen: boolean): void {
+    // Keep state in sync (prevents conflicts if navbar manages state internally)
+    if (this.searchInputOpen() !== isOpen) {
+      this.searchInputOpen.set(isOpen);
+    }
+  }
+
+  /**
+   * Handle search input value change
+   */
+  onSearchChange(event: { value: string }): void {
+    console.log('Search value:', event.value);
+    // Implement search logic here
+  }
+}
+```
+
+**Key Points for Navbar Search**:
+
+1. **State Management**: Use a `signal` to track `searchInputOpen` state
+2. **Visibility Settings**: Set both `search: true` (search button) and `searchInput: true` (search input field) in visibility
+3. **Two-Way Binding**: Bind `[searchInputOpen]` to control state, and listen to `(searchInputOpenChange)` to sync
+4. **Toggle on Click**: Handle `(searchClick)` to toggle the state when search button is clicked
+5. **Sync Handler**: Handle `(searchInputOpenChange)` to keep state synchronized if the navbar manages state internally
+
+**Why This Pattern**:
+
+- The navbar requires explicit state management for the search input expansion
+- Binding `[searchInputOpen]` gives you control over the expansion state
+- Handling `(searchInputOpenChange)` ensures state stays synchronized
+- Setting `searchInput: true` in visibility makes the search input field visible when expanded
+
+---
+
+## Component List
+
+All available wrapper components:
+
+- `modus-accordion` - Accordion/collapsible sections
+- `modus-alert` - Alert/notification messages
+- `modus-autocomplete` - Autocomplete input
+- `modus-avatar` - User avatar display
+- `modus-badge` - Badge/counter component
+- `modus-breadcrumbs` - Navigation breadcrumbs
+- `modus-button` - Button with icon support
+- `modus-card` - Card container
+- `modus-checkbox` - Checkbox input
+- `modus-chip` - Chip/tag component
+- `modus-collapse` - Collapsible content
+- `modus-date` - Date picker input
+- `modus-divider` - Horizontal/vertical divider
+- `modus-dropdown-menu` - Dropdown menu
+- `modus-file-dropzone` - File upload dropzone
+- `modus-icon` - Icon wrapper component
+- `modus-loader` - Loading spinner
+- `modus-menu` / `modus-menu-item` - Menu components
+- `modus-modal` - Modal dialog
+- `modus-navbar` - Navigation bar
+- `modus-number-input` - Number input field
+- `modus-pagination` - Pagination controls
+- `modus-progress` - Progress bar
+- `modus-radio` - Radio button input
+- `modus-rating` - Star rating component
+- `modus-select` - Select/dropdown input
+- `modus-side-navigation` - Side navigation menu
+- `modus-skeleton` - Loading skeleton
+- `modus-slider` - Range slider
+- `modus-stepper` - Step indicator
+- `modus-switch` - Toggle switch
+- `modus-table` - Data table
+- `modus-tabs` - Tab navigation
+- `modus-text-input` - Text input field
+- `modus-textarea` - Textarea input
+- `modus-theme-switcher` - Theme switcher
+- `modus-time-input` - Time picker input
+- `modus-toast` - Toast notification
+- `modus-toolbar` - Toolbar component
+- `modus-tooltip` - Tooltip component
+- `modus-typography` - Typography component
+- `modus-utility-panel` - Utility panel
+
+**Reference**: See `src/app/components/index.ts` for complete exports and `src/app/components/README.md` for detailed documentation.
+
+---
+
+## Reference Links
+
+- **Modus Web Components**: [Documentation](https://trimble-oss.github.io/modus-wc-2.0/main/)
+- **Angular Signals**: [Angular Signals Guide](https://angular.io/guide/signals)
+- **Angular Standalone Components**: [Standalone Components Guide](https://angular.io/guide/standalone-components)
+- **Design System**: See `src/styles.css` and `.cursor/rules/angular-design-system.mdc`
+- **Component Source**: `src/app/components/`
+
+---
+
+**All wrapper components follow these patterns. When creating new wrappers or modifying existing ones, refer to this guide and existing component implementations.**

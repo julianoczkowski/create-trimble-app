@@ -1,0 +1,209 @@
+---
+description: Comprehensive essential rules for React + Vite development with Modus Design System
+globs: ["**/*.tsx", "**/*.ts", "**/*.css"]
+alwaysApply: false
+---
+
+# Modus React Essentials
+
+Comprehensive essential rules for React + Vite development with Modus Design System.
+
+## Design System Integration
+
+### Color Usage
+
+- **Use design system colors only** - `bg-background`, `text-foreground`, `bg-primary`, etc.
+- **Never use generic Tailwind colors** - No `bg-blue-500`, `text-gray-600`, etc.
+- **Never use hardcoded values** - No hex colors, RGB values, or CSS variables
+- **Use semantic color names** - `bg-destructive`, `text-warning`, `bg-success`
+- **Follow color hierarchy** - Background → Card → Primary → Secondary → Muted → Accent
+- **Use hover states** - `hover:bg-primary/90` for interactive elements
+- **Test in all themes** - Ensure colors work in light and dark modes
+
+### Opacity Usage
+
+- **Use custom opacity utilities, not Tailwind /80 syntax** - `text-foreground-80` not `text-foreground/80`
+- **CSS variables don't work with Tailwind opacity modifiers** - Tailwind needs actual color values
+- **Use color-mix() for opacity variants** - Modern CSS function for proper opacity calculation
+- **All utilities defined in index.css** - No Tailwind config changes needed
+- **Respects theme switching** - Works in all 6 Modus themes
+- **Use semantic color names** - `foreground`, `primary`, `destructive`, etc.
+- **Available opacity levels** - `80`, `60`, `40`, `20` (e.g., `text-foreground-80`, `bg-primary-60`)
+- **Available utilities** - `text-*`, `bg-*`, `border-*` with opacity variants
+
+### Border Usage
+
+- **Use design system border utilities only** - `border-default`, `border-success`, `border-warning`, `border-destructive`, `border-primary`
+- **Never use Tailwind color classes in borders** - No `border-blue-500`, `border-gray-300`, etc.
+- **Use `border-thick` for emphasis** - For important borders and separators
+- **Use directional borders** - `border-t`, `border-b`, `border-l`, `border-r` with design system colors
+- **No inline styles for borders** - Use Tailwind classes exclusively
+- **Context-specific usage** - Cards use `border-default`, alerts use semantic colors, forms use `border-input`
+
+### Icons
+
+- **Use Modus icons exclusively** - `<i className="modus-icons">icon-name</i>`
+- **Never use other icon libraries** - No Font Awesome, Material Icons, Heroicons, etc.
+- **Use valid icon names only** - Check Modus Icons documentation for valid names
+- **Size with Tailwind classes** - `text-sm`, `text-lg`, `text-xl` for sizing
+- **Color with design system** - `text-primary`, `text-foreground`, `text-muted-foreground`
+- **Use CDN import** - Ensure Modus Icons CDN is loaded
+- **Test icon rendering** - Verify icons display correctly in all themes
+
+### No Emojis
+
+- **Never use emojis in code** - No emoji characters in any code files
+- **Never use emojis in components** - No emoji in JSX, content, or UI elements
+- **Never use emojis in content** - No emoji in text, descriptions, or user-facing content
+- **Use Modus icons instead** - Replace emojis with appropriate Modus icons
+- **Use Unicode characters for symbols** - Use proper Unicode symbols when needed
+- **Check all content** - Verify no emojis in comments, strings, or documentation
+- **Use linting to catch violations** - Automated checks for emoji usage
+
+## React Integration Patterns
+
+### Core Integration
+
+- **Proper ModusProvider setup** - Wrap app with ModusProvider for theme and component support
+- **Event handling with refs** - Use refs and event listeners for web component events
+- **State management patterns** - Let Modus components manage their own state
+- **CSS import order** - Import Modus CSS before Tailwind CSS
+- **TypeScript integration** - Use proper types for web component props and events
+- **Vite-specific patterns** - Use environment variables and dynamic imports
+- **Performance optimization** - Use memoization and lazy loading
+
+### React Best Practices
+
+- **Single configurable components** - One component with variants, not multiple specific components
+- **Use design system colors only** - Never use generic Tailwind colors or hardcoded values
+- **Component composition pattern** - Build complex components from smaller, reusable pieces
+- **Event handling with refs** - Use refs and event listeners for Modus Web Components
+- **Theme-aware components** - Use theme context for conditional styling and content
+- **Performance optimization** - Use memoization and lazy loading where appropriate
+- **Vite-specific patterns** - Use environment variables, dynamic imports, and asset imports
+
+### React Key Warnings
+
+- **Use composite keys for web components** - `${value}-${index}` pattern for uniqueness
+- **Props over slots for icons** - Use `start-icon={icon}` not `<i slot="start-icon">`
+- **Avoid div wrappers** - Let web components render directly
+- **Never use array index as key** - Use stable identifiers when items can reorder
+- **Handle dynamic content safely** - Use stable identifiers for keys
+- **Test in Chrome DevTools** - Verify no React warnings in console
+- **Follow Modus patterns** - Use established component patterns
+
+## Component-Specific Rules
+
+### Accordion State Management
+
+- **Let Modus components manage their own state** - Don't try to control accordion state from React
+- **Use `expanded` for initial state only** - Set initial state, then let component handle changes
+- **Use `onExpandedChange` for tracking** - Monitor state changes without controlling them
+- **Use refs for programmatic control** - Access component methods when needed
+- **Avoid real-time synchronization** - Don't sync React state with accordion state
+- **Handle events properly** - Use `onExpandedChange` to track state changes
+- **Don't use `useEffect` for state sync** - Let components manage their own state
+
+### Checkbox Value Inversion
+
+- **Always invert checkbox value property** - `const actualChecked = !value` from `inputChange` event
+- **Use wrapper components** - Create React wrapper to handle inversion automatically
+- **Never trust the raw value** - The `value` property is inverted (false when checked, true when unchecked)
+- **Handle in event handlers** - Invert value in `onInputChange` event handler
+- **Use utility functions** - Create helper functions for value inversion
+- **Test thoroughly** - Verify checkbox behavior matches expected state
+- **Document the bug** - Make team aware of this critical issue
+
+### Modal Implementation
+
+- **Use forwardRef pattern for modals** - Create React wrapper with `forwardRef` and `useImperativeHandle`
+- **Access inner dialog element** - Use `querySelector("dialog")` to access native dialog methods
+- **Expose openModal/closeModal methods** - Provide clean API for modal control
+- **Never control from React state** - Don't use `useState` for modal visibility
+- **Don't use useEffect for modal control** - Let the wrapper handle method calls
+- **Handle dialog methods properly** - `dialog.showModal()` and `dialog.close()`
+- **Test modal behavior** - Verify opening, closing, and event handling
+
+### Select vs Dropdown Menu
+
+- **Use ModusDropdownMenu, not ModusSelect** - ModusSelect has unreliable event handling in React
+- **Reliable itemSelect events** - ModusDropdownMenu provides consistent event handling
+- **Proper state management** - Use React state to track selected values and visibility
+- **Programmatic control** - Use refs to control dropdown visibility
+- **Event handling patterns** - Handle `itemSelect` events for selection changes
+- **Test thoroughly** - Verify dropdown behavior and event handling
+- **Use established patterns** - Follow ModusDropdownMenu component patterns
+
+## HTML and Styling
+
+### Semantic HTML
+
+- **Use div elements only** - All content must use `<div>` elements
+- **No semantic HTML elements** - Never use `h1`, `p`, `section`, `header`, `footer`, `nav`, `main`, `aside`, `article`, `span`
+- **Use Tailwind classes for styling** - Apply typography and layout with Tailwind classes
+- **Icon exception** - Only `<i>` elements allowed for Modus icons
+- **Consistent structure** - Maintain consistent div-based component structure
+- **Accessibility with divs** - Ensure proper accessibility with div elements
+- **Test rendering** - Verify components render correctly in all themes
+
+### Tailwind Usage
+
+- **Tailwind v3 with design system** - Use Tailwind v3 with Modus Design System integration
+- **No generic Tailwind colors** - Never use `bg-blue-500`, `text-gray-600`, etc.
+- **Use design system colors** - `bg-background`, `text-foreground`, `bg-primary`, etc.
+- **Custom utilities for borders** - Use `border-default`, `border-success`, `border-warning`, etc.
+- **Elevation utilities** - Use `elevation-1`, `elevation-2`, `elevation-3` for shadows
+- **Proper CSS import order** - Modus CSS before Tailwind CSS
+- **Test in all themes** - Ensure Tailwind classes work in all 6 themes
+
+## Theming
+
+### Theme Implementation
+
+- **6 Modus themes supported** - Classic Light/Dark, Modern Light/Dark, Connect Light/Dark
+- **Use ThemeProvider and useTheme hook** - Proper theme context setup
+- **Hydration safety** - Handle SSR/hydration with `mounted` state
+- **Theme persistence** - Save to localStorage and restore on page load
+- **Official data-theme attribute** - Use `data-theme` for theme switching
+- **Theme-aware components** - Use theme context for conditional styling
+- **Test all themes** - Verify components work in all 6 themes
+
+## Development Workflow
+
+### Quality Assurance
+
+- **Run linting commands during development** - `npm run lint:all` before commits
+- **Fix violations before committing** - No violations in committed code
+- **Check inline styles** - `npm run lint:styles` to catch inline style violations
+- **Verify design system colors** - `npm run lint:colors` for color compliance
+- **Validate Modus icons** - `npm run lint:icons` for icon usage
+- **Check semantic HTML** - `npm run lint:semantic` for HTML compliance
+- **Verify border usage** - `npm run lint:borders` for border compliance
+
+### Testing
+
+- **Always use Chrome DevTools MCP** - Never skip browser testing
+- **Test before completion** - Validate all implementations in browser
+- **Check console for errors** - Look for JavaScript errors and warnings
+- **Inspect DOM structure** - Verify proper semantic HTML and component rendering
+- **Test interactive elements** - Verify Modus Web Components work correctly
+- **Performance testing** - Use DevTools for performance analysis
+- **Cross-browser validation** - Test in Chrome, Firefox, Safari
+
+### Implementation Guides
+
+- **Create guides for major features** - Any feature requiring 2+ hours of development
+- **Document before coding** - Plan architecture and approach first
+- **Use required template sections** - Overview, architecture, plan, testing, deployment, documentation, review
+- **Store in `.cursor/rules/implementation-guides/`** - Organized by feature name
+- **Update status throughout development** - Planning → In Progress → Complete → Archived
+- **Include post-implementation review** - Document lessons learned and improvements
+- **Reference in commits** - Link to implementation guide in commit messages
+
+## Reference
+
+This rule consolidates all essential Modus React development guidelines. For detailed patterns, examples, and advanced techniques, fetch the individual full rules as needed.
+
+### Opacity Utilities
+
+For detailed opacity utility patterns, migration guide, and advanced techniques, fetch the full rule: `modus-opacity-utilities-react`

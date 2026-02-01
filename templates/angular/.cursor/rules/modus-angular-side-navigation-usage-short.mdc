@@ -1,0 +1,50 @@
+---
+description: Integration patterns for Modus Navbar with Side Navigation in Angular
+globs: ["**/*.ts", "**/*.html", "**/*.scss", "**/*.css"]
+alwaysApply: true
+---
+
+# Modus Side Navigation Usage - Short
+
+Critical integration patterns for Modus Navbar with Side Navigation in Angular.
+
+## Key Rules
+
+- **Use Angular wrapper components** - Use `modus-navbar` and `modus-side-navigation`, not raw web components
+- **Pass props as native objects** - Angular handles binding automatically
+- **Listen for mainMenuOpenChange events** - Use DOM event listeners on container
+- **Position side navigation absolutely** - Required for proper layering
+- **Set explicit z-index** - Ensure side navigation renders above content
+- **Account for collapsed width** - Add margin-left to panel content
+
+## Required CSS
+
+```css
+.side-navigation {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  z-index: 999;
+}
+
+.panel-content {
+  margin-left: 4rem;
+}
+```
+
+## Event Integration
+
+```typescript
+ngAfterViewInit(): void {
+  const container = this.elementRef.nativeElement.querySelector('.layout-with-navbar');
+  container.addEventListener('mainMenuOpenChange', (event: any) => {
+    const sideNav = container.querySelector('modus-wc-side-navigation');
+    if (sideNav) sideNav.expanded = event.detail;
+  });
+}
+```
+
+## Reference
+
+For detailed layout patterns and common pitfalls, fetch the full rule: `modus-angular-side-navigation-usage`

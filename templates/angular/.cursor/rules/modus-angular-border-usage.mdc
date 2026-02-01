@@ -1,0 +1,286 @@
+---
+description: Essential border usage rules for Modus Design System integration in Angular + Vite
+globs: ["**/*.ts", "**/*.html", "**/*.scss", "**/*.css"]
+alwaysApply: false
+---
+
+# Border Usage Guidelines - Modus Design System (Angular)
+
+## CRITICAL: Use Design System Border Utilities
+
+When working with borders in this Angular + Vite app, always use custom design system border utilities instead of Tailwind color classes or inline styles.
+
+## NEVER Do These
+
+### 1. Tailwind Color Classes in Borders
+
+```html
+<!-- WRONG: Tailwind color classes -->
+<div class="border border-red-500">Error message</div>
+<div class="border-2 border-green-500">Success message</div>
+<div class="border border-blue-500">Info message</div>
+<div class="border border-yellow-500">Warning message</div>
+```
+
+### 2. Inline Border Styles
+
+```html
+<!-- WRONG: Inline styles -->
+<div [style.border]="'1px solid var(--border)'">Content</div>
+<div [style.border]="'2px solid var(--modus-wc-color-success)'">Content</div>
+```
+
+### 3. Generic Tailwind Border Classes
+
+```html
+<!-- WRONG: Generic Tailwind classes -->
+<div class="border border-gray-300">Content</div>
+<div class="border-2 border-slate-400">Content</div>
+```
+
+## ALWAYS Do These
+
+### 1. Use Design System Border Utilities
+
+```html
+<!-- CORRECT: Design system utilities -->
+<div class="border-default">Default border</div>
+<div class="border-success">Success border</div>
+<div class="border-warning">Warning border</div>
+<div class="border-destructive">Error border</div>
+<div class="border-primary">Primary border</div>
+```
+
+### 2. Use Thick Border Utilities for Emphasis
+
+```html
+<!-- CORRECT: Thick borders for emphasis -->
+<div class="border-thick">Default thick border</div>
+<div class="border-thick-success">Success thick border</div>
+<div class="border-thick-warning">Warning thick border</div>
+<div class="border-thick-destructive">Error thick border</div>
+<div class="border-thick-primary">Primary thick border</div>
+```
+
+### 3. Use Directional Border Utilities
+
+```html
+<!-- CORRECT: Directional borders -->
+<div class="border-top-default">Top border only</div>
+<div class="border-bottom-default">Bottom border only</div>
+<div class="border-left-default">Left border only</div>
+<div class="border-right-default">Right border only</div>
+```
+
+### 4. Use Dashed Border Utilities
+
+```html
+<!-- CORRECT: Dashed borders -->
+<div class="border-dashed">1px dashed border</div>
+<div class="border-thick-dashed">2px dashed border</div>
+```
+
+## Available Border Utilities
+
+### Standard Borders (1px)
+
+```css
+border-default          /* 1px solid var(--border) */
+border-success          /* 1px solid var(--modus-wc-color-success) */
+border-warning          /* 1px solid var(--modus-wc-color-warning) */
+border-destructive      /* 1px solid var(--modus-wc-color-error) */
+border-primary          /* 1px solid var(--modus-wc-color-info) */
+
+border-dashed           /* 1px dashed var(--border) */
+```
+
+### Thick Borders (2px)
+
+```css
+border-thick            /* 2px solid var(--border) */
+border-thick-success    /* 2px solid var(--modus-wc-color-success) */
+border-thick-warning    /* 2px solid var(--modus-wc-color-warning) */
+border-thick-destructive /* 2px solid var(--modus-wc-color-error) */
+border-thick-primary    /* 2px solid var(--modus-wc-color-info) */
+
+border-thick-dashed     /* 2px dashed var(--border) */
+```
+
+### Directional Borders
+
+```css
+border-top-default      /* border-top: 1px solid var(--border) */
+border-bottom-default   /* border-bottom: 1px solid var(--border) */
+border-left-default     /* border-left: 1px solid var(--border) */
+border-right-default    /* border-right: 1px solid var(--border) */
+```
+
+## Context-Specific Usage
+
+### Success States
+
+```html
+<!-- CORRECT: Success borders -->
+<div class="border-success">Success message</div>
+<div class="border-thick-success">Important success</div>
+<div class="border-top-success">Success indicator</div>
+```
+
+### Warning States
+
+```html
+<!-- CORRECT: Warning borders -->
+<div class="border-warning">Warning message</div>
+<div class="border-thick-warning">Important warning</div>
+```
+
+### Error States
+
+```html
+<!-- CORRECT: Error borders -->
+<div class="border-destructive">Error message</div>
+<div class="border-thick-destructive">Critical error</div>
+<div class="border-bottom-destructive">Error indicator</div>
+```
+
+### Primary/Info States
+
+```html
+<!-- CORRECT: Primary borders -->
+<div class="border-primary">Info message</div>
+<div class="border-thick-primary">Important info</div>
+<div class="border-left-primary">Info indicator</div>
+```
+
+## Common Violations and Fixes
+
+### Violation: Tailwind Color Classes
+
+```html
+<!-- WRONG -->
+<div class="border border-red-500">Error</div>
+<div class="border-2 border-green-500">Success</div>
+
+<!-- CORRECT -->
+<div class="border-destructive">Error</div>
+<div class="border-thick-success">Success</div>
+```
+
+### Violation: Inline Styles
+
+```html
+<!-- WRONG -->
+<div [style.border]="'1px solid var(--border)'">Content</div>
+
+<!-- CORRECT -->
+<div class="border-default">Content</div>
+```
+
+## Reference Implementation
+
+### Card Components
+
+```typescript
+@Component({
+  template: `
+    <div class="bg-card border-default rounded-lg p-4">
+      <div class="text-lg font-semibold">Card Title</div>
+      <div class="text-muted-foreground">Card content</div>
+    </div>
+  `,
+})
+export class CardComponent {}
+```
+
+### Alert Components
+
+```typescript
+@Component({
+  template: `
+    <div class="bg-success/5 border-success rounded-lg p-4">
+      <div class="flex items-center">
+        <i class="modus-icons text-success mr-2">check_circle</i>
+        <div class="text-success font-medium">Success message</div>
+      </div>
+    </div>
+  `,
+})
+export class SuccessAlertComponent {}
+```
+
+### Form Components
+
+```typescript
+@Component({
+  template: `
+    <div [class]="hasError() ? 'border-destructive' : 'border-default'" class="rounded-md p-3">
+      <modus-text-input
+        [value]="value()"
+        (inputChange)="handleChange($event)"
+      />
+    </div>
+  `,
+})
+export class FormFieldComponent {
+  readonly value = input<string>('');
+  readonly hasError = input<boolean>(false);
+  readonly valueChange = output<string>();
+  
+  handleChange(value: string): void {
+    this.valueChange.emit(value);
+  }
+}
+```
+
+## Linting and Validation
+
+```bash
+# Check for border violations
+npm run lint:borders
+
+# All linting checks
+npm run lint:all
+```
+
+## Quick Reference
+
+```css
+/* Default content */
+border-default
+
+/* Success states */
+border-success
+border-thick-success
+
+/* Warning states */
+border-warning
+border-thick-warning
+
+/* Error states */
+border-destructive
+border-thick-destructive
+
+/* Primary states */
+border-primary
+border-thick-primary
+
+/* Dashed borders */
+border-dashed
+border-thick-dashed
+
+/* Directional borders */
+border-top-default
+border-bottom-default
+border-left-default
+border-right-default
+```
+
+## Quick Checklist
+
+- [ ] Using design system border utilities
+- [ ] No Tailwind color classes in borders
+- [ ] No inline border styles
+- [ ] Using appropriate border thickness (default vs thick)
+- [ ] Using contextual colors (success, warning, error, primary)
+- [ ] Passing border linting checks
+- [ ] Using directional borders when appropriate

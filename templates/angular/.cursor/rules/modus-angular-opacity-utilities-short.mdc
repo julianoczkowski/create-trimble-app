@@ -1,0 +1,43 @@
+---
+description: Essential opacity utilities for Modus Design System colors in Angular + Vite
+globs: ["**/*.ts", "**/*.html", "**/*.scss", "**/*.css"]
+alwaysApply: true
+---
+
+# Modus Opacity Utilities - Short
+
+Essential opacity utilities for Modus Design System colors in Angular + Vite.
+
+## Key Rules
+
+- **Use custom opacity utilities, not Tailwind /80 syntax** - `text-foreground-80` not `text-foreground/80`
+- **CSS variables don't work with Tailwind opacity modifiers** - Tailwind needs actual color values
+- **Use color-mix() for opacity variants** - Modern CSS function for proper opacity calculation
+- **All utilities defined in styles.css** - No Tailwind config changes needed
+- **Respects theme switching** - Works in all 6 Modus themes
+- **Use semantic color names** - `foreground`, `primary`, `destructive`, etc.
+
+## Available Utilities
+
+### Opacity Levels
+
+- **80%** - `text-foreground-80`, `bg-primary-80`, `border-destructive-80`
+- **60%** - `text-foreground-60`, `bg-primary-60`, `border-destructive-60`
+- **40%** - `text-foreground-40`, `bg-primary-40`, `border-destructive-40`
+- **20%** - `text-foreground-20`, `bg-primary-20`, `border-destructive-20`
+
+## Usage Examples
+
+```html
+<!-- WRONG: Tailwind syntax doesn't work -->
+<div class="text-foreground/80">Text with 80% opacity</div>
+
+<!-- CORRECT: Use custom opacity utilities -->
+<div class="text-foreground-80">Text with 80% opacity</div>
+<div class="bg-primary-60">Primary background with 60% opacity</div>
+<div class="border border-destructive-40">Destructive border with 40% opacity</div>
+```
+
+## Reference
+
+For detailed implementation patterns and advanced techniques, fetch the full rule: `modus-angular-opacity-utilities`

@@ -1,0 +1,83 @@
+---
+description: ModusSelect vs ModusDropdownMenu reliability comparison in Angular
+globs: ["**/*.ts", "**/*.html", "**/*.scss", "**/*.css"]
+alwaysApply: false
+---
+
+# ModusSelect vs ModusDropdownMenu in Angular
+
+## CRITICAL: ModusSelect Reliability Issues
+
+**Problem**: `ModusSelect` component has unreliable event handling in some scenarios, especially with Chrome DevTools automation and testing.
+
+**Solution**: Use `ModusDropdownMenu` with `itemSelect` events, which are more reliable and consistent.
+
+## Correct Pattern: Use ModusDropdownMenu
+
+```typescript
+// CORRECT: ModusDropdownMenu with reliable events
+@Component({
+  template: `
+    <modus-dropdown-menu
+      [menuVisible]="isOpen()"
+      (itemSelect)="handleItemSelect($event)"
+      (menuVisibleChange)="isOpen.set($event)"
+    >
+      <modus-button
+        slot="trigger"
+        variant="outlined"
+        (buttonClick)="toggleDropdown()"
+      >
+        {{ selectedLabel() || 'Select an option' }}
+        <i class="modus-icons ml-2">{{ isOpen() ? 'caret_up' : 'caret_down' }}</i>
+      </modus-button>
+
+      @for (item of menuItems(); track item.value) {
+        <modus-menu-item
+          [value]="item.value"
+          [class.bg-primary-20]="selectedValue() === item.value"
+        >
+          {{ item.label }}
+        </modus-menu-item>
+      }
+    </modus-dropdown-menu>
+  `,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class ReliableDropdownComponent {
+  readonly selectedValue = signal<string>('');
+  readonly isOpen = signal(false);
+
+  readonly menuItems = signal([
+    { label: 'Option 1', value: 'option1' },
+    { label: 'Option 2', value: 'option2' },
+    { label: 'Option 3', value: 'option3' },
+  ]);
+
+  readonly selectedLabel = computed(() => {
+    const item = this.menuItems().find(i => i.value === this.selectedValue());
+    return item?.label ?? '';
+  });
+
+  handleItemSelect(event: CustomEvent<{ value: string }>): void {
+    const value = event.detail.value;
+    this.selectedValue.set(value);
+    this.isOpen.set(false);
+  }
+
+  toggleDropdown(): void {
+    this.isOpen.update(open => !open);
+  }
+}
+```
+
+## Key Takeaways
+
+1. **Prefer ModusDropdownMenu**: Use `ModusDropdownMenu` for reliable event handling
+2. **Reliable Events**: `itemSelect` events are more reliable than `inputChange` events
+3. **Programmatic Control**: Use `menuVisible` property for programmatic control
+4. **Event Handling**: Use proper event handling patterns with signals
+
+---
+
+**Remember: ModusSelect may have unreliable event handling in some scenarios. Prefer ModusDropdownMenu with itemSelect events for reliable dropdown functionality.**

@@ -1,0 +1,117 @@
+---
+description: Critical pattern for ModusButton inside ModusButtonGroup
+globs: ["**/components/ModusButton*.tsx", "**/demos/**/page.tsx"]
+alwaysApply: false
+---
+
+# Modus Button Group Usage
+
+Critical patterns for using ModusButton components inside ModusButtonGroup.
+
+## The Problem
+
+When `ModusButton` has default values for `variant` and `color`, these explicit values **override** the `ModusButtonGroup`'s settings. This causes all buttons to look the same regardless of the group's variant prop.
+
+## Root Cause
+
+The `modus-wc-button-group` web component uses `setAttribute()` to apply its `variant` and `color` to child buttons **after** they load. If React buttons have explicit defaults, they override the group's settings.
+
+## Correct Pattern
+
+### ModusButton Component
+
+Do NOT set defaults for `variant` or `color` in the ModusButton wrapper:
+
+```tsx
+// CORRECT - No defaults, allows inheritance from button group
+export default function ModusButton({
+  color, // undefined by default
+  variant, // undefined by default
+  size = "md",
+  // ...other props
+}: ModusButtonProps) {
+  return (
+    <ModusWcButton
+      {...(color && { color })} // Only pass if defined
+      {...(variant && { variant })} // Only pass if defined
+      size={size}
+      // ...other props
+    >
+      {children}
+    </ModusWcButton>
+  );
+}
+```
+
+```tsx
+// WRONG - Defaults override button group settings
+export default function ModusButton({
+  color = "primary", // BAD: Will override group's color
+  variant = "filled", // BAD: Will override group's variant
+  // ...
+}: ModusButtonProps) {
+  // ...
+}
+```
+
+### Using ModusButton Standalone
+
+When using `ModusButton` outside a button group, explicitly set the props you need:
+
+```tsx
+// Standalone button - explicitly set variant and color
+<ModusButton variant="filled" color="primary">
+  Click Me
+</ModusButton>
+```
+
+### Using ModusButton in a Button Group
+
+When inside a `ModusButtonGroup`, do NOT set variant/color on individual buttons:
+
+```tsx
+// CORRECT - Group controls all button styling
+<ModusButtonGroup variant="outlined" color="primary">
+  <ModusButton>Button 1</ModusButton>
+  <ModusButton>Button 2</ModusButton>
+  <ModusButton>Button 3</ModusButton>
+</ModusButtonGroup>
+
+// WRONG - Individual button props override group settings
+<ModusButtonGroup variant="outlined" color="primary">
+  <ModusButton variant="filled">Button 1</ModusButton>  // BAD
+  <ModusButton color="danger">Button 2</ModusButton>    // BAD
+</ModusButtonGroup>
+```
+
+## How ModusButtonGroup Works
+
+The web component applies styling to children via DOM manipulation:
+
+```typescript
+// Inside modus-wc-button-group.tsx
+private syncButtonStates(): void {
+  this.buttonElements = this.el.querySelectorAll('modus-wc-button');
+  this.setButtonAttribute('variant', this.variant);
+  this.setButtonAttribute('color', this.color || null);
+  this.setButtonAttribute('disabled', this.disabled ? 'true' : null);
+}
+```
+
+This only works if child buttons don't have explicit values that override the setAttribute calls.
+
+## Quick Reference
+
+| Context                        | variant                | color                  | Notes                            |
+| ------------------------------ | ---------------------- | ---------------------- | -------------------------------- |
+| Standalone button              | Set explicitly         | Set explicitly         | Button controls its own style    |
+| Inside button group            | Do NOT set             | Do NOT set             | Group controls all button styles |
+| Mixed (some grouped, some not) | Set only on standalone | Set only on standalone | Follow context rules             |
+
+## Testing Checklist
+
+- [ ] Outlined variant shows bordered buttons with transparent background
+- [ ] Filled variant shows solid colored buttons
+- [ ] Borderless variant shows text-only buttons without borders
+- [ ] Color prop applies consistently to all buttons in group
+- [ ] Individual buttons don't override group styling

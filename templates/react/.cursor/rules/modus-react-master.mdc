@@ -1,0 +1,160 @@
+---
+description: Master rule providing overview and references to all Modus React rules
+globs: ["**/*.tsx", "**/*.ts", "**/*.css"]
+alwaysApply: true
+---
+
+# Modus React Rules - Master Reference
+
+This master rule provides an overview of all available rules and serves as an entry point for understanding the Modus React development patterns.
+
+## Rule Structure
+
+This project uses a **short/full rule pattern**:
+
+- **Short Rules** (`*-short.mdc`): Always applied, concise summaries
+- **Full Rules** (`*.mdc`): Apply intelligently, detailed patterns
+
+See `README.md` in this directory for complete rule documentation.
+
+## Essential Rules (Always Applied)
+
+These short rules are always included in chat context:
+
+### Design System
+- `modus-color-usage-react-short.mdc` - Color system usage
+- `modus-icons-react-short.mdc` - Icon usage patterns
+- `modus-semantic-html-react-short.mdc` - HTML element usage
+- `border-usage-guidelines-short.mdc` - Border utilities
+- `modus-opacity-utilities-react-short.mdc` - Opacity utilities
+- `modus-tailwind-usage-react-short.mdc` - Tailwind integration
+- `modus-themes-react-short.mdc` - Theme implementation
+
+### Component Patterns
+- `modus-button-group-usage-react-short.mdc` - Button group patterns
+- `modus-checkbox-value-inversion-react-short.mdc` - Checkbox bug handling
+- `modus-modal-implementation-react-short.mdc` - Modal patterns
+- `modus-accordion-state-management-react-short.mdc` - Accordion state
+- `modus-select-vs-dropdown-menu-react-short.mdc` - Dropdown patterns
+- `modus-navbar-side-navigation-react-short.mdc` - Navigation integration
+
+### React Integration
+- `modus-react-integration-short.mdc` - React + Modus integration
+- `modus-react-best-practices-short.mdc` - React best practices
+- `modus-react-key-warnings-short.mdc` - React key prop patterns
+
+### Workflow
+- `development-workflow-react-short.mdc` - Linting and quality checks
+- `chrome-devtools-testing-react-short.mdc` - Browser testing
+- `implementation-guides-react-short.mdc` - Feature development guides
+- `modus-no-emojis-react-short.mdc` - Emoji prohibition
+
+## Detailed Rules (Apply Intelligently)
+
+For detailed patterns, examples, and advanced techniques, reference these full rules:
+
+### Component-Specific Details
+- `modus-button-group-usage-react.mdc` - Complete button group patterns
+- `modus-checkbox-value-inversion-react.mdc` - Checkbox bug details
+- `modus-modal-implementation-react.mdc` - Complete modal implementation
+- `modus-accordion-state-management-react.mdc` - Accordion state management
+- `modus-select-vs-dropdown-menu-react.mdc` - Dropdown comparison
+- `modus-navbar-side-navigation-react.mdc` - Navigation integration details
+
+### Design System Details
+- `modus-color-usage-react.mdc` - Complete color system guide
+- `modus-icons-react.mdc` - Complete icon usage guide
+- `modus-semantic-html-react.mdc` - HTML patterns guide
+- `border-usage-guidelines.mdc` - Complete border utilities guide
+- `modus-opacity-utilities-react.mdc` - Complete opacity utilities guide
+- `modus-tailwind-usage-react.mdc` - Complete Tailwind integration guide
+- `modus-themes-react.mdc` - Complete theme implementation guide
+
+### Integration & Best Practices
+- `modus-react-integration.mdc` - Complete React integration guide
+- `modus-react-best-practices.mdc` - Complete best practices guide
+- `modus-react-key-warnings.mdc` - Complete key prop patterns guide
+- `modus-react-essentials.mdc` - Comprehensive essentials (consolidates multiple topics)
+
+### Workflow & Testing
+- `development-workflow-react.mdc` - Complete workflow guide
+- `chrome-devtools-testing-react.mdc` - Complete testing guide
+- `implementation-guides-react.mdc` - Complete implementation guide structure
+
+### UX Foundations
+- `ux/ux-ui-foundations.mdc` - UI/UX foundations with Modus 2 + Tailwind
+- `ux/gestalt-laws-detailed.mdc` - Gestalt Laws implementation guide
+
+## Reference Files
+
+- `modus-icon-names.mdc` - Complete list of valid Modus icon names
+- `modus-components-reference.mdc` - Component reference guide
+
+## Quick Start Guide
+
+### Working with Components
+
+1. Check component-specific short rule (always applied)
+2. For details, reference full rule: `@modus-[component]-react`
+3. See component reference: `@modus-components-reference`
+
+### Working with Design System
+
+1. Short rules provide essential patterns (always applied)
+2. For details, reference full rule: `@modus-[topic]-react`
+3. For icon names: `@modus-icon-names`
+
+### Common Patterns
+
+**Colors**: Always use design system colors (`bg-background`, `text-foreground`, etc.)
+- Reference: `@modus-color-usage-react`
+
+**Icons**: Use Modus icons exclusively (`<i className="modus-icons">icon-name</i>`)
+- Reference: `@modus-icons-react`
+- Names: `@modus-icon-names`
+
+**Components**: Use wrapper components, not web components directly
+- Reference: `@modus-react-integration`
+
+**State Management**: Let Modus components manage their own state
+- Reference: Component-specific rules
+
+## Rule Application
+
+Rules are applied automatically based on:
+
+1. **Always Apply**: Short rules with `alwaysApply: true`
+2. **File Patterns**: Rules activate when working with matching files (`globs`)
+3. **Context Matching**: Agent applies rules based on description relevance
+4. **Manual Reference**: Use `@rule-name` to explicitly reference a rule
+
+## Best Practices
+
+When working with Modus React:
+
+1. **Follow Short Rules**: Essential patterns are always available
+2. **Reference Full Rules**: Use `@rule-name` for detailed guidance
+3. **Check Component Reference**: See `@modus-components-reference` for component details
+4. **Verify Icon Names**: Check `@modus-icon-names` before using icons
+5. **Run Linting**: Use `npm run lint:all` before committing
+
+## Getting Help
+
+- **Rule Documentation**: See `README.md` in this directory
+- **Project Guide**: See `CLAUDE.md` in project root
+- **Component Reference**: `@modus-components-reference`
+- **Icon Names**: `@modus-icon-names`
+
+## Rule Maintenance
+
+When adding or updating rules:
+
+1. Create/update short rule with `alwaysApply: true`
+2. Create/update full rule with `alwaysApply: false`
+3. Ensure descriptions match between short and full
+4. Add appropriate `globs:` patterns
+5. Update `README.md` with new rule entry
+
+---
+
+**Note**: This master rule is always applied to provide rule overview. For specific guidance, reference the appropriate detailed rule using `@rule-name` syntax.

@@ -1,0 +1,472 @@
+---
+description: Best practices for Modus Web Components in Angular
+globs: ["**/*.ts", "**/*.html", "**/*.scss", "**/*.css"]
+alwaysApply: true
+---
+
+# Modus Angular Best Practices
+
+## Component Architecture
+
+### Single Configurable Component Pattern
+
+**CRITICAL**: Create **one configurable component** instead of multiple specific components.
+
+```typescript
+// CORRECT: Single configurable component
+@Component({
+  selector: 'app-button',
+  template: `
+    <modus-button
+      [color]="color()"
+      [variant]="variant()"
+      [size]="size()"
+      [disabled]="disabled()"
+      (buttonClick)="buttonClick.emit($event)"
+    >
+      <ng-content />
+    </modus-button>
+  `,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class AppButtonComponent {
+  readonly color = input<ButtonColor>('primary');
+  readonly variant = input<ButtonVariant>('filled');
+  readonly size = input<ButtonSize>('md');
+  readonly disabled = input<boolean>(false);
+  readonly buttonClick = output<MouseEvent | KeyboardEvent>();
+}
+
+// WRONG: Multiple specific components
+@Component({ selector: 'app-primary-button', ... })
+export class PrimaryButtonComponent { /* ... */ }
+
+@Component({ selector: 'app-secondary-button', ... })
+export class SecondaryButtonComponent { /* ... */ }
+
+@Component({ selector: 'app-danger-button', ... })
+export class DangerButtonComponent { /* ... */ }
+```
+
+### Component Composition Pattern
+
+```typescript
+// CORRECT: Component composition
+@Component({
+  selector: 'app-card',
+  template: `
+    <div class="bg-card text-foreground border-default rounded-lg" [class]="customClass()">
+      <ng-content />
+    </div>
+  `,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class CardComponent {
+  readonly customClass = input<string>('');
+}
+
+@Component({
+  selector: 'app-card-header',
+  template: `
+    <div class="flex flex-col space-y-1.5 p-6" [class]="customClass()">
+      <ng-content />
+    </div>
+  `,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class CardHeaderComponent {
+  readonly customClass = input<string>('');
+}
+
+@Component({
+  selector: 'app-card-title',
+  template: `
+    <div class="text-2xl font-semibold leading-none tracking-tight" [class]="customClass()">
+      <ng-content />
+    </div>
+  `,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class CardTitleComponent {
+  readonly customClass = input<string>('');
+}
+
+@Component({
+  selector: 'app-card-content',
+  template: `
+    <div class="p-6 pt-0" [class]="customClass()">
+      <ng-content />
+    </div>
+  `,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class CardContentComponent {
+  readonly customClass = input<string>('');
+}
+
+// Usage
+template: `
+  <app-card>
+    <app-card-header>
+      <app-card-title>Card Title</app-card-title>
+    </app-card-header>
+    <app-card-content>
+      <div>Card content</div>
+    </app-card-content>
+  </app-card>
+`
+```
+
+## Styling Architecture
+
+### Design System Integration
+
+```typescript
+// CORRECT: Design system color usage
+@Component({
+  template: `
+    <div class="bg-background text-foreground">
+      <div class="bg-card text-foreground border-default rounded-lg p-4">
+        <div class="text-primary">Primary text</div>
+        <div class="text-secondary">Secondary text</div>
+        <div class="text-foreground-60">Muted text</div>
+      </div>
+    </div>
+  `,
+})
+export class ThemedComponent {}
+
+// WRONG: Generic Tailwind colors
+template: `<div class="bg-blue-500 text-white border-gray-300">Generic colors</div>`
+```
+
+### Responsive Design Patterns
+
+```typescript
+// CORRECT: Responsive design with design system
+@Component({
+  template: `
+    <div class="
+      grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4
+      p-4 md:p-6 lg:p-8
+      bg-background text-foreground
+    ">
+      <div class="bg-card text-foreground border-default rounded-lg p-4">
+        <div class="text-lg font-semibold mb-2">Card Title</div>
+        <div class="text-sm text-foreground-60">Card description</div>
+      </div>
+    </div>
+  `,
+})
+export class ResponsiveComponent {}
+```
+
+### Interactive States
+
+```typescript
+// CORRECT: Interactive states with design system
+@Component({
+  template: `
+    <div class="
+      bg-card text-foreground border-default rounded-lg p-4
+      hover:bg-card/80 hover:shadow-lg
+      focus:ring-2 focus:ring-primary focus:ring-offset-2
+      active:bg-card/90
+      transition-all duration-200
+      cursor-pointer
+    ">
+      Interactive content
+    </div>
+  `,
+})
+export class InteractiveComponent {}
+```
+
+## Modus Web Components Integration
+
+### Event Handling Patterns
+
+```typescript
+// CORRECT: Event handling with signals
+@Component({
+  template: `
+    <modus-button
+      [color]="color()"
+      [disabled]="disabled()"
+      (buttonClick)="handleClick($event)"
+    >
+      Click me
+    </modus-button>
+  `,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class ModusButtonExampleComponent {
+  readonly color = input<ButtonColor>('primary');
+  readonly disabled = input<boolean>(false);
+
+  handleClick(event: MouseEvent | KeyboardEvent): void {
+    console.log('Button clicked:', event);
+  }
+}
+```
+
+### State Management Patterns
+
+```typescript
+// CORRECT: State management with Modus components
+@Component({
+  template: `
+    <modus-button (buttonClick)="openModal()">Open Modal</modus-button>
+
+    <modus-modal
+      id="example-modal"
+      [headline]="'Modal Title'"
+    >
+      <div slot="content">Modal content</div>
+      <div slot="footer">
+        <modus-button (buttonClick)="closeModal()">Close</modus-button>
+      </div>
+    </modus-modal>
+  `,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class StatefulComponent {
+  openModal(): void {
+    const dialog = document.getElementById('example-modal') as HTMLDialogElement | null;
+    if (dialog && typeof dialog.showModal === 'function') {
+      dialog.showModal();
+    }
+  }
+
+  closeModal(): void {
+    const dialog = document.getElementById('example-modal') as HTMLDialogElement | null;
+    if (dialog && typeof dialog.close === 'function') {
+      dialog.close();
+    }
+  }
+}
+```
+
+## Angular + Vite Specific Patterns
+
+### Environment Variables
+
+```typescript
+// CORRECT: Environment variables in Angular
+@Component({
+  template: `
+    <div>
+      <div>Environment: {{ isDevelopment ? 'Development' : 'Production' }}</div>
+    </div>
+  `,
+})
+export class ApiComponent {
+  readonly isDevelopment = !environment.production;
+}
+```
+
+### Lazy Loading
+
+```typescript
+// CORRECT: Lazy loading routes
+export const routes: Routes = [
+  {
+    path: 'demos',
+    loadChildren: () => import('./demos/demos.routes').then(m => m.DEMO_ROUTES),
+  },
+  {
+    path: 'settings',
+    loadComponent: () => import('./settings/settings.component').then(m => m.SettingsComponent),
+  },
+];
+```
+
+## Theme Integration
+
+### Theme-Aware Components
+
+```typescript
+// CORRECT: Theme-aware component
+@Component({
+  template: `
+    <div class="
+      bg-background text-foreground
+      transition-colors duration-200
+    ">
+      <div class="text-foreground">Current theme: {{ currentTheme() }}</div>
+      <div class="text-foreground-60">
+        Mode: {{ isDarkTheme() ? 'Dark' : 'Light' }}
+      </div>
+    </div>
+  `,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class ThemedComponent {
+  private themeService = inject(ThemeService);
+
+  readonly currentTheme = this.themeService.currentTheme;
+
+  readonly isDarkTheme = computed(() =>
+    this.currentTheme().includes('dark')
+  );
+}
+```
+
+### Conditional Theming
+
+```typescript
+// CORRECT: Conditional theming
+@Component({
+  template: `
+    <div class="bg-background text-foreground p-4 rounded border-default">
+      <div class="text-lg font-semibold">{{ themeSpecificContent() }}</div>
+    </div>
+  `,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class ConditionalThemedComponent {
+  private themeService = inject(ThemeService);
+  readonly currentTheme = this.themeService.currentTheme;
+
+  readonly themeSpecificContent = computed(() => {
+    switch (this.currentTheme()) {
+      case 'modus-classic-light':
+        return 'Classic Light Theme';
+      case 'modus-classic-dark':
+        return 'Classic Dark Theme';
+      case 'modus-modern-light':
+        return 'Modern Light Theme';
+      case 'modus-modern-dark':
+        return 'Modern Dark Theme';
+      case 'connect-light':
+        return 'Connect Light Theme';
+      case 'connect-dark':
+        return 'Connect Dark Theme';
+      default:
+        return 'Default Theme';
+    }
+  });
+}
+```
+
+## Performance Optimization
+
+### Computed Signals for Derived State
+
+```typescript
+// CORRECT: Use computed for derived state
+@Component({
+  template: `
+    <div class="space-y-2">
+      @for (item of processedData(); track item.id) {
+        <div class="bg-card text-foreground p-2 rounded">
+          {{ item.processed }}
+        </div>
+      }
+    </div>
+  `,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class ExpensiveComponent {
+  readonly data = input.required<DataItem[]>();
+
+  readonly processedData = computed(() =>
+    this.data().map(item => ({
+      ...item,
+      processed: item.value * 2,
+    }))
+  );
+}
+```
+
+### Lazy Loading Components
+
+```typescript
+// CORRECT: Lazy loading with @defer
+@Component({
+  template: `
+    <div>
+      @defer (on viewport) {
+        <heavy-component />
+      } @placeholder {
+        <modus-skeleton height="200px" />
+      } @loading {
+        <modus-loader />
+      }
+    </div>
+  `,
+})
+export class LazyLoadingComponent {}
+```
+
+## Common Anti-Patterns
+
+### Don't Create Multiple Specific Components
+
+```typescript
+// WRONG: Multiple specific components
+@Component({ selector: 'app-primary-button' })
+export class PrimaryButtonComponent { /* ... */ }
+
+@Component({ selector: 'app-secondary-button' })
+export class SecondaryButtonComponent { /* ... */ }
+
+// CORRECT: Single configurable component
+@Component({ selector: 'app-button' })
+export class ButtonComponent {
+  readonly variant = input<'primary' | 'secondary'>('primary');
+}
+```
+
+### Don't Use Generic Tailwind Colors
+
+```html
+<!-- WRONG: Generic Tailwind colors -->
+<div class="bg-blue-500 text-white border-gray-300">
+  Generic colors
+</div>
+
+<!-- CORRECT: Design system colors -->
+<div class="bg-primary text-white border-default">
+  Design system colors
+</div>
+```
+
+### Don't Mix Color Systems
+
+```html
+<!-- WRONG: Mixing color systems -->
+<div class="bg-background text-blue-500 border-red-300">
+  Mixed color systems
+</div>
+
+<!-- CORRECT: Consistent design system -->
+<div class="bg-background text-foreground border-default">
+  Consistent design system
+</div>
+```
+
+## Key Takeaways
+
+1. **Single Configurable Components**: Create one configurable component instead of multiple specific ones
+2. **Design System Colors**: Always use design system colors, never generic Tailwind colors
+3. **Signal-Based State**: Use signals for reactive state management
+4. **Event Handling**: Use proper event handling patterns with outputs
+5. **Theme Integration**: Use theme context for conditional styling and content
+6. **Performance**: Use computed signals and lazy loading for optimization
+7. **OnPush Change Detection**: Always use `ChangeDetectionStrategy.OnPush`
+
+## Best Practices Checklist
+
+- [ ] **Single Configurable Components**: One component with variants, not multiple specific components
+- [ ] **Design System Colors**: Using design system colors exclusively
+- [ ] **Signal-Based API**: Using `input()`, `output()`, `signal()`, `computed()`
+- [ ] **OnPush Change Detection**: All components use `ChangeDetectionStrategy.OnPush`
+- [ ] **Theme Integration**: Theme-aware components with conditional styling
+- [ ] **Performance**: Computed signals and lazy loading where appropriate
+- [ ] **Accessibility**: Proper accessibility with ARIA attributes
+- [ ] **Consistency**: Consistent patterns across all components
+
+---
+
+**Remember: This Angular + Vite application follows a single configurable component pattern with design system integration. Always use design system colors, signal-based state management, and OnPush change detection. Never use generic Tailwind colors or create multiple specific components.**

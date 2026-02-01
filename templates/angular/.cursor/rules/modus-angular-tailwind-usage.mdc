@@ -1,0 +1,242 @@
+---
+description: Tailwind CSS v4 with Modus Design System integration in Angular + Vite
+globs: ["**/*.ts", "**/*.html", "**/*.scss", "**/*.css"]
+alwaysApply: false
+---
+
+# Tailwind CSS Usage in Angular + Vite
+
+## Tailwind v4 Integration
+
+This Angular + Vite application uses **Tailwind CSS v4** with Modus Design System integration.
+
+**Configuration**: Tailwind v4 reads CSS variables directly from `src/styles.css`. No separate `tailwind.config.js` is required for basic color mapping.
+
+## FORBIDDEN: Generic Tailwind Colors
+
+### Never Use Generic Tailwind Color Classes
+
+```html
+<!-- WRONG: Generic Tailwind color classes -->
+<div class="bg-blue-500 text-white border-gray-300"></div>
+<div class="bg-red-400 text-yellow-200 border-green-500"></div>
+<div class="bg-gray-100 text-black border-purple-300"></div>
+```
+
+### Never Use Hardcoded Colors
+
+```html
+<!-- WRONG: Hardcoded colors -->
+<div class="bg-[#ffffff] text-[#000000] border-[#e5e5e5]"></div>
+<div [style.background-color]="'#ffffff'"></div>
+```
+
+### Never Use Raw Modus Variables
+
+```html
+<!-- WRONG: Raw Modus CSS variables -->
+<div class="bg-[var(--modus-wc-color-base-page)]"></div>
+<div [style.background-color]="'var(--modus-wc-color-base-page)'"></div>
+```
+
+## CORRECT: Design System Colors
+
+### Use Design System Tailwind Classes
+
+```html
+<!-- CORRECT: Design system colors -->
+<div class="bg-background text-foreground"></div>
+<div class="bg-card text-card-foreground border-default"></div>
+<div class="bg-primary text-primary-foreground"></div>
+<div class="bg-secondary text-secondary-foreground"></div>
+<div class="bg-muted text-muted-foreground"></div>
+<div class="bg-destructive text-destructive-foreground"></div>
+<div class="bg-warning text-warning-foreground"></div>
+<div class="bg-success text-success-foreground"></div>
+```
+
+### Available Design System Colors
+
+```typescript
+// Background colors
+bg-background, bg-card, bg-muted, bg-secondary
+
+// Text colors
+text-foreground, text-card-foreground, text-muted-foreground
+
+// Primary colors
+bg-primary, text-primary-foreground
+
+// Status colors
+bg-destructive, text-destructive-foreground
+bg-warning, text-warning-foreground
+bg-success, text-success-foreground
+
+// Border colors
+border-border, border-default, border-primary, border-success, border-warning, border-destructive
+```
+
+## Component Styling Patterns
+
+### Card Components
+
+```typescript
+@Component({
+  template: `
+    <div class="bg-card text-card-foreground border-default rounded-lg p-6">
+      <div class="text-2xl font-semibold mb-2">{{ title() }}</div>
+      <div class="text-muted-foreground">{{ content() }}</div>
+    </div>
+  `,
+})
+export class CardComponent {
+  readonly title = input.required<string>();
+  readonly content = input<string>('');
+}
+```
+
+### Form Components
+
+```typescript
+@Component({
+  template: `
+    <div class="space-y-4">
+      <div class="flex flex-col gap-2">
+        <div class="text-sm font-medium text-foreground">{{ label() }}</div>
+        <modus-text-input
+          [value]="value()"
+          (inputChange)="handleChange($event)"
+        />
+      </div>
+    </div>
+  `,
+})
+export class FormFieldComponent {
+  readonly label = input.required<string>();
+  readonly value = input<string>('');
+  readonly valueChange = output<string>();
+  
+  handleChange(event: string): void {
+    this.valueChange.emit(event);
+  }
+}
+```
+
+### Status Indicators
+
+```typescript
+@Component({
+  template: `
+    <div [class]="statusClasses()">
+      {{ status() }}
+    </div>
+  `,
+})
+export class StatusIndicatorComponent {
+  readonly status = input<'success' | 'warning' | 'error' | 'info'>('info');
+  
+  readonly statusClasses = computed(() => {
+    const base = 'px-3 py-1 rounded border';
+    const variants = {
+      success: 'bg-success text-success-foreground border-success',
+      warning: 'bg-warning text-warning-foreground border-warning',
+      error: 'bg-destructive text-destructive-foreground border-destructive',
+      info: 'bg-primary text-primary-foreground border-primary',
+    };
+    return `${base} ${variants[this.status()]}`;
+  });
+}
+```
+
+## Typography Patterns
+
+### Typography with Design System Colors
+
+```html
+<div class="space-y-4">
+  <div class="text-4xl font-bold text-foreground">Heading 1</div>
+  <div class="text-3xl font-semibold text-foreground">Heading 2</div>
+  <div class="text-2xl font-medium text-foreground">Heading 3</div>
+  <div class="text-xl font-medium text-foreground">Heading 4</div>
+  <div class="text-lg font-medium text-foreground">Heading 5</div>
+  <div class="text-base font-medium text-foreground">Heading 6</div>
+  
+  <div class="text-base text-foreground">Regular paragraph text</div>
+  <div class="text-sm text-muted-foreground">Small text</div>
+  <div class="text-xs text-muted-foreground">Extra small text</div>
+</div>
+```
+
+## Custom Utilities
+
+### Border Utilities
+
+```html
+<!-- Default borders -->
+<div class="border-default">Default border</div>
+<div class="border-thick">Thick border</div>
+<div class="border-dashed">Dashed border</div>
+
+<!-- Semantic borders -->
+<div class="border-success">Success border</div>
+<div class="border-warning">Warning border</div>
+<div class="border-destructive">Destructive border</div>
+<div class="border-primary">Primary border</div>
+
+<!-- Directional borders -->
+<div class="border-top-default">Top border</div>
+<div class="border-bottom-default">Bottom border</div>
+<div class="border-left-default">Left border</div>
+<div class="border-right-default">Right border</div>
+```
+
+### Elevation Utilities
+
+```html
+<div class="shadow-sm">Small elevation</div>
+<div class="shadow-md">Medium elevation</div>
+<div class="shadow-lg">Large elevation</div>
+<div class="shadow-xl">Extra large elevation</div>
+```
+
+## Common Anti-Patterns
+
+### Don't Mix Color Systems
+
+```html
+<!-- WRONG: Mixing design system and generic colors -->
+<div class="bg-background text-blue-500 border-red-300">
+  Mixed color systems
+</div>
+
+<!-- CORRECT: Consistent design system -->
+<div class="bg-background text-foreground border-default">
+  Consistent design system
+</div>
+```
+
+## Validation
+
+### Linting Commands
+
+```bash
+# Check for color violations
+npm run lint:colors
+
+# Check for inline styles
+npm run lint:styles
+
+# Check for border violations
+npm run lint:borders
+
+# Check for opacity violations
+npm run lint:opacity
+```
+
+## Key Takeaways
+
+1. **Use Design System Colors**: Always use design system Tailwind classes
+2. **Never Use Generic Colors**: No generic Tailwind color classes
+3. **Never Use Hardcoded Colors**: No hex, RGB, or hardcoded values
+4. **Use Custom Utilities**: Leverage custom border and opacity utilities from `src/styles.css`
+5. **Tailwind v4**: Uses CSS imports, reads variables directly from `src/styles.css`

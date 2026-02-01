@@ -1,0 +1,145 @@
+---
+description: Development workflow and quality assurance for Angular + Vite with Modus
+globs: ["**/*.ts", "**/*.html", "**/*.scss", "**/*.css"]
+alwaysApply: false
+---
+
+# Development Workflow & Quality Assurance for Angular + Vite
+
+## MANDATORY: Always Run Linting Commands During Development
+
+**CRITICAL**: Before making any code changes, always run these linting commands to ensure design system compliance:
+
+```bash
+# Check for inline styles that should use Tailwind classes
+npm run lint:styles
+
+# Check for non-Modus colors (hex, RGB, Tailwind colors)
+npm run lint:colors
+
+# Check for non-Modus icons (Font Awesome, Material Icons, etc.)
+npm run lint:icons
+
+# Check for border violations (Tailwind color classes in borders)
+npm run lint:borders
+
+# Check for opacity violations (using /80 syntax instead of custom utilities)
+npm run lint:opacity
+
+# Validate Modus icon names
+npm run lint:icon-names
+
+# Run TypeScript type checking
+npm run type-check
+
+# Run all linting checks at once
+npm run lint:all
+```
+
+## Pre-Development Checklist
+
+Before starting any new feature or component:
+
+1. **Run Design System Lints**:
+
+   ```bash
+   npm run lint:styles    # Check inline styles
+   npm run lint:colors    # Check color usage
+   npm run lint:icons     # Check icon usage
+   npm run lint:borders   # Check border violations
+   npm run lint:opacity   # Check opacity utilities
+   npm run type-check     # TypeScript validation
+   ```
+
+2. **Verify Theme Compatibility**:
+
+   - Test with all 6 Modus themes (classic/modern, light/dark, connect themes)
+   - Ensure components work in both light and dark modes
+
+3. **Check Component Architecture**:
+   - Use single configurable components (not multiple specific ones)
+   - Follow Modus Web Components wrapper patterns
+   - Use signals for state management
+
+## Common Violations to Watch For
+
+### Inline Styles (lint:styles):
+
+```typescript
+// VIOLATION: Inline styles
+template: `<div style="background-color: var(--modus-wc-color-base-page)">`;
+template: `<div [style.margin-right.px]="8">`;
+
+// CORRECT: Tailwind classes
+template: `<div class="bg-background mr-2 text-foreground">`;
+```
+
+### Color Usage (lint:colors):
+
+```typescript
+// VIOLATION: Non-Modus colors
+template: `<div style="background-color: #ffffff">`;
+template: `<div class="bg-blue-500 text-red-400">`;
+
+// CORRECT: Modus design system colors
+template: `<div class="bg-background text-foreground">`;
+```
+
+### Icon Usage (lint:icons):
+
+```typescript
+// VIOLATION: Non-Modus icons
+template: `<i class="fa fa-home"></i>`;
+template: `<mat-icon>home</mat-icon>`;
+
+// CORRECT: Modus icons
+template: `<i class="modus-icons">home</i>`;
+template: `<modus-icon name="home" />`;
+```
+
+### Border Violations (lint:borders):
+
+```html
+<!-- VIOLATION: Tailwind color classes in borders -->
+<div class="border border-red-500">Error message</div>
+
+<!-- CORRECT: Design system border utilities -->
+<div class="border-destructive">Error message</div>
+```
+
+### Opacity Violations (lint:opacity):
+
+```html
+<!-- VIOLATION: Tailwind opacity syntax -->
+<div class="text-foreground/80">Text with opacity</div>
+
+<!-- CORRECT: Custom opacity utilities -->
+<div class="text-foreground-80">Text with opacity</div>
+```
+
+## Quality Gates
+
+**Pre-commit Requirements:**
+
+- [ ] `npm run lint:styles` passes (0 violations)
+- [ ] `npm run lint:colors` passes (0 violations)
+- [ ] `npm run lint:icons` passes (0 violations)
+- [ ] `npm run lint:borders` passes (0 violations)
+- [ ] `npm run lint:opacity` passes (0 violations)
+- [ ] `npm run type-check` passes (0 TypeScript errors)
+- [ ] All 6 themes tested (classic/modern, light/dark, connect themes)
+- [ ] No console errors or warnings
+
+## Angular + Vite Best Practices
+
+### Component Development:
+
+1. **Use standalone components** with signal-based APIs
+2. **Use `input()` and `output()`** functions, not decorators
+3. **Use `ChangeDetectionStrategy.OnPush`** for performance
+4. **Use `inject()`** for dependency injection
+5. **Use modern control flow** (`@if`, `@for`, `@switch`)
+
+---
+
+**Remember**: Quality gates are non-negotiable. All linting commands must pass before any code is considered complete.

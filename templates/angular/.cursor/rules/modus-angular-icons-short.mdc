@@ -1,0 +1,40 @@
+---
+description: Modus Icons usage guide for Angular applications
+globs: ["**/*.ts", "**/*.html", "**/*.scss", "**/*.css"]
+alwaysApply: true
+---
+
+# Modus Icons - Short
+
+Essential icon usage rules for Modus Design System in Angular.
+
+## Key Rules
+
+- **Use Modus icons exclusively** - `<i class="modus-icons">icon_name</i>`
+- **Use UNDERSCORES in names** - `save_disk`, `arrow_left`, NOT `save-disk`, `arrow-left`
+- **Never use other icon libraries** - No Font Awesome, Material Icons, Heroicons
+- **Use valid icon names only** - Check modus-angular-icon-names.mdc for valid names
+- **Size with Tailwind classes** - `text-sm`, `text-lg`, `text-xl` for sizing
+- **Color with design system** - `text-primary`, `text-foreground`, `text-muted-foreground`
+
+## Usage Patterns
+
+```html
+<!-- Direct HTML usage -->
+<i class="modus-icons text-lg" aria-hidden="true">save_disk</i>
+<i class="modus-icons text-base" role="img" aria-label="Settings">settings</i>
+
+<!-- In buttons -->
+<modus-button icon="save_disk" iconPosition="left">Save</modus-button>
+<modus-button icon="settings" iconPosition="only" ariaLabel="Settings"></modus-button>
+```
+
+## Common Icons
+
+- **Navigation:** `arrow_left`, `arrow_right`, `chevron_left`, `chevron_right`, `menu`, `close`
+- **Actions:** `add`, `add_circle`, `edit`, `delete`, `save_disk`, `download`, `upload`
+- **Status:** `check`, `check_circle`, `error`, `warning`, `info`, `help`
+
+## Reference
+
+For complete icon list and accessibility guidelines, fetch the full rule: `modus-angular-icons`

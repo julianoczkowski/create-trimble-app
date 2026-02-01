@@ -1,0 +1,54 @@
+---
+description: 6 Modus themes with proper switching and persistence in Angular + Vite
+globs: ["**/*.ts", "**/*.html", "**/*.scss", "**/*.css"]
+alwaysApply: true
+---
+
+# Modus Themes - Short
+
+6 Modus themes with proper switching and persistence.
+
+## Key Rules
+
+- **6 Modus themes supported** - Classic Light/Dark, Modern Light/Dark, Connect Light/Dark
+- **Use ThemeService with inject()** - Proper Angular service pattern
+- **Theme persistence** - Save to localStorage and restore on page load
+- **Official data-theme attribute** - Use `data-theme` for theme switching
+- **Theme-aware components** - Use computed signals for conditional styling
+- **Test all themes** - Verify components work in all 6 themes
+
+## Available Themes
+
+- `modus-classic-light` / `modus-classic-dark`
+- `modus-modern-light` / `modus-modern-dark`
+- `connect-light` / `connect-dark`
+
+## Usage Pattern
+
+```typescript
+@Component({
+  template: `
+    <div class="bg-background text-foreground">
+      Theme: {{ themeService.currentTheme() }}
+      Mode: {{ themeService.isDark() ? 'Dark' : 'Light' }}
+    </div>
+  `,
+})
+export class ThemedComponent {
+  readonly themeService = inject(ThemeService);
+}
+```
+
+## Theme Switching
+
+```typescript
+// Set theme via service
+this.themeService.setTheme('modus-modern-dark');
+
+// Document attribute is set automatically
+// document.documentElement.setAttribute('data-theme', theme);
+```
+
+## Reference
+
+For detailed theme implementation and service patterns, fetch the full rule: `modus-angular-themes`

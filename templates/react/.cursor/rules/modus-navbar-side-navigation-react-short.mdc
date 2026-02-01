@@ -1,0 +1,23 @@
+---
+description: Critical integration patterns for Modus Navbar with Side Navigation in React
+globs: ["**/components/ModusNavbar*.tsx", "**/components/ModusSideNavigation*.tsx", "**/demos/**/page.tsx"]
+alwaysApply: true
+---
+
+# Modus Navbar + Side Navigation - Short
+
+Critical integration patterns for Modus Navbar with Side Navigation in React.
+
+## Key Rules
+
+- **Use ModusNavbar wrapper component** - Never use `ModusWcNavbar` directly
+- **Pass props as native React objects** - Wrapper handles serialization
+- **Sync via ref and state** - Set `expanded` on ref AND track in React state
+- **Position side navigation absolutely** - Use `position: absolute`, `z-index: 999`
+- **Account for collapsed width** - Add `margin-left: 4rem` to panel content
+- **Listen for expandedChange events** - Keep React state in sync with web component
+- **Collapse sub-menus when nav closes** - Reset sub-menu states on collapse
+
+## Reference
+
+For detailed patterns, layout structure, and common pitfalls, fetch the full rule: `modus-navbar-side-navigation-react`

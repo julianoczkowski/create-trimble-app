@@ -1,0 +1,222 @@
+---
+description: 6 Modus themes with proper switching and persistence in Angular + Vite
+globs: ["**/*.ts", "**/*.html", "**/*.scss", "**/*.css"]
+alwaysApply: false
+---
+
+# Modus Themes Implementation in Angular + Vite
+
+## Theme System Overview
+
+This Angular + Vite application supports **6 Modus themes** with proper theme switching, persistence, and service-based management.
+
+**Available Themes**: 4 Modus themes + 2 Connect themes
+
+- `modus-classic-light` / `modus-classic-dark`
+- `modus-modern-light` / `modus-modern-dark`
+- `connect-light` / `connect-dark`
+
+## Theme Architecture
+
+### ThemeService Implementation
+
+```typescript
+import { Injectable, signal, computed } from '@angular/core';
+
+export type Theme =
+  | 'modus-classic-light'
+  | 'modus-classic-dark'
+  | 'modus-modern-light'
+  | 'modus-modern-dark'
+  | 'connect-light'
+  | 'connect-dark';
+
+const VALID_THEMES: Theme[] = [
+  'modus-classic-light',
+  'modus-classic-dark',
+  'modus-modern-light',
+  'modus-modern-dark',
+  'connect-light',
+  'connect-dark',
+];
+
+@Injectable({ providedIn: 'root' })
+export class ThemeService {
+  private readonly themeSignal = signal<Theme>('modus-classic-light');
+
+  readonly currentTheme = this.themeSignal.asReadonly();
+  readonly isDark = computed(() => this.themeSignal().includes('dark'));
+  readonly isModern = computed(() => this.themeSignal().includes('modern'));
+
+  constructor() {
+    this.loadThemeFromStorage();
+  }
+
+  private loadThemeFromStorage(): void {
+    if (typeof window !== 'undefined') {
+      try {
+        const savedTheme = window.localStorage.getItem('preferred-theme') as Theme | null;
+        if (savedTheme && VALID_THEMES.includes(savedTheme)) {
+          this.setTheme(savedTheme);
+        }
+      } catch (error) {
+        console.warn('Unable to read stored theme preference:', error);
+      }
+    }
+  }
+
+  setTheme(theme: Theme): void {
+    this.themeSignal.set(theme);
+    
+    // Apply theme to document
+    document.documentElement.setAttribute('data-theme', theme);
+    
+    // Persist to localStorage
+    try {
+      window.localStorage.setItem('preferred-theme', theme);
+    } catch (error) {
+      console.warn('Unable to persist theme preference:', error);
+    }
+  }
+}
+```
+
+## Theme Usage Patterns
+
+### Theme-Aware Components
+
+```typescript
+@Component({
+  template: `
+    <div class="bg-background text-foreground transition-colors duration-200">
+      <div class="text-foreground">Current theme: {{ themeService.currentTheme() }}</div>
+      <div class="text-muted-foreground">
+        Mode: {{ themeService.isDark() ? 'Dark' : 'Light' }}
+      </div>
+      <div class="text-muted-foreground">
+        Style: {{ themeService.isModern() ? 'Modern' : 'Classic' }}
+      </div>
+    </div>
+  `,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class ThemedComponent {
+  readonly themeService = inject(ThemeService);
+}
+```
+
+### Conditional Theming
+
+```typescript
+@Component({
+  template: `
+    <div class="bg-background text-foreground p-4 rounded border-default">
+      <div class="text-lg font-semibold">{{ themeSpecificContent() }}</div>
+    </div>
+  `,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class ConditionalThemedComponent {
+  private themeService = inject(ThemeService);
+  
+  readonly themeSpecificContent = computed(() => {
+    switch (this.themeService.currentTheme()) {
+      case 'modus-classic-light': return 'Classic Light Theme';
+      case 'modus-classic-dark': return 'Classic Dark Theme';
+      case 'modus-modern-light': return 'Modern Light Theme';
+      case 'modus-modern-dark': return 'Modern Dark Theme';
+      case 'connect-light': return 'Connect Light Theme';
+      case 'connect-dark': return 'Connect Dark Theme';
+      default: return 'Default Theme';
+    }
+  });
+}
+```
+
+### Theme Switching Component
+
+```typescript
+@Component({
+  template: `
+    <div class="space-y-2">
+      <div class="text-sm font-medium text-foreground">Theme</div>
+      <modus-dropdown-menu
+        [menuVisible]="isOpen()"
+        (itemSelect)="handleItemSelect($event)"
+        (menuVisibleChange)="isOpen.set($event)"
+      >
+        <modus-button slot="trigger" variant="outlined" (buttonClick)="isOpen.update(o => !o)">
+          {{ selectedLabel() }}
+        </modus-button>
+        @for (theme of themes; track theme.value) {
+          <modus-menu-item 
+            [value]="theme.value"
+            [class.bg-primary-20]="currentTheme() === theme.value"
+          >
+            {{ theme.label }}
+          </modus-menu-item>
+        }
+      </modus-dropdown-menu>
+    </div>
+  `,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class ThemeSwitcherComponent {
+  private themeService = inject(ThemeService);
+  
+  readonly isOpen = signal(false);
+  readonly currentTheme = this.themeService.currentTheme;
+  
+  readonly themes = [
+    { value: 'modus-classic-light', label: 'Classic Light' },
+    { value: 'modus-classic-dark', label: 'Classic Dark' },
+    { value: 'modus-modern-light', label: 'Modern Light' },
+    { value: 'modus-modern-dark', label: 'Modern Dark' },
+    { value: 'connect-light', label: 'Connect Light' },
+    { value: 'connect-dark', label: 'Connect Dark' },
+  ];
+  
+  readonly selectedLabel = computed(() => {
+    const theme = this.themes.find(t => t.value === this.currentTheme());
+    return theme?.label || 'Select Theme';
+  });
+  
+  handleItemSelect(event: CustomEvent<{ value: string }>): void {
+    this.themeService.setTheme(event.detail.value as Theme);
+    this.isOpen.set(false);
+  }
+}
+```
+
+## Common Anti-Patterns
+
+### Don't Use Custom Theme Attributes
+
+```typescript
+// WRONG: Using custom theme attributes
+document.documentElement.setAttribute('data-mode', isDark ? 'dark' : 'light');
+document.documentElement.classList.add(isDark ? 'dark' : 'light');
+
+// CORRECT: Use only official data-theme attribute
+document.documentElement.setAttribute('data-theme', theme);
+```
+
+### Don't Use Invalid Theme Values
+
+```typescript
+// WRONG: Invalid theme values
+this.themeService.setTheme('invalid-theme');
+this.themeService.setTheme('modus-light');
+
+// CORRECT: Valid theme values
+this.themeService.setTheme('modus-classic-light');
+this.themeService.setTheme('connect-dark');
+```
+
+## Key Takeaways
+
+1. **Use ThemeService**: Always use `ThemeService` for theme access via `inject()`
+2. **Official Theme Application**: Use only `data-theme` attribute (no custom attributes)
+3. **Valid Themes**: Only use the 6 valid theme values
+4. **Persistence**: Themes are automatically persisted to localStorage
+5. **Testing**: Test all themes to ensure proper functionality

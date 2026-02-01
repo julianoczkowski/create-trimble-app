@@ -1,0 +1,160 @@
+---
+description: Essential opacity utilities for Modus Design System colors in Angular + Vite
+globs: ["**/*.ts", "**/*.html", "**/*.scss", "**/*.css"]
+alwaysApply: false
+---
+
+# Modus Opacity Utilities - Angular
+
+Essential opacity utilities for Modus Design System colors in Angular + Vite.
+
+## Key Rules
+
+- **Use custom opacity utilities, not Tailwind /80 syntax** - `text-foreground-80` not `text-foreground/80`
+- **CSS variables don't work with Tailwind opacity modifiers** - Tailwind needs actual color values
+- **Use color-mix() for opacity variants** - Modern CSS function for proper opacity calculation
+- **All utilities defined in styles.css** - No Tailwind config changes needed
+- **Respects theme switching** - Works in all 6 Modus themes
+- **Use semantic color names** - `foreground`, `primary`, `destructive`, etc.
+
+## Available Opacity Levels
+
+- **80%** - `text-foreground-80`, `bg-primary-80`, `border-destructive-80`
+- **60%** - `text-foreground-60`, `bg-primary-60`, `border-destructive-60`
+- **40%** - `text-foreground-40`, `bg-primary-40`, `border-destructive-40`
+- **20%** - `text-foreground-20`, `bg-primary-20`, `border-destructive-20`
+
+## Available Colors
+
+- **foreground** - `text-foreground-80`, `bg-foreground-80`, `border-foreground-80`
+- **muted-foreground** - `text-muted-foreground-80`, `bg-muted-foreground-80`
+- **primary** - `text-primary-80`, `bg-primary-80`, `border-primary-80`
+- **secondary** - `text-secondary-80`, `bg-secondary-80`
+- **destructive** - `text-destructive-80`, `bg-destructive-80`, `border-destructive-80`
+- **warning** - `text-warning-80`, `bg-warning-80`, `border-warning-80`
+- **success** - `text-success-80`, `bg-success-80`, `border-success-80`
+
+## Usage Examples
+
+### Text Opacity
+
+```html
+<!-- WRONG: Tailwind syntax doesn't work with CSS variables -->
+<div class="text-foreground/80">Text with 80% opacity</div>
+
+<!-- CORRECT: Use custom opacity utilities -->
+<div class="text-foreground-80">Text with 80% opacity</div>
+<div class="text-primary-60">Primary text with 60% opacity</div>
+<div class="text-muted-foreground-40">Muted text with 40% opacity</div>
+```
+
+### Background Opacity
+
+```html
+<!-- CORRECT: Background opacity utilities -->
+<div class="bg-primary-80">Primary background with 80% opacity</div>
+<div class="bg-destructive-60">Destructive background with 60% opacity</div>
+<div class="bg-warning-40">Warning background with 40% opacity</div>
+```
+
+### Border Opacity
+
+```html
+<!-- CORRECT: Border opacity utilities -->
+<div class="border border-primary-80">Primary border with 80% opacity</div>
+<div class="border border-destructive-60">Destructive border with 60% opacity</div>
+<div class="border border-success-40">Success border with 40% opacity</div>
+```
+
+### Combined Usage
+
+```html
+<!-- CORRECT: Mix opacity utilities with other classes -->
+<div class="p-4 bg-card border border-primary-40 rounded-lg">
+  <div class="text-foreground-80 mb-2">Title with 80% opacity</div>
+  <div class="text-muted-foreground-60">Description with 60% opacity</div>
+</div>
+```
+
+## Implementation Details
+
+### CSS Custom Properties
+
+```css
+/* Opacity variants for design system colors */
+--foreground-80: color-mix(in srgb, var(--foreground) 80%, transparent);
+--foreground-60: color-mix(in srgb, var(--foreground) 60%, transparent);
+--foreground-40: color-mix(in srgb, var(--foreground) 40%, transparent);
+--foreground-20: color-mix(in srgb, var(--foreground) 20%, transparent);
+```
+
+### Tailwind Utilities
+
+```css
+.text-foreground-80 {
+  color: var(--foreground-80);
+}
+.text-foreground-60 {
+  color: var(--foreground-60);
+}
+.text-foreground-40 {
+  color: var(--foreground-40);
+}
+.text-foreground-20 {
+  color: var(--foreground-20);
+}
+```
+
+## Common Patterns
+
+### Subtle Text Hierarchy
+
+```html
+<div class="space-y-2">
+  <div class="text-foreground">Main heading (100%)</div>
+  <div class="text-foreground-80">Subheading (80%)</div>
+  <div class="text-muted-foreground-60">Description (60%)</div>
+  <div class="text-muted-foreground-40">Caption (40%)</div>
+</div>
+```
+
+### Interactive States
+
+```html
+<modus-button class="bg-primary hover:bg-primary-80 transition-colors">
+  Hover with opacity
+</modus-button>
+```
+
+### Overlay Effects
+
+```html
+<div class="relative">
+  <div class="bg-foreground-20 absolute inset-0 rounded-lg"></div>
+  <div class="relative z-10 p-4">Content with overlay</div>
+</div>
+```
+
+## Migration Guide
+
+### From Tailwind /80 syntax
+
+```html
+<!-- WRONG: Old (doesn't work with CSS variables) -->
+<div class="text-foreground/80">Text</div>
+<div class="bg-primary/60">Background</div>
+<div class="border-destructive/40">Border</div>
+
+<!-- CORRECT: New (works with design system) -->
+<div class="text-foreground-80">Text</div>
+<div class="bg-primary-60">Background</div>
+<div class="border-destructive-40">Border</div>
+```
+
+## Best Practices
+
+- **Use semantic colors** - `foreground`, `primary`, `destructive` instead of generic colors
+- **Maintain contrast ratios** - Ensure accessibility with opacity levels
+- **Test in all themes** - Verify opacity works in light and dark modes
+- **Use consistent opacity levels** - Stick to 80%, 60%, 40%, 20% for consistency
+- **Combine with other utilities** - Mix with spacing, sizing, and layout classes

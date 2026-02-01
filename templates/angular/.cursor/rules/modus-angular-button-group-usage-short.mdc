@@ -1,0 +1,47 @@
+---
+description: Critical patterns for ModusButton usage inside ModusButtonGroup in Angular
+globs: ["**/*.ts", "**/*.html", "**/*.scss", "**/*.css"]
+alwaysApply: true
+---
+
+# Modus Button Group Usage - Short
+
+Critical pattern to avoid styling conflicts in button groups.
+
+## Key Rules
+
+- **No defaults for variant/color in ModusButton** - Defaults override button group settings
+- **Group controls styling** - ModusButtonGroup applies variant/color to all child buttons
+- **Don't set variant/color on buttons inside groups** - Let the group control them
+- **Explicitly set props for standalone buttons** - When not in a group, set variant and color
+- **Group uses setAttribute after load** - DOM manipulation requires no conflicting props
+- **Test all three variants** - Outlined, filled, and borderless should look distinct
+
+## Correct Patterns
+
+```typescript
+// CORRECT - No defaults, allows group to control
+readonly color = input<ButtonColor | undefined>();
+readonly variant = input<ButtonVariant | undefined>();
+
+// WRONG - Defaults override group settings
+readonly color = input<ButtonColor>('primary');
+readonly variant = input<ButtonVariant>('filled');
+```
+
+```html
+<!-- CORRECT: Group controls all button styling -->
+<modus-button-group variant="outlined" color="primary">
+  <modus-button>Button 1</modus-button>
+  <modus-button>Button 2</modus-button>
+</modus-button-group>
+
+<!-- WRONG: Individual button props override group -->
+<modus-button-group variant="outlined">
+  <modus-button variant="filled">Button</modus-button>
+</modus-button-group>
+```
+
+## Reference
+
+For detailed patterns and wrapper component implementation, fetch the full rule: `modus-angular-button-group-usage`

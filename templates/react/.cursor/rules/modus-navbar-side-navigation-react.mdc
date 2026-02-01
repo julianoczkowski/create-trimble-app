@@ -1,0 +1,247 @@
+---
+description: Critical integration patterns for Modus Navbar with Side Navigation in React
+globs: ["**/components/ModusNavbar*.tsx", "**/components/ModusSideNavigation*.tsx", "**/demos/**/page.tsx"]
+alwaysApply: false
+---
+
+# Modus Navbar + Side Navigation Integration
+
+Critical patterns for integrating `ModusWcNavbar` with `ModusWcSideNavigation` in React applications.
+
+## Key Rules
+
+- **Use the ModusNavbar wrapper component** - Never use `ModusWcNavbar` directly
+- **Pass props as native React objects** - Wrapper handles serialization
+- **Sync navbar hamburger menu with side navigation** - Use `onMainMenuOpenChange` callback
+- **Position side navigation absolutely** - Required for proper layering
+- **Set explicit z-index** - Ensure side navigation renders above content
+
+---
+
+## DO: Use ModusNavbar Wrapper Component
+
+The `ModusNavbar` wrapper component handles prop serialization and event binding correctly.
+
+```tsx
+// DO: Use the wrapper component
+import ModusNavbar from "../../components/ModusNavbar";
+
+<ModusNavbar
+  userCard={userCard}
+  visibility={{ mainMenu: true, user: true }}
+  onMainMenuOpenChange={handleNavbarMenuOpenChange}
+/>;
+```
+
+## DON'T: Use ModusWcNavbar Directly
+
+Direct usage causes prop serialization issues.
+
+```tsx
+// DON'T: Direct usage won't work properly
+import { ModusWcNavbar } from "@trimble-oss/moduswebcomponents-react";
+
+<ModusWcNavbar
+  user-card={JSON.stringify(userCard)} // Won't work!
+  visibility={JSON.stringify({ mainMenu: true })} // Won't work!
+/>;
+```
+
+---
+
+## DO: Sync Navbar with Side Navigation via Ref
+
+Use a ref to directly set the `expanded` property on the side navigation.
+
+```tsx
+const [navbarMenuExpanded, setNavbarMenuExpanded] = useState(false);
+const sideNavRef = useRef<any>(null);
+
+const handleNavbarMenuOpenChange = useCallback((isOpen: boolean) => {
+  setNavbarMenuExpanded(isOpen);
+
+  // Directly set expanded property on the web component
+  const sideNav = sideNavRef.current;
+  if (sideNav) {
+    sideNav.expanded = isOpen;
+  }
+}, []);
+
+<ModusNavbar
+  onMainMenuOpenChange={handleNavbarMenuOpenChange}
+/>
+
+<ModusWcSideNavigation
+  ref={sideNavRef}
+  expanded={navbarMenuExpanded}
+/>
+```
+
+## DON'T: Rely Only on React State
+
+React state alone won't trigger the web component to expand.
+
+```tsx
+// DON'T: This alone won't work
+const [expanded, setExpanded] = useState(false);
+
+const handleMenuOpen = (isOpen: boolean) => {
+  setExpanded(isOpen); // Web component won't update!
+};
+
+<ModusWcSideNavigation expanded={expanded} />; // May not respond
+```
+
+---
+
+## DO: Position Side Navigation Absolutely with Z-Index
+
+Side navigation uses `position: absolute` internally. Set proper CSS.
+
+```css
+.main-content-row {
+  display: flex;
+  flex: 1;
+  position: relative; /* Creates positioning context */
+  min-height: 500px;
+}
+
+.side-navigation {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  z-index: 999; /* Ensure above content */
+}
+
+.panel-content {
+  flex: 1;
+  padding: 1.5rem;
+  margin-left: 4rem; /* Account for collapsed nav width */
+}
+```
+
+## DON'T: Use Relative Positioning
+
+Relative positioning causes the side navigation to be hidden by other content.
+
+```css
+/* DON'T: Side nav will be hidden */
+.side-navigation {
+  position: relative; /* Wrong! */
+}
+```
+
+---
+
+## DO: Listen for expandedChange Events
+
+Keep React state in sync with web component state changes.
+
+```tsx
+useEffect(() => {
+  const sideNav = sideNavRef.current;
+  if (!sideNav) return;
+
+  const handleExpandedChange = (e: Event) => {
+    const customEvent = e as CustomEvent<boolean>;
+    setNavbarMenuExpanded(customEvent.detail);
+  };
+
+  sideNav.addEventListener("expandedChange", handleExpandedChange);
+
+  return () => {
+    sideNav.removeEventListener("expandedChange", handleExpandedChange);
+  };
+}, []);
+```
+
+---
+
+## DO: Use Correct User Card Structure
+
+```tsx
+const userCard = {
+  name: "John Doe",
+  email: "john.doe@example.com",
+  avatarSrc: "", // Optional
+  avatarAlt: "User Avatar", // Optional
+};
+```
+
+---
+
+## DO: Handle Sub-Menu State When Side Nav Collapses
+
+Collapse all sub-menus when the side navigation closes.
+
+```tsx
+const [subMenuStates, setSubMenuStates] = useState<Record<string, boolean>>({
+  charts: false,
+  maps: false,
+});
+
+const collapseAllSubMenus = () => {
+  setSubMenuStates({
+    charts: false,
+    maps: false,
+  });
+};
+
+const handleNavbarMenuOpenChange = useCallback((isOpen: boolean) => {
+  setNavbarMenuExpanded(isOpen);
+
+  if (!isOpen) {
+    collapseAllSubMenus(); // Reset sub-menus when collapsing
+  }
+}, []);
+```
+
+---
+
+## Required Layout Structure
+
+```tsx
+<div className="layout-with-navbar">
+  <ModusNavbar
+    userCard={userCard}
+    visibility={{ mainMenu: true, user: true }}
+    onMainMenuOpenChange={handleNavbarMenuOpenChange}
+  />
+
+  <div className="main-content-row">
+    <ModusWcSideNavigation
+      ref={sideNavRef}
+      expanded={navbarMenuExpanded}
+      collapse-on-click-outside={true}
+      max-width="256px"
+      mode="push"
+      className="side-navigation"
+    >
+      <ModusWcMenu>
+        <ModusWcMenuItem label="Home" value="home">
+          <ModusWcIcon slot="start-icon" name="home" decorative={true} />
+        </ModusWcMenuItem>
+      </ModusWcMenu>
+    </ModusWcSideNavigation>
+
+    <div className="panel-content">{/* Main content here */}</div>
+  </div>
+</div>
+```
+
+---
+
+## Common Pitfalls
+
+1. **Hamburger menu not visible** - Use `ModusNavbar` wrapper, not `ModusWcNavbar` directly
+2. **Side nav expands then immediately collapses** - Bind `expanded` prop to React state and set via ref
+3. **Side nav hidden by content** - Use `position: absolute` and `z-index: 999`
+4. **Events not firing** - Use `addEventListener` for web component custom events
+5. **Props not updating** - Set properties directly on the ref for web components
+
+---
+
+## Reference Implementation
+
+See `/src/demos/side-navigation-demo/page.tsx` for complete working examples.

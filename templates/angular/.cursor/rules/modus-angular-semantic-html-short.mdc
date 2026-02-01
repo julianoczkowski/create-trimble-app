@@ -1,0 +1,36 @@
+---
+description: Semantic HTML usage guidelines for Angular + Vite with Modus
+globs: ["**/*.ts", "**/*.html", "**/*.scss", "**/*.css"]
+alwaysApply: true
+---
+
+# Modus Semantic HTML - Short
+
+Use div elements exclusively to avoid Tailwind CSS conflicts.
+
+## Key Rules
+
+- **Use div elements only** - All content must use `<div>` elements
+- **No semantic HTML elements** - Never use `h1`, `p`, `section`, `header`, `footer`, `nav`, `main`, `aside`, `article`, `span`
+- **Use Tailwind classes for styling** - Apply typography and layout with Tailwind classes
+- **Icon exception** - Only `<i>` elements allowed for Modus icons
+- **Consistent structure** - Maintain consistent div-based component structure
+
+## Correct Patterns
+
+```html
+<!-- CORRECT: Div elements with Tailwind classes -->
+<div class="text-4xl font-bold">Title</div>
+<div class="text-base">Paragraph text</div>
+<div class="bg-background">Header content</div>
+<div class="bg-muted">Footer content</div>
+
+<!-- WRONG: Semantic HTML elements -->
+<h1 class="text-4xl font-bold">Title</h1>
+<p class="text-base">Paragraph text</p>
+<header class="bg-background">Header content</header>
+```
+
+## Reference
+
+For detailed HTML patterns and accessibility guidelines, fetch the full rule: `modus-angular-semantic-html`

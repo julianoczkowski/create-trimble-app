@@ -1,0 +1,48 @@
+---
+description: Essential border usage rules for Modus Design System integration in Angular + Vite
+globs: ["**/*.ts", "**/*.html", "**/*.scss", "**/*.css"]
+alwaysApply: true
+---
+
+# Border Usage Guidelines - Short
+
+Essential border usage rules for Modus Design System integration.
+
+## Key Rules
+
+- **Use design system border utilities only** - `border-default`, `border-success`, `border-warning`, `border-destructive`, `border-primary`
+- **Never use Tailwind color classes in borders** - No `border-blue-500`, `border-gray-300`, etc.
+- **Use `border-thick` for emphasis** - For important borders and separators
+- **Use directional borders** - `border-top-default`, `border-bottom-default`, etc.
+- **No inline styles for borders** - Use Tailwind classes exclusively
+
+## Correct Patterns
+
+```html
+<!-- CORRECT: Design system utilities -->
+<div class="border-default">Default border</div>
+<div class="border-success">Success border</div>
+<div class="border-warning">Warning border</div>
+<div class="border-destructive">Error border</div>
+<div class="border-primary">Primary border</div>
+
+<!-- CORRECT: Thick borders -->
+<div class="border-thick-success">Important success</div>
+
+<!-- CORRECT: Directional borders -->
+<div class="border-bottom-default">Bottom border</div>
+```
+
+## Forbidden Patterns
+
+```html
+<!-- WRONG: Tailwind color classes -->
+<div class="border border-red-500">Error</div>
+
+<!-- WRONG: Inline styles -->
+<div [style.border]="'1px solid var(--border)'">Content</div>
+```
+
+## Reference
+
+For detailed border utilities and patterns, fetch the full rule: `modus-angular-border-usage`

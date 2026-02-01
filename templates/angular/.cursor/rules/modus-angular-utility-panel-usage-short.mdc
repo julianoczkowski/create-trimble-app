@@ -1,0 +1,52 @@
+---
+description: Correct implementation pattern for Modus Utility Panel in Angular
+globs: ["**/*.ts", "**/*.html", "**/*.scss", "**/*.css"]
+alwaysApply: true
+---
+
+# Modus Utility Panel Usage - Short
+
+Critical implementation patterns for Modus Utility Panel.
+
+## Key Rules
+
+- **Always use `className="fixed-utility-panel"`** - Required for overlay panels
+- **Place panel at END of template** - Outside content containers
+- **Don't use overflow-hidden** - On parent elements
+- **Don't nest panel in relative containers** - Causes layout issues
+- **Control state from your buttons** - Not from `panelToggle` events
+- **Panel should be sibling of content** - Not a child
+
+## Correct Pattern
+
+```typescript
+@Component({
+  template: `
+    <div class="p-6">
+      <modus-button (buttonClick)="expanded.set(!expanded())">
+        {{ expanded() ? 'Close' : 'Open' }} Panel
+      </modus-button>
+    </div>
+
+    <modus-utility-panel
+      [expanded]="expanded()"
+      className="fixed-utility-panel"
+      position="right"
+      panelWidth="312px"
+    >
+      <div slot="header">Panel Title</div>
+      <div>Panel content</div>
+      <div slot="footer">
+        <modus-button (buttonClick)="expanded.set(false)">Close</modus-button>
+      </div>
+    </modus-utility-panel>
+  `,
+})
+export class PanelComponent {
+  readonly expanded = signal<boolean>(false);
+}
+```
+
+## Reference
+
+For detailed panel patterns and props, fetch the full rule: `modus-angular-utility-panel-usage`

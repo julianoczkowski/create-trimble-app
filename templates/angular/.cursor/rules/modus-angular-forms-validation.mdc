@@ -1,0 +1,124 @@
+---
+description: Comprehensive rules for implementing forms and validation in Angular with Modus Web Components
+globs: ["**/*.ts", "**/*.html", "**/*.scss", "**/*.css"]
+alwaysApply: false
+---
+
+# Forms and Validation Rules
+
+Comprehensive guide for implementing forms and validation in Angular applications with Modus Web Components.
+
+## Core Principles
+
+### ALWAYS Use Reactive Forms
+
+```typescript
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+
+@Component({
+  imports: [ReactiveFormsModule],
+})
+export class MyFormComponent {
+  private readonly fb = new FormBuilder();
+
+  readonly form = this.fb.group({
+    email: ['', [Validators.required, Validators.email]],
+    password: ['', [Validators.required, Validators.minLength(8)]],
+  });
+}
+```
+
+## CRITICAL: Track Touched State Manually
+
+**Modus Web Components don't automatically track Angular form touched state.** You must manually track which fields have been touched.
+
+```typescript
+export class FormComponent {
+  readonly touchedFields = signal<Set<string>>(new Set());
+
+  handleFieldChange(event: InputEvent, fieldName: string): void {
+    const target = event.target as HTMLInputElement;
+    const control = this.form.controls[fieldName];
+    control.setValue(target.value);
+    this.markFieldTouched(fieldName);
+  }
+
+  handleFieldBlur(fieldName: string): void {
+    this.markFieldTouched(fieldName);
+  }
+
+  private markFieldTouched(fieldName: string): void {
+    this.touchedFields.update((fields) => {
+      const newFields = new Set(fields);
+      newFields.add(fieldName);
+      return newFields;
+    });
+  }
+}
+```
+
+## Validation Feedback Pattern
+
+### Use Computed Signals for Validation Feedback
+
+```typescript
+readonly emailFeedback = computed<IInputFeedbackProp | undefined>(() => {
+  const control = this.form.controls.email;
+  const isTouched = this.touchedFields().has('email');
+
+  if (!isTouched || !control.errors) return undefined;
+
+  if (control.errors['required']) {
+    return { level: 'error', message: 'Email address is required.' };
+  }
+  if (control.errors['email']) {
+    return { level: 'error', message: 'Please enter a valid email address.' };
+  }
+  return undefined;
+});
+```
+
+## Connecting Modus Components to Forms
+
+### Text Inputs
+
+```typescript
+readonly firstNameFeedback = computed<IInputFeedbackProp | undefined>(() => {
+  const control = this.form.controls.firstName;
+  const isTouched = this.touchedFields().has('firstName');
+  if (!isTouched || !control.errors) return undefined;
+  if (control.errors['required']) {
+    return { level: 'error', message: 'First name is required.' };
+  }
+  return undefined;
+});
+
+handleFirstNameChange(event: InputEvent): void {
+  const target = event.target as HTMLInputElement;
+  this.form.controls.firstName.setValue(target.value);
+  this.markFieldTouched('firstName');
+}
+```
+
+```html
+<modus-text-input
+  inputId="firstName"
+  placeholder="Enter first name"
+  [required]="true"
+  [value]="form.controls.firstName.value ?? ''"
+  [feedback]="firstNameFeedback()"
+  (inputChange)="handleFirstNameChange($event.detail)"
+  (inputBlur)="handleFirstNameBlur()"
+/>
+```
+
+## Best Practices Summary
+
+1. **ALWAYS use Reactive Forms** - Don't use template-driven forms
+2. **ALWAYS track touched state manually** - Modus components don't integrate automatically
+3. **ALWAYS use computed signals for feedback** - Reactive, efficient validation
+4. **ALWAYS check touched state before showing errors** - Better UX
+5. **ALWAYS use specific error messages** - Helpful, clear feedback
+6. **ALWAYS handle both inputChange and inputBlur** - Complete interaction tracking
+7. **ALWAYS extract event.detail** - Correct event handling
+8. **ALWAYS use null coalescing for value bindings** - `form.controls.field.value ?? ''`

@@ -1,0 +1,45 @@
+---
+description: State management patterns for Modus accordion components in Angular
+globs: ["**/*.ts", "**/*.html", "**/*.scss", "**/*.css"]
+alwaysApply: true
+---
+
+# Modus Accordion State Management - Short
+
+Essential state management patterns for Modus Accordion components in Angular.
+
+## Key Rules
+
+- **Let Modus components manage their own state** - Don't try to control accordion state from Angular
+- **Use `expanded` for initial state only** - Set initial state, then let component handle changes
+- **Use `(expandedChange)` for tracking** - Monitor state changes without controlling them
+- **Use ViewChild for programmatic control** - Access component methods when needed
+- **Avoid real-time synchronization** - Don't sync Angular state with accordion state
+- **Don't use signals to control accordion** - Creates state loops and conflicts
+
+## Correct Patterns
+
+```typescript
+// CORRECT: Let Modus manage state
+@Component({
+  template: `
+    <modus-accordion>
+      <modus-collapse collapse-id="item1" [expanded]="true">
+        <div slot="content">Content</div>
+      </modus-collapse>
+    </modus-accordion>
+  `,
+})
+
+// CORRECT: ViewChild for programmatic control
+readonly collapseRef = viewChild<ElementRef>('collapseRef');
+
+openAccordion(): void {
+  const collapse = this.collapseRef()?.nativeElement;
+  if (collapse) collapse.expanded = true;
+}
+```
+
+## Reference
+
+For detailed state management patterns and advanced accordion usage, fetch the full rule: `modus-angular-accordion-state-management`

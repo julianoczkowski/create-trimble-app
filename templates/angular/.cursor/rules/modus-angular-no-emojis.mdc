@@ -1,0 +1,66 @@
+---
+description: Strict prohibition of emojis in Angular + Vite application
+globs: ["**/*.ts", "**/*.html", "**/*.scss", "**/*.css"]
+alwaysApply: true
+---
+
+# Modus No Emojis - Angular
+
+Strict prohibition of emojis in Angular + Vite application.
+
+## Key Rules
+
+- **Never use emojis in code** - No emoji characters in any TypeScript, HTML, or CSS files
+- **Never use emojis in components** - No emoji in templates, content, or UI elements
+- **Never use emojis in content** - No emoji in text, descriptions, or user-facing content
+- **Use Modus icons instead** - Replace emojis with appropriate Modus icons
+- **Use Unicode characters for symbols** - Use proper Unicode symbols when needed
+- **Check all content** - Verify no emojis in comments, strings, or documentation
+- **Use linting to catch violations** - Automated checks for emoji usage
+
+## Correct Alternatives
+
+```html
+<!-- WRONG: Emoji usage -->
+<div class="text-foreground">Hello World! [wave emoji]</div>
+<div class="text-success">Success! [checkmark emoji]</div>
+<div class="text-warning">Warning! [warning emoji]</div>
+
+<!-- CORRECT: Use Modus icons -->
+<div class="text-foreground">
+  Hello World! <i class="modus-icons">hand</i>
+</div>
+<div class="text-success">
+  Success! <i class="modus-icons">check_circle</i>
+</div>
+<div class="text-warning">
+  Warning! <i class="modus-icons">warning</i>
+</div>
+```
+
+## Icon Alternatives for Common Emojis
+
+| Emoji | Modus Icon Alternative |
+|-------|----------------------|
+| checkmark | `check_circle` |
+| x mark | `cancel_circle` |
+| warning | `warning` |
+| info | `info` |
+| person | `person` |
+| email | `email` |
+| phone | `phone_mobile` |
+| search | `search` |
+| settings | `settings` |
+| home | `home` |
+| folder | `folder_closed` |
+| file | `file` |
+| save | `save_disk` |
+| delete | `delete` |
+
+## Validation
+
+Run linting to catch emoji violations:
+
+```bash
+npm run lint:all
+```

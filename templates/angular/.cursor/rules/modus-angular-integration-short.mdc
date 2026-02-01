@@ -1,0 +1,60 @@
+---
+description: Integration patterns for Modus Web Components with Angular standalone wrapper components
+globs: ["**/*.ts", "**/*.html", "**/*.scss", "**/*.css"]
+alwaysApply: true
+---
+
+# Modus Angular Integration - Short
+
+Essential integration patterns for Modus Web Components with Angular.
+
+## Key Rules
+
+- **Use wrapper components** - Always use `<modus-button>`, not `<modus-wc-button>` directly
+- **Signal-based API** - Use `input()`, `output()`, `signal()`, `computed()`
+- **OnPush change detection** - All components use `ChangeDetectionStrategy.OnPush`
+- **Event handling** - Extract `event.detail` from CustomEvent when needed
+- **Modern control flow** - Use `@if`, `@for`, `@switch`, not `*ngIf`, `*ngFor`
+- **inject() for DI** - Use `inject()` function, not constructor injection
+
+## Wrapper Pattern
+
+```typescript
+@Component({
+  selector: 'modus-button', // Users use <modus-button>
+  template: `
+    <modus-wc-button
+      [color]="color()"
+      [variant]="variant()"
+      (buttonClick)="handleButtonClick($event)"
+    >
+      <ng-content />
+    </modus-wc-button>
+  `,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class ModusButtonComponent {
+  readonly color = input<ButtonColor>('primary');
+  readonly buttonClick = output<MouseEvent | KeyboardEvent>();
+
+  handleButtonClick(event: CustomEvent<MouseEvent | KeyboardEvent>): void {
+    this.buttonClick.emit(event.detail);
+  }
+}
+```
+
+## Template Usage
+
+```html
+<!-- CORRECT: Use wrapper component -->
+<modus-button [color]="'primary'" (buttonClick)="handleClick($event)">
+  Click Me
+</modus-button>
+
+<!-- WRONG: Never use web component directly -->
+<modus-wc-button>Don't do this</modus-wc-button>
+```
+
+## Reference
+
+For detailed integration patterns and component list, fetch the full rule: `modus-angular-integration`

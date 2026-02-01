@@ -1,0 +1,36 @@
+---
+description: Critical bug fix for ModusWcCheckbox value property inversion in Angular
+globs: ["**/*.ts", "**/*.html", "**/*.scss", "**/*.css"]
+alwaysApply: true
+---
+
+# Modus Checkbox Value Inversion - Short
+
+Critical bug fix for ModusWcCheckbox value property inversion.
+
+## Key Rules
+
+- **Always invert checkbox value property** - `const actualChecked = !value` from `inputChange` event
+- **Use wrapper components** - Create Angular wrapper to handle inversion automatically
+- **Never trust the raw value** - The `value` property is inverted (false when checked, true when unchecked)
+- **Handle in event handlers** - Invert value in `(inputChange)` event handler
+- **Test thoroughly** - Verify checkbox behavior matches expected state
+
+## Bug Details
+
+- When checkbox is **checked**: `target.value` returns `false`
+- When checkbox is **unchecked**: `target.value` returns `true`
+
+## Correct Pattern
+
+```typescript
+handleChange(event: CustomEvent<InputEvent>): void {
+  const value = (event.target as HTMLModusWcCheckboxElement).value;
+  const actualChecked = !value; // CRITICAL: Always invert
+  this.isChecked.set(actualChecked);
+}
+```
+
+## Reference
+
+For detailed bug explanation, wrapper component patterns, and utility functions, fetch the full rule: `modus-angular-checkbox-value-inversion`

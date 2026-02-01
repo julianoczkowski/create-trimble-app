@@ -1,0 +1,56 @@
+---
+description: Comprehensive rules for implementing forms and validation in Angular with Modus
+globs: ["**/*.ts", "**/*.html", "**/*.scss", "**/*.css"]
+alwaysApply: true
+---
+
+# Modus Forms Validation - Short
+
+Essential patterns for forms and validation with Modus Web Components.
+
+## Key Rules
+
+- **Always use Reactive Forms** - Don't use template-driven forms
+- **Track touched state manually** - Modus components don't integrate with Angular form state
+- **Use computed signals for feedback** - Reactive, efficient validation
+- **Check touched state before showing errors** - Better UX
+- **Handle both inputChange and inputBlur** - Complete interaction tracking
+- **Extract event.detail** - Correct event handling pattern
+
+## Manual Touch Tracking
+
+```typescript
+readonly touchedFields = signal<Set<string>>(new Set());
+
+handleFieldChange(event: InputEvent, fieldName: string): void {
+  const target = event.target as HTMLInputElement;
+  this.form.controls[fieldName].setValue(target.value);
+  this.markFieldTouched(fieldName);
+}
+
+private markFieldTouched(fieldName: string): void {
+  this.touchedFields.update((fields) => {
+    const newFields = new Set(fields);
+    newFields.add(fieldName);
+    return newFields;
+  });
+}
+```
+
+## Validation Feedback
+
+```typescript
+readonly emailFeedback = computed<IInputFeedbackProp | undefined>(() => {
+  const control = this.form.controls.email;
+  const isTouched = this.touchedFields().has('email');
+  if (!isTouched || !control.errors) return undefined;
+  if (control.errors['required']) {
+    return { level: 'error', message: 'Email is required.' };
+  }
+  return undefined;
+});
+```
+
+## Reference
+
+For detailed form patterns and validation strategies, fetch the full rule: `modus-angular-forms-validation`

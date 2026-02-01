@@ -1,0 +1,52 @@
+---
+description: Modus Table component usage patterns for Angular
+globs: ["**/*.ts", "**/*.html", "**/*.scss", "**/*.css"]
+alwaysApply: true
+---
+
+# Modus Table Usage - Short
+
+Essential patterns for Modus Table component in Angular.
+
+## Key Rules
+
+- **Use custom editors for editable cells** - Set `editor: 'custom'` with `customEditorRenderer`
+- **Use design system CSS variables** - `--border`, `--background`, `--foreground` in editors
+- **Handle keyboard events** - Enter to commit, Escape to cancel
+- **Use immutable updates with signals** - For proper change detection
+- **Import types from Modus** - `ITableColumn` from `@trimble-oss/moduswebcomponents`
+
+## Basic Usage
+
+```typescript
+const columns: ITableColumn[] = [
+  { id: 'name', header: 'Name', accessor: 'name', width: '40%' },
+  { id: 'role', header: 'Role', accessor: 'role' },
+];
+```
+
+```html
+<modus-table
+  [columns]="columns"
+  [data]="data"
+  density="comfortable"
+  [zebra]="true"
+  [hover]="true"
+/>
+```
+
+## Editable Cells
+
+```typescript
+{
+  id: 'task',
+  header: 'Task',
+  accessor: 'task',
+  editor: 'custom',
+  customEditorRenderer: (value, onCommit) => createTextEditor(value, onCommit),
+}
+```
+
+## Reference
+
+For detailed table patterns and custom editors, fetch the full rule: `modus-angular-table-usage`

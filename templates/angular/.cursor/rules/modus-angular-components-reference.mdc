@@ -1,0 +1,114 @@
+---
+description: Comprehensive reference guide for Modus Web Components in Angular
+globs: ["**/*.ts", "**/*.html", "**/*.scss", "**/*.css"]
+alwaysApply: false
+---
+
+# Modus Components Reference
+
+Comprehensive reference guide for all Modus Design System components available in this Angular + Vite application.
+
+## Component Categories
+
+### Layout & Navigation Components
+
+- **ModusAccordion** - Collapsible content sections
+- **ModusBreadcrumbs** - Navigation breadcrumb trail
+- **ModusNavbar** - Main application navigation bar
+- **ModusSideNavigation** - Collapsible sidebar navigation
+- **ModusTabs** - Tabbed interface for organizing content
+- **ModusToolbar** - Toolbar container with content slots
+- **ModusUtilityPanel** - Slide-out utility panel
+
+### Form & Input Components
+
+- **ModusAutocomplete** - Text input with dropdown suggestions
+- **ModusCheckbox** - Checkbox input with value inversion bug handling
+- **ModusDate** - Date input with calendar picker
+- **ModusDropdownMenu** - Dropdown menu with button trigger
+- **ModusNumberInput** - Number input with validation
+- **ModusRadio** - Radio button input
+- **ModusSelect** - Dropdown select input
+- **ModusSlider** - Range slider input
+- **ModusSwitch** - Toggle switch for boolean values
+- **ModusTextarea** - Multi-line text input
+- **ModusTextInput** - Single-line text input
+- **ModusTimeInput** - Time input with time picker
+
+### Display & Feedback Components
+
+- **ModusAlert** - Alert messages with severity levels
+- **ModusBadge** - Small status indicators
+- **ModusCard** - Content container
+- **ModusChip** - Small interactive elements for tags
+- **ModusDivider** - Visual separator
+- **ModusInputFeedback** - Feedback messages for form inputs
+- **ModusInputLabel** - Label component for form inputs
+- **ModusLoader** - Loading indicators
+- **ModusProgress** - Progress bars
+- **ModusSkeleton** - Placeholder content while loading
+- **ModusToast** - Temporary notification messages
+- **ModusTooltip** - Hover tooltips
+
+### Data & Table Components
+
+- **ModusTable** - Data table with sorting, pagination, editing
+- **ModusPagination** - Page navigation
+
+### Interactive Components
+
+- **ModusButton** - Interactive button
+- **ModusMenu** - Menu container with menu items
+- **ModusMenuItem** - Individual menu item
+- **ModusRating** - Star or emoji rating input
+- **ModusStepper** - Step indicator for multi-step processes
+
+### Media & Icon Components
+
+- **ModusAvatar** - User profile image or initials
+- **ModusIcon** - Icon display using Modus icon system
+
+### System & Utility Components
+
+- **ModusThemeSwitcher** - Theme switching control
+
+## Component Usage Patterns
+
+### Signal-Based API
+
+All wrapper components use Angular's signal-based API:
+
+```typescript
+readonly color = input<ButtonColor>('primary');
+readonly disabled = input<boolean>(false);
+readonly buttonClick = output<MouseEvent | KeyboardEvent>();
+```
+
+### Event Handling
+
+Components properly extract `event.detail` from CustomEvents:
+
+```typescript
+handleButtonClick(event: CustomEvent<MouseEvent | KeyboardEvent>): void {
+  if (!this.disabled()) {
+    this.buttonClick.emit(event.detail);
+  }
+}
+```
+
+## Import Pattern
+
+```typescript
+import {
+  ModusButtonComponent,
+  ModusAlertComponent,
+  ModusIconComponent,
+} from '@/app/components';
+```
+
+## Notes
+
+- All components are TypeScript-enabled with proper type definitions
+- Components follow Angular 20+ best practices with signals
+- Integration with Modus Web Components is handled through wrapper components
+- Always use wrapper selectors (`<modus-button>`) not web component selectors (`<modus-wc-button>`)

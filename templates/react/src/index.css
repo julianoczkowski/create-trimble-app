@@ -1,0 +1,635 @@
+@import url("https://cdn.jsdelivr.net/npm/@trimble-oss/modus-icons@1.17.0/dist/field-systems/fonts/modus-icons.css");
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&display=swap");
+
+/* Modus Icons Solid - for modus-wc-icon variant="solid" */
+@font-face {
+  font-family: "modus-icons-solid";
+  font-display: block;
+  src:
+    url("https://cdn.jsdelivr.net/npm/@trimble-oss/modus-icons@1.17.0/dist/modus-solid/fonts/modus-icons.woff2")
+      format("woff2"),
+    url("https://cdn.jsdelivr.net/npm/@trimble-oss/modus-icons@1.17.0/dist/modus-solid/fonts/modus-icons.woff")
+      format("woff");
+}
+
+.modus-icons-solid {
+  font-family: "modus-icons-solid";
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  display: inline-block;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: "liga";
+}
+
+/* Modus Icons Outlined - for modus-wc-icon variant="outlined" */
+@font-face {
+  font-family: "modus-icons-outlined";
+  font-display: block;
+  src:
+    url("https://cdn.jsdelivr.net/npm/@trimble-oss/modus-icons@1.17.0/dist/modus-outlined/fonts/modus-icons.woff2")
+      format("woff2"),
+    url("https://cdn.jsdelivr.net/npm/@trimble-oss/modus-icons@1.17.0/dist/modus-outlined/fonts/modus-icons.woff")
+      format("woff");
+}
+
+.modus-icons-outlined {
+  font-family: "modus-icons-outlined";
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  display: inline-block;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: "liga";
+}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Font weights */
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+
+  /* Map Figma colors to Modus 9-color system */
+  --background: var(--modus-wc-color-base-page);
+  --foreground: var(--modus-wc-color-base-content);
+  --card: var(--modus-wc-color-base-100);
+  --card-foreground: var(--modus-wc-color-base-content);
+  --popover: var(--modus-wc-color-base-page);
+  --popover-foreground: var(--modus-wc-color-base-content);
+  --primary: var(--modus-wc-color-info);
+  --primary-foreground: var(--modus-wc-color-base-page);
+  --secondary: var(--modus-wc-color-base-300);
+  --secondary-foreground: var(--modus-wc-color-base-content);
+  --muted: var(--modus-wc-color-base-200);
+  --muted-foreground: var(--modus-wc-color-base-content);
+  --accent: var(--modus-wc-color-info);
+  --accent-foreground: var(--modus-wc-color-base-page);
+  --destructive: var(--destructive);
+  --destructive-foreground: var(--modus-wc-color-base-page);
+  --warning: var(--modus-wc-color-warning);
+  --warning-foreground: var(--modus-wc-color-base-content);
+  --success: var(--modus-wc-color-success);
+  --success-foreground: var(--modus-wc-color-base-page);
+  --border: var(--modus-wc-color-base-200);
+  --input: var(--modus-wc-color-base-page);
+  --input-background: var(--modus-wc-color-base-page);
+  --ring: var(--modus-wc-color-info);
+  --elevation-sm: 0px 1px 1px 0px rgba(0, 0, 0, 0.05);
+  --chart-1: var(--modus-wc-color-info);
+  --chart-2: var(--modus-wc-color-warning);
+  --chart-3: var(--modus-wc-color-success);
+  --chart-4: var(--modus-wc-color-error);
+  --chart-5: var(--modus-wc-color-info);
+  --radius: 8px;
+  --radius-card: 16px;
+  --radius-badge: 4px;
+  --sidebar: var(--modus-wc-color-base-page);
+  --sidebar-foreground: var(--modus-wc-color-base-content);
+  --sidebar-primary: var(--modus-wc-color-info);
+  --sidebar-primary-foreground: var(--modus-wc-color-base-page);
+  --sidebar-accent: var(--modus-wc-color-info);
+  --sidebar-accent-foreground: var(--modus-wc-color-base-page);
+  --sidebar-border: var(--modus-wc-color-base-200);
+  --sidebar-ring: var(--modus-wc-color-info);
+
+  /* Opacity variants for design system colors */
+  --foreground-80: color-mix(in srgb, var(--foreground) 80%, transparent);
+  --foreground-60: color-mix(in srgb, var(--foreground) 60%, transparent);
+  --foreground-40: color-mix(in srgb, var(--foreground) 40%, transparent);
+  --foreground-20: color-mix(in srgb, var(--foreground) 20%, transparent);
+
+  --muted-foreground-80: color-mix(
+    in srgb,
+    var(--muted-foreground) 80%,
+    transparent
+  );
+  --muted-foreground-60: color-mix(
+    in srgb,
+    var(--muted-foreground) 60%,
+    transparent
+  );
+  --muted-foreground-40: color-mix(
+    in srgb,
+    var(--muted-foreground) 40%,
+    transparent
+  );
+  --muted-foreground-20: color-mix(
+    in srgb,
+    var(--muted-foreground) 20%,
+    transparent
+  );
+
+  --primary-80: color-mix(in srgb, var(--primary) 80%, transparent);
+  --primary-60: color-mix(in srgb, var(--primary) 60%, transparent);
+  --primary-40: color-mix(in srgb, var(--primary) 40%, transparent);
+  --primary-20: color-mix(in srgb, var(--primary) 20%, transparent);
+
+  --secondary-80: color-mix(in srgb, var(--secondary) 80%, transparent);
+  --secondary-60: color-mix(in srgb, var(--secondary) 60%, transparent);
+  --secondary-40: color-mix(in srgb, var(--secondary) 40%, transparent);
+  --secondary-20: color-mix(in srgb, var(--secondary) 20%, transparent);
+
+  --destructive-80: color-mix(in srgb, var(--destructive) 80%, transparent);
+  --destructive-60: color-mix(in srgb, var(--destructive) 60%, transparent);
+  --destructive-40: color-mix(in srgb, var(--destructive) 40%, transparent);
+  --destructive-20: color-mix(in srgb, var(--destructive) 20%, transparent);
+
+  --warning-80: color-mix(in srgb, var(--warning) 80%, transparent);
+  --warning-60: color-mix(in srgb, var(--warning) 60%, transparent);
+  --warning-40: color-mix(in srgb, var(--warning) 40%, transparent);
+  --warning-20: color-mix(in srgb, var(--warning) 20%, transparent);
+
+  --success-80: color-mix(in srgb, var(--success) 80%, transparent);
+  --success-60: color-mix(in srgb, var(--success) 60%, transparent);
+  --success-40: color-mix(in srgb, var(--success) 40%, transparent);
+  --success-20: color-mix(in srgb, var(--success) 20%, transparent);
+
+  --border-80: color-mix(in srgb, var(--border) 80%, transparent);
+  --border-60: color-mix(in srgb, var(--border) 60%, transparent);
+  --border-40: color-mix(in srgb, var(--border) 40%, transparent);
+  --border-20: color-mix(in srgb, var(--border) 20%, transparent);
+}
+
+@layer base {
+  * {
+    @apply box-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: "Open Sans", sans-serif;
+    font-size: 14px;
+  }
+
+  html {
+    font-size: 14px;
+    font-family: "Open Sans", sans-serif;
+  }
+}
+
+/* Smart Border Utilities - Tailwind v4 Compatible */
+.border-default {
+  border: 1px solid var(--border);
+}
+
+.border-thick {
+  border: 2px solid var(--border);
+}
+
+.border-dashed {
+  border: 1px dashed var(--border);
+}
+
+.border-thick-dashed {
+  border: 2px dashed var(--border);
+}
+
+.border-bottom-default {
+  border-bottom: 1px solid var(--border);
+}
+
+.border-top-default {
+  border-top: 1px solid var(--border);
+}
+
+.border-left-default {
+  border-left: 1px solid var(--border);
+}
+
+.border-right-default {
+  border-right: 1px solid var(--border);
+}
+
+/* Thick Border Utilities with Design System Colors */
+.border-thick-success {
+  border: 2px solid var(--modus-wc-color-success);
+}
+
+.border-thick-warning {
+  border: 2px solid var(--modus-wc-color-warning);
+}
+
+.border-thick-destructive {
+  border: 2px solid var(--modus-wc-color-error);
+}
+
+.border-thick-primary {
+  border: 2px solid var(--modus-wc-color-info);
+}
+
+.border-thick-border {
+  border: 2px solid var(--border);
+}
+
+/* Context-Specific Border Utilities */
+/* Success borders */
+.border-success {
+  border: 1px solid var(--modus-wc-color-success);
+}
+.border-thick-success {
+  border: 2px solid var(--modus-wc-color-success);
+}
+.border-dashed-success {
+  border: 1px dashed var(--modus-wc-color-success);
+}
+.border-top-success {
+  border-top: 1px solid var(--modus-wc-color-success);
+}
+.border-bottom-success {
+  border-bottom: 1px solid var(--modus-wc-color-success);
+}
+.border-left-success {
+  border-left: 1px solid var(--modus-wc-color-success);
+}
+.border-right-success {
+  border-right: 1px solid var(--modus-wc-color-success);
+}
+
+/* Warning borders */
+.border-warning {
+  border: 1px solid var(--modus-wc-color-warning);
+}
+.border-thick-warning {
+  border: 2px solid var(--modus-wc-color-warning);
+}
+.border-dashed-warning {
+  border: 1px dashed var(--modus-wc-color-warning);
+}
+.border-top-warning {
+  border-top: 1px solid var(--modus-wc-color-warning);
+}
+.border-bottom-warning {
+  border-bottom: 1px solid var(--modus-wc-color-warning);
+}
+.border-left-warning {
+  border-left: 1px solid var(--modus-wc-color-warning);
+}
+.border-right-warning {
+  border-right: 1px solid var(--modus-wc-color-warning);
+}
+
+/* Error/Destructive borders */
+.border-destructive {
+  border: 1px solid var(--modus-wc-color-error);
+}
+.border-thick-destructive {
+  border: 2px solid var(--modus-wc-color-error);
+}
+.border-dashed-destructive {
+  border: 1px dashed var(--modus-wc-color-error);
+}
+.border-top-destructive {
+  border-top: 1px solid var(--modus-wc-color-error);
+}
+.border-bottom-destructive {
+  border-bottom: 1px solid var(--modus-wc-color-error);
+}
+.border-left-destructive {
+  border-left: 1px solid var(--modus-wc-color-error);
+}
+.border-right-destructive {
+  border-right: 1px solid var(--modus-wc-color-error);
+}
+
+/* Primary/Info borders */
+.border-primary {
+  border: 1px solid var(--modus-wc-color-info);
+}
+.border-thick-primary {
+  border: 2px solid var(--modus-wc-color-info);
+}
+.border-dashed-primary {
+  border: 1px dashed var(--modus-wc-color-info);
+}
+.border-top-primary {
+  border-top: 1px solid var(--modus-wc-color-info);
+}
+.border-bottom-primary {
+  border-bottom: 1px solid var(--modus-wc-color-info);
+}
+.border-left-primary {
+  border-left: 1px solid var(--modus-wc-color-info);
+}
+.border-right-primary {
+  border-right: 1px solid var(--modus-wc-color-info);
+}
+
+/* Theme-specific icon visibility */
+.github-icon-light {
+  display: block;
+}
+
+.github-icon-dark {
+  display: none;
+}
+
+.dark .github-icon-light {
+  display: none;
+}
+
+.dark .github-icon-dark {
+  display: block;
+}
+
+/*Opacity utilities for design system colors */
+.text-foreground-80 {
+  color: var(--foreground-80);
+}
+.text-foreground-60 {
+  color: var(--foreground-60);
+}
+.text-foreground-40 {
+  color: var(--foreground-40);
+}
+.text-foreground-20 {
+  color: var(--foreground-20);
+}
+
+.text-muted-foreground-80 {
+  color: var(--muted-foreground-80);
+}
+.text-muted-foreground-60 {
+  color: var(--muted-foreground-60);
+}
+.text-muted-foreground-40 {
+  color: var(--muted-foreground-40);
+}
+.text-muted-foreground-20 {
+  color: var(--muted-foreground-20);
+}
+
+.text-primary-80 {
+  color: var(--primary-80);
+}
+.text-primary-60 {
+  color: var(--primary-60);
+}
+.text-primary-40 {
+  color: var(--primary-40);
+}
+.text-primary-20 {
+  color: var(--primary-20);
+}
+
+.text-secondary-80 {
+  color: var(--secondary-80);
+}
+.text-secondary-60 {
+  color: var(--secondary-60);
+}
+.text-secondary-40 {
+  color: var(--secondary-40);
+}
+.text-secondary-20 {
+  color: var(--secondary-20);
+}
+
+.text-destructive-80 {
+  color: var(--destructive-80);
+}
+.text-destructive-60 {
+  color: var(--destructive-60);
+}
+.text-destructive-40 {
+  color: var(--destructive-40);
+}
+.text-destructive-20 {
+  color: var(--destructive-20);
+}
+
+.text-warning-80 {
+  color: var(--warning-80);
+}
+.text-warning-60 {
+  color: var(--warning-60);
+}
+.text-warning-40 {
+  color: var(--warning-40);
+}
+.text-warning-20 {
+  color: var(--warning-20);
+}
+
+.text-success-80 {
+  color: var(--success-80);
+}
+.text-success-60 {
+  color: var(--success-60);
+}
+.text-success-40 {
+  color: var(--success-40);
+}
+.text-success-20 {
+  color: var(--success-20);
+}
+
+.bg-foreground-80 {
+  background-color: var(--foreground-80);
+}
+.bg-foreground-60 {
+  background-color: var(--foreground-60);
+}
+.bg-foreground-40 {
+  background-color: var(--foreground-40);
+}
+.bg-foreground-20 {
+  background-color: var(--foreground-20);
+}
+
+.bg-primary-80 {
+  background-color: var(--primary-80);
+}
+.bg-primary-60 {
+  background-color: var(--primary-60);
+}
+.bg-primary-40 {
+  background-color: var(--primary-40);
+}
+.bg-primary-20 {
+  background-color: var(--primary-20);
+}
+
+.bg-secondary-80 {
+  background-color: var(--secondary-80);
+}
+.bg-secondary-60 {
+  background-color: var(--secondary-60);
+}
+.bg-secondary-40 {
+  background-color: var(--secondary-40);
+}
+.bg-secondary-20 {
+  background-color: var(--secondary-20);
+}
+
+.bg-destructive-80 {
+  background-color: var(--destructive-80);
+}
+.bg-destructive-60 {
+  background-color: var(--destructive-60);
+}
+.bg-destructive-40 {
+  background-color: var(--destructive-40);
+}
+.bg-destructive-20 {
+  background-color: var(--destructive-20);
+}
+
+.bg-warning-80 {
+  background-color: var(--warning-80);
+}
+.bg-warning-60 {
+  background-color: var(--warning-60);
+}
+.bg-warning-40 {
+  background-color: var(--warning-40);
+}
+.bg-warning-20 {
+  background-color: var(--warning-20);
+}
+
+.bg-success-80 {
+  background-color: var(--success-80);
+}
+.bg-success-60 {
+  background-color: var(--success-60);
+}
+.bg-success-40 {
+  background-color: var(--success-40);
+}
+.bg-success-20 {
+  background-color: var(--success-20);
+}
+
+.border-foreground-80 {
+  border-color: var(--foreground-80);
+}
+.border-foreground-60 {
+  border-color: var(--foreground-60);
+}
+.border-foreground-40 {
+  border-color: var(--foreground-40);
+}
+.border-foreground-20 {
+  border-color: var(--foreground-20);
+}
+
+.border-primary-80 {
+  border-color: var(--primary-80);
+}
+.border-primary-60 {
+  border-color: var(--primary-60);
+}
+.border-primary-40 {
+  border-color: var(--primary-40);
+}
+.border-primary-20 {
+  border-color: var(--primary-20);
+}
+
+.border-destructive-80 {
+  border-color: var(--destructive-80);
+}
+.border-destructive-60 {
+  border-color: var(--destructive-60);
+}
+.border-destructive-40 {
+  border-color: var(--destructive-40);
+}
+.border-destructive-20 {
+  border-color: var(--destructive-20);
+}
+
+.border-warning-80 {
+  border-color: var(--warning-80);
+}
+.border-warning-60 {
+  border-color: var(--warning-60);
+}
+.border-warning-40 {
+  border-color: var(--warning-40);
+}
+.border-warning-20 {
+  border-color: var(--warning-20);
+}
+
+.border-success-80 {
+  border-color: var(--success-80);
+}
+.border-success-60 {
+  border-color: var(--success-60);
+}
+.border-success-40 {
+  border-color: var(--success-40);
+}
+.border-success-20 {
+  border-color: var(--success-20);
+}
+
+/* Side Navigation Demo Utilities */
+.side-nav-layout {
+  height: 500px;
+}
+
+.side-nav-navbar {
+  z-index: 2;
+  box-shadow: none;
+}
+
+.side-nav-panel-content {
+  flex: 1;
+}
+
+.side-nav-clickable {
+  cursor: pointer;
+}
+
+.side-nav-nested-indent {
+  padding-left: 4rem !important;
+}
+
+/* Dev Panel Animations */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slide-in-right {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.2s ease-out;
+}
+
+.animate-slide-in-right {
+  animation: slide-in-right 0.3s ease-out;
+}
+

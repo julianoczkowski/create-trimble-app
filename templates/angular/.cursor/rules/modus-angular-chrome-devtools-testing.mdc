@@ -1,0 +1,185 @@
+---
+description: Chrome DevTools MCP usage for comprehensive Angular + Vite testing
+globs: ["**/*.ts", "**/*.html", "**/*.scss", "**/*.css"]
+alwaysApply: false
+---
+
+# Chrome DevTools Testing - Angular + Vite
+
+Comprehensive Chrome DevTools usage for Angular + Vite application testing.
+
+## Key Rules
+
+- **Always use Chrome DevTools MCP** - Never skip browser testing
+- **Test before completion** - Validate all implementations in browser
+- **Check console for errors** - Look for JavaScript errors and warnings
+- **Inspect DOM structure** - Verify proper HTML structure and component rendering
+- **Test interactive elements** - Verify Modus Web Components work correctly
+- **Performance testing** - Use DevTools for performance analysis
+- **Cross-browser validation** - Test in Chrome, Firefox, Safari
+
+## Testing Workflow
+
+### 1. Pre-Development Check
+
+```bash
+# Start development server
+npm start
+
+# Open browser at http://localhost:4200
+```
+
+### 2. Console Error Checking
+
+Look for:
+- JavaScript/TypeScript errors
+- Angular warnings
+- Modus Web Component initialization errors
+- Network request failures
+- CSP violations
+
+### 3. DOM Inspection
+
+Verify:
+- Modus components render correctly
+- Wrapper components pass props correctly
+- Event listeners are attached
+- Styles are applied correctly
+
+### 4. Network Tab
+
+Check:
+- API requests complete successfully
+- Fonts and icons load correctly
+- No 404 errors for assets
+
+### 5. Performance Testing
+
+Monitor:
+- Component render times
+- Memory usage
+- Change detection cycles
+- Bundle size impact
+
+## Testing Checklist
+
+### Component Testing
+
+- [ ] Component renders without console errors
+- [ ] Props/inputs are passed correctly to Modus components
+- [ ] Events emit correctly
+- [ ] Styles match design system
+- [ ] Accessibility attributes present
+
+### Form Testing
+
+- [ ] Input values update correctly
+- [ ] Validation errors display
+- [ ] Form submission works
+- [ ] Checkbox value inversion handled
+
+### Navigation Testing
+
+- [ ] Routes work correctly
+- [ ] Side navigation expands/collapses
+- [ ] Menu items are accessible
+- [ ] Active states highlight correctly
+
+### Theme Testing
+
+- [ ] All 6 themes work correctly
+- [ ] Theme switching persists
+- [ ] Colors update appropriately
+- [ ] No flash of unstyled content
+
+### Modal Testing
+
+- [ ] Modal opens with `showModal()`
+- [ ] Modal closes with `close()`
+- [ ] Focus trapping works
+- [ ] ESC key closes modal
+
+## Common Issues to Check
+
+### Modus Component Issues
+
+```typescript
+// Check for proper component initialization
+const button = document.querySelector('modus-wc-button');
+console.log('Button initialized:', button);
+
+// Check for event binding
+const checkbox = document.querySelector('modus-wc-checkbox');
+console.log('Checkbox value:', checkbox?.value);
+```
+
+### Angular-Specific Issues
+
+```typescript
+// Check for change detection issues
+// Components should use OnPush
+@Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+
+// Check signal updates
+console.log('Signal value:', this.mySignal());
+```
+
+### Event Handling Issues
+
+```typescript
+// Verify CustomEvent.detail extraction
+handleEvent(event: CustomEvent<{ value: string }>): void {
+  console.log('Event detail:', event.detail);
+  console.log('Value:', event.detail.value);
+}
+```
+
+## Performance Metrics
+
+### Target Metrics
+
+- First Contentful Paint: < 1.5s
+- Time to Interactive: < 3s
+- Largest Contentful Paint: < 2.5s
+- Cumulative Layout Shift: < 0.1
+
+### Monitoring Tools
+
+- Lighthouse audit
+- Performance tab profiling
+- Network throttling tests
+- Memory leak detection
+
+## Accessibility Testing
+
+### Screen Reader Testing
+
+- Labels are announced correctly
+- Focus order is logical
+- ARIA attributes are present
+- Interactive elements are accessible
+
+### Keyboard Navigation
+
+- Tab order is correct
+- Enter/Space activate buttons
+- ESC closes modals/dropdowns
+- Arrow keys navigate menus
+
+## Theme Testing Protocol
+
+1. Switch to each theme:
+   - `modus-classic-light`
+   - `modus-classic-dark`
+   - `modus-modern-light`
+   - `modus-modern-dark`
+   - `connect-light`
+   - `connect-dark`
+
+2. Verify for each theme:
+   - Colors are correct
+   - Contrast is adequate
+   - No styling issues
+   - Icons are visible

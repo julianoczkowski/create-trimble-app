@@ -1,0 +1,272 @@
+---
+description: Comprehensive essential rules for Angular + Vite development with Modus Design System
+globs: ["**/*.ts", "**/*.html", "**/*.scss", "**/*.css"]
+alwaysApply: true
+---
+
+# Modus Angular Essentials
+
+Comprehensive essential rules for Angular + Vite development with Modus Design System.
+
+## Design System Integration
+
+### Color Usage
+
+- **Use design system colors only** - `bg-background`, `text-foreground`, `bg-primary`, etc.
+- **Never use generic Tailwind colors** - No `bg-blue-500`, `text-gray-600`, etc.
+- **Never use hardcoded values** - No hex colors, RGB values, or CSS variables directly
+- **Use semantic color names** - `bg-destructive`, `text-warning`, `bg-success`
+- **Follow color hierarchy** - Background > Card > Primary > Secondary > Muted
+- **Test in all themes** - Ensure colors work in light and dark modes
+
+### Opacity Usage
+
+- **Use custom opacity utilities, not Tailwind /80 syntax** - `text-foreground-80` not `text-foreground/80`
+- **CSS variables don't work with Tailwind opacity modifiers** - Tailwind needs actual color values
+- **Available opacity levels** - `80`, `60`, `40`, `20` (e.g., `text-foreground-80`, `bg-primary-60`)
+- **Available utilities** - `text-*`, `bg-*`, `border-*` with opacity variants
+- **All utilities defined in styles.css** - No Tailwind config changes needed
+- **Respects theme switching** - Works in all 6 Modus themes
+
+### Border Usage
+
+- **Use design system border utilities only** - `border-default`, `border-success`, `border-warning`, `border-destructive`, `border-primary`
+- **Never use Tailwind color classes in borders** - No `border-blue-500`, `border-gray-300`, etc.
+- **Use `border-thick` for emphasis** - For important borders and separators
+- **Use directional borders** - `border-t`, `border-b`, `border-l`, `border-r` with design system colors
+- **No inline styles for borders** - Use Tailwind classes exclusively
+
+### Icons
+
+- **Use Modus icons exclusively** - `<i class="modus-icons">icon-name</i>` or `<modus-icon name="icon-name" />`
+- **Never use other icon libraries** - No Font Awesome, Material Icons, Heroicons, etc.
+- **Use valid icon names only** - Check Modus Icons documentation for valid names
+- **Size with Tailwind classes** - `text-sm`, `text-lg`, `text-xl` for sizing
+- **Color with design system** - `text-primary`, `text-foreground`, `text-foreground-60`
+- **Validate icon names** - Run `npm run lint:icon-names` to verify
+
+### No Emojis
+
+- **Never use emojis in code** - No emoji characters in any code files
+- **Never use emojis in components** - No emoji in templates, content, or UI elements
+- **Never use emojis in content** - No emoji in text, descriptions, or user-facing content
+- **Use Modus icons instead** - Replace emojis with appropriate Modus icons
+- **Use Unicode characters for symbols** - Use proper Unicode symbols when needed
+
+## Angular Integration Patterns
+
+### Core Integration
+
+- **Use wrapper components** - Always use `<modus-button>`, not `<modus-wc-button>` directly
+- **Signal-based API** - Use `input()`, `output()`, `signal()`, `computed()`
+- **OnPush change detection** - All components use `ChangeDetectionStrategy.OnPush`
+- **Event handling** - Extract `event.detail` from CustomEvent when needed
+- **Modern control flow** - Use `@if`, `@for`, `@switch`, not `*ngIf`, `*ngFor`
+- **inject() for DI** - Use `inject()` function, not constructor injection
+
+### Angular Best Practices
+
+- **Single configurable components** - One component with variants, not multiple specific components
+- **Use design system colors only** - Never use generic Tailwind colors or hardcoded values
+- **Component composition pattern** - Build complex components from smaller, reusable pieces
+- **Theme-aware components** - Use theme context for conditional styling and content
+- **Performance optimization** - Use computed signals and lazy loading where appropriate
+
+### Signal Patterns
+
+```typescript
+// Signal-based inputs
+readonly color = input<ButtonColor>('primary');
+readonly disabled = input<boolean>(false);
+
+// Signal-based outputs
+readonly buttonClick = output<MouseEvent | KeyboardEvent>();
+
+// Writable signals for local state
+readonly isOpen = signal(false);
+
+// Computed for derived state
+readonly isDisabled = computed(() => this.disabled() || this.loading());
+```
+
+## Component-Specific Rules
+
+### Accordion State Management
+
+- **Let Modus components manage their own state** - Don't try to control accordion state from Angular
+- **Use `expanded` for initial state only** - Set initial state, then let component handle changes
+- **Use `(expandedChange)` for tracking** - Monitor state changes without controlling them
+- **Use ViewChild for programmatic control** - Access component methods when needed
+- **Avoid real-time synchronization** - Don't sync Angular state with accordion state
+
+### Checkbox Value Inversion
+
+- **Always invert checkbox value property** - `const actualChecked = !value` from `inputChange` event
+- **Use wrapper components** - Create Angular wrapper to handle inversion automatically
+- **Never trust the raw value** - The `value` property is inverted (false when checked, true when unchecked)
+- **Handle in event handlers** - Invert value in `(inputChange)` event handler
+- **Test thoroughly** - Verify checkbox behavior matches expected state
+
+### Modal Implementation
+
+- **Use document.getElementById for modal access** - Get the dialog element by ID
+- **Type-safe access** - Cast to `HTMLDialogElement | null`
+- **Check method existence** - `typeof dialog.showModal === 'function'`
+- **Use native dialog API** - `dialog.showModal()` and `dialog.close()`
+- **Never use querySelector with web component selectors**
+- **Descriptive, kebab-case modal IDs**
+
+### Select vs Dropdown Menu
+
+- **Prefer ModusDropdownMenu** - More reliable event handling than ModusSelect
+- **Reliable itemSelect events** - ModusDropdownMenu provides consistent event handling
+- **Proper state management** - Use Angular signals to track selected values and visibility
+- **Programmatic control** - Use `menuVisible` property for control
+- **Test thoroughly** - Verify dropdown behavior and event handling
+
+### Button Group Usage
+
+- **Don't set defaults for variant/color in button wrapper** - Allows group to control
+- **Inside button group**: Do NOT set variant/color on individual buttons
+- **Standalone buttons**: Explicitly set variant and color
+- **Group controls all button styling** via DOM manipulation
+
+## HTML and Styling
+
+### Semantic HTML
+
+- **Use div elements only** - All content must use `<div>` elements
+- **No semantic HTML elements** - Never use `h1`, `p`, `section`, `header`, `footer`, `nav`, `main`, `aside`, `article`, `span`
+- **Use Tailwind classes for styling** - Apply typography and layout with Tailwind classes
+- **Icon exception** - Only `<i>` elements allowed for Modus icons
+- **Consistent structure** - Maintain consistent div-based component structure
+
+### Tailwind Usage
+
+- **Tailwind v4 with design system** - Use Tailwind v4 with Modus Design System integration
+- **No generic Tailwind colors** - Never use `bg-blue-500`, `text-gray-600`, etc.
+- **Use design system colors** - `bg-background`, `text-foreground`, `bg-primary`, etc.
+- **Custom utilities for borders** - Use `border-default`, `border-success`, `border-warning`, etc.
+- **Custom utilities for opacity** - Use `text-foreground-80`, not `text-foreground/80`
+- **Test in all themes** - Ensure Tailwind classes work in all 6 themes
+
+## Theming
+
+### Theme Implementation
+
+- **6 Modus themes supported** - Classic Light/Dark, Modern Light/Dark, Connect Light/Dark
+- **Use data-theme attribute** - `data-theme="modus-classic-light"` on document
+- **Theme persistence** - Save to localStorage and restore on page load
+- **Theme-aware components** - Use computed signals for theme-specific styling
+- **Test all themes** - Verify components work in all 6 themes
+
+## Development Workflow
+
+### Quality Assurance
+
+- **Run linting commands during development** - `npm run lint:all` before commits
+- **Fix violations before committing** - No violations in committed code
+- **Check inline styles** - `npm run lint:styles` to catch inline style violations
+- **Verify design system colors** - `npm run lint:colors` for color compliance
+- **Validate Modus icons** - `npm run lint:icons` for icon usage
+- **Verify border usage** - `npm run lint:borders` for border compliance
+- **Check opacity utilities** - `npm run lint:opacity` for opacity compliance
+- **TypeScript validation** - `npm run type-check` for type errors
+
+### Testing
+
+- **Use Chrome DevTools MCP** - Real-time browser debugging
+- **Test before completion** - Validate all implementations in browser
+- **Check console for errors** - Look for JavaScript errors and warnings
+- **Test interactive elements** - Verify Modus Web Components work correctly
+- **Performance testing** - Use DevTools for performance analysis
+- **Test all 6 themes** - Verify components work in all themes
+
+### Linting Commands
+
+```bash
+npm run lint:styles    # Check inline styles
+npm run lint:colors    # Check color usage
+npm run lint:icons     # Check icon usage
+npm run lint:borders   # Check border violations
+npm run lint:opacity   # Check opacity utilities
+npm run lint:icon-names # Validate icon names
+npm run type-check     # TypeScript validation
+npm run lint:all       # Run all checks
+```
+
+## Quick Reference
+
+### Correct Patterns
+
+```typescript
+// Signal-based component
+@Component({
+  selector: 'app-example',
+  template: `
+    <div class="bg-background text-foreground p-4">
+      @if (isVisible()) {
+        <modus-button
+          [color]="color()"
+          [disabled]="disabled()"
+          (buttonClick)="handleClick($event)"
+        >
+          {{ buttonText() }}
+        </modus-button>
+      }
+    </div>
+  `,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class ExampleComponent {
+  readonly color = input<ButtonColor>('primary');
+  readonly disabled = input<boolean>(false);
+  readonly buttonText = input<string>('Click Me');
+  readonly isVisible = signal(true);
+
+  handleClick(event: MouseEvent | KeyboardEvent): void {
+    console.log('Button clicked:', event);
+  }
+}
+```
+
+### Forbidden Patterns
+
+```typescript
+// WRONG: Generic Tailwind colors
+template: `<div class="bg-blue-500 text-white">`
+
+// WRONG: Semantic HTML
+template: `<h1>Title</h1><p>Content</p>`
+
+// WRONG: Opacity with / syntax
+template: `<div class="text-foreground/80">`
+
+// WRONG: Tailwind border colors
+template: `<div class="border-red-500">`
+
+// WRONG: Direct web component usage
+template: `<modus-wc-button>`
+
+// WRONG: @Input() decorator
+@Input() color: string;
+
+// WRONG: *ngIf directive
+template: `<div *ngIf="condition">`
+```
+
+## Reference
+
+This rule consolidates all essential Modus Angular development guidelines. For detailed patterns, examples, and advanced techniques, refer to the individual rule files:
+
+- `modus-angular-20.mdc` - Angular 20 patterns
+- `modus-angular-design-system.mdc` - Colors, opacity, borders
+- `modus-angular-integration.mdc` - Wrapper component patterns
+- `modus-angular-icons.mdc` - Icon usage
+- `modus-angular-accordion-state-management.mdc` - Accordion state
+- `modus-angular-checkbox-value-inversion.mdc` - Checkbox bug handling
+- `modus-angular-button-group-usage.mdc` - Button group patterns
+- `modus-angular-select-vs-dropdown-menu.mdc` - Dropdown patterns
+- `modus-angular-semantic-html.mdc` - Div-only HTML
+- `modus-angular-development-workflow.mdc` - Linting and workflow
+- `modus-angular-chrome-devtools-testing.mdc` - Testing patterns

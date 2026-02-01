@@ -1,0 +1,43 @@
+---
+description: Development workflow and quality assurance for Angular + Vite with Modus
+globs: ["**/*.ts", "**/*.html", "**/*.scss", "**/*.css"]
+alwaysApply: true
+---
+
+# Modus Development Workflow - Short
+
+Essential linting and quality checks for Angular + Vite development.
+
+## Key Rules
+
+- **Run linting commands during development** - `npm run lint:all` before commits
+- **Fix violations before committing** - No violations in committed code
+- **Check inline styles** - `npm run lint:styles` to catch inline style violations
+- **Verify design system colors** - `npm run lint:colors` for color compliance
+- **Validate Modus icons** - `npm run lint:icons` for icon usage
+- **Check border usage** - `npm run lint:borders` for border compliance
+- **Check opacity utilities** - `npm run lint:opacity` for opacity compliance
+
+## Linting Commands
+
+```bash
+npm run lint:styles    # Check inline styles
+npm run lint:colors    # Check color usage
+npm run lint:icons     # Check icon usage
+npm run lint:borders   # Check border violations
+npm run lint:opacity   # Check opacity utilities
+npm run type-check     # TypeScript validation
+npm run lint:all       # Run all checks
+```
+
+## Angular Best Practices
+
+- **Use standalone components** with signal-based APIs
+- **Use `input()` and `output()`** functions, not decorators
+- **Use `ChangeDetectionStrategy.OnPush`** for performance
+- **Use `inject()`** for dependency injection
+- **Use modern control flow** (`@if`, `@for`, `@switch`)
+
+## Reference
+
+For detailed workflow guide and quality gates, fetch the full rule: `modus-angular-development-workflow`

@@ -1,0 +1,81 @@
+---
+description: Semantic HTML usage guidelines for Angular + Vite with Modus
+globs: ["**/*.ts", "**/*.html", "**/*.scss", "**/*.css"]
+alwaysApply: false
+---
+
+# Semantic HTML Usage in Angular + Vite
+
+## CRITICAL: Use Div Elements Only
+
+**MANDATORY**: This Angular + Vite application uses **div elements exclusively** for all content (except `<i>` for icons) to avoid conflicts with Tailwind CSS default browser styles.
+
+**Rule**: Use `div` elements with Tailwind classes instead of semantic HTML elements.
+
+## FORBIDDEN: Semantic HTML Elements
+
+```html
+<!-- WRONG: Semantic HTML elements -->
+<h1 class="text-4xl font-bold">Title</h1>
+<p class="text-base">Paragraph text</p>
+<section class="mb-8 p-4">Content section</section>
+<header class="bg-background">Header content</header>
+<footer class="bg-muted">Footer content</footer>
+<nav class="flex space-x-4">Navigation</nav>
+<span class="text-sm">Inline text</span>
+```
+
+## CORRECT: Div Elements with Tailwind
+
+```html
+<!-- CORRECT: Div elements with Tailwind classes -->
+<div class="text-4xl font-bold">Title</div>
+<div class="text-base">Paragraph text</div>
+<div class="mb-8 p-4">Content section</div>
+<div class="bg-background">Header content</div>
+<div class="bg-muted">Footer content</div>
+<div class="flex space-x-4">Navigation</div>
+<div class="text-sm">Inline text</div>
+```
+
+## Component Patterns
+
+### Page Layout with Divs
+
+```typescript
+@Component({
+  selector: 'page-layout',
+  template: `
+    <div class="min-h-screen flex flex-col">
+      <div class="bg-background border-b border-default">
+        <div class="container mx-auto px-4 py-4">
+          <div class="text-2xl font-bold text-foreground">App Title</div>
+        </div>
+      </div>
+
+      <div class="flex-1">
+        <ng-content />
+      </div>
+
+      <div class="bg-muted border-t border-default">
+        <div class="container mx-auto px-4 py-4">
+          <div class="text-sm text-foreground-60">Footer content</div>
+        </div>
+      </div>
+    </div>
+  `,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class PageLayoutComponent {}
+```
+
+## Semantic HTML Compliance Checklist
+
+- [ ] **No Semantic Elements**: No `h1`, `h2`, `p`, `section`, `header`, `footer`, `nav`, `main`, `aside`, `article`, `span`
+- [ ] **Div Elements Only**: All content uses `div` elements
+- [ ] **Icon Exception**: Only `<i>` elements allowed for icons
+- [ ] **Tailwind Styling**: All styling through Tailwind classes
+
+---
+
+**Remember: This Angular + Vite application uses div elements exclusively for all content (except `<i>` for icons) to avoid conflicts with Tailwind CSS default browser styles.**

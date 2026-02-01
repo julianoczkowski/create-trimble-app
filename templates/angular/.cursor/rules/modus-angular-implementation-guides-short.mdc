@@ -1,0 +1,36 @@
+---
+description: Create comprehensive implementation guides for major feature development in Angular + Vite
+globs: ["**/.cursor/rules/implementation-guides/**/*.md"]
+alwaysApply: true
+---
+
+# Implementation Guides - Short
+
+Create comprehensive implementation guides for major feature development.
+
+## Key Rules
+
+- **Create guides for major features** - Any feature requiring 2+ hours of development
+- **Document before coding** - Plan architecture and approach first
+- **Use required template sections** - Overview, architecture, plan, testing, review
+- **Store in `implementation_guides/`** - Organized by feature name and date
+- **Update status throughout development** - Planning > In Progress > Complete > Archived
+- **Include post-implementation review** - Document lessons learned and improvements
+- **Reference in commits** - Link to implementation guide in commit messages
+
+## When to Create
+
+**Create guides for:**
+- New page/view components with complex functionality
+- New reusable components or design system additions
+- API integrations
+- Features requiring 2+ hours of development
+
+**Skip for:**
+- Simple bug fixes (< 30 minutes)
+- Minor text or styling tweaks
+- Documentation updates
+
+## Reference
+
+For detailed template structure and lifecycle management, fetch the full rule: `modus-angular-implementation-guides`

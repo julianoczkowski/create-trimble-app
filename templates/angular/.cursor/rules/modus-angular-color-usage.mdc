@@ -1,0 +1,208 @@
+---
+description: Essential color usage rules for Modus Design System integration in Angular + Vite
+globs: ["**/*.ts", "**/*.html", "**/*.scss", "**/*.css"]
+alwaysApply: false
+---
+
+# Modus Color Usage in Angular + Vite
+
+## Design System Color Architecture
+
+This Angular + Vite application uses a **9-color design system** that maps Figma variables to Modus's color system, available as Tailwind classes.
+
+**Color System**: 9 Modus colors mapped to design system variables in `src/styles.css`
+
+## FORBIDDEN: Raw Modus CSS Variables
+
+### Never Use Raw Modus Variables
+
+```html
+<!-- WRONG: Raw Modus CSS variables -->
+<div [style.background-color]="'var(--modus-wc-color-base-page)'"></div>
+<div [style.color]="'var(--modus-wc-color-base-content)'"></div>
+
+<!-- WRONG: Direct Modus variable usage in classes -->
+<div class="bg-[var(--modus-wc-color-base-page)]"></div>
+<div class="text-[var(--modus-wc-color-base-content)]"></div>
+```
+
+### Never Use Hardcoded Colors
+
+```html
+<!-- WRONG: Hardcoded hex/RGB values -->
+<div [style.background-color]="'#ffffff'"></div>
+<div [style.color]="'#000000'"></div>
+
+<!-- WRONG: Hardcoded colors in Tailwind -->
+<div class="bg-[#ffffff]"></div>
+<div class="text-[#000000]"></div>
+```
+
+### Never Use Generic Tailwind Colors
+
+```html
+<!-- WRONG: Generic Tailwind color classes -->
+<div class="bg-blue-500"></div>
+<div class="text-red-400"></div>
+<div class="border-green-300"></div>
+<div class="bg-gray-100"></div>
+```
+
+## CORRECT: Design System Colors
+
+### Use Design System Tailwind Classes
+
+```html
+<!-- CORRECT: Design system colors -->
+<div class="bg-background text-foreground"></div>
+<div class="bg-card text-card-foreground"></div>
+<div class="bg-primary text-primary-foreground"></div>
+<div class="bg-secondary text-secondary-foreground"></div>
+<div class="bg-muted text-muted-foreground"></div>
+<div class="bg-destructive text-destructive-foreground"></div>
+<div class="bg-warning text-warning-foreground"></div>
+<div class="bg-success text-success-foreground"></div>
+```
+
+### 9 Core Colors
+
+| Semantic Name | Modus Variable | Usage |
+|---------------|----------------|-------|
+| `background` | `--modus-wc-color-base-page` | Page background |
+| `foreground` | `--modus-wc-color-base-content` | Primary text |
+| `card` | `--modus-wc-color-base-100` | Card backgrounds |
+| `muted` | `--modus-wc-color-base-200` | Subtle backgrounds, borders |
+| `secondary` | `--modus-wc-color-base-300` | Secondary UI elements |
+| `primary` | `--modus-wc-color-info` | Primary actions, info |
+| `success` | `--modus-wc-color-success` | Success states |
+| `warning` | `--modus-wc-color-warning` | Warning states |
+| `destructive` | `--modus-wc-color-error` | Error/destructive states |
+
+## Color Usage Patterns
+
+### Component Color Patterns
+
+```typescript
+@Component({
+  template: `
+    <div class="bg-card text-card-foreground border-default rounded-lg p-4">
+      <ng-content />
+    </div>
+  `,
+})
+export class CardComponent {}
+```
+
+### Status Color Patterns
+
+```typescript
+@Component({
+  template: `
+    <div [class]="statusClasses()">
+      {{ status() }}
+    </div>
+  `,
+})
+export class StatusIndicatorComponent {
+  readonly status = input<'success' | 'warning' | 'error'>('success');
+  
+  readonly statusClasses = computed(() => {
+    const variants = {
+      success: 'bg-success text-success-foreground',
+      warning: 'bg-warning text-warning-foreground',
+      error: 'bg-destructive text-destructive-foreground',
+    };
+    return `px-3 py-1 rounded ${variants[this.status()]}`;
+  });
+}
+```
+
+### Alert Component
+
+```typescript
+@Component({
+  template: `
+    <div [class]="alertClasses()">
+      <ng-content />
+    </div>
+  `,
+})
+export class AlertComponent {
+  readonly type = input<'success' | 'warning' | 'error' | 'info'>('info');
+  
+  readonly alertClasses = computed(() => {
+    const variants = {
+      success: 'bg-success text-success-foreground border-success',
+      warning: 'bg-warning text-warning-foreground border-warning',
+      error: 'bg-destructive text-destructive-foreground border-destructive',
+      info: 'bg-primary text-primary-foreground border-primary',
+    };
+    return `p-4 rounded border ${variants[this.type()]}`;
+  });
+}
+```
+
+### Theme-Aware Color Patterns
+
+```typescript
+@Component({
+  template: `
+    <div class="bg-background text-foreground transition-colors duration-200">
+      <div class="text-foreground">Title</div>
+      <div class="text-muted-foreground">Description</div>
+    </div>
+  `,
+})
+export class ThemedComponent {
+  private themeService = inject(ThemeService);
+  readonly isDark = this.themeService.isDark;
+}
+```
+
+## Common Anti-Patterns
+
+### Don't Mix Color Systems
+
+```html
+<!-- WRONG: Mixing design system and generic colors -->
+<div class="bg-background text-blue-500 border-red-300">
+  Mixed color systems
+</div>
+
+<!-- WRONG: Using both design system and hardcoded colors -->
+<div class="bg-card" [style.color]="'#ff0000'">
+  Mixed approaches
+</div>
+```
+
+### Don't Override Design System Colors
+
+```html
+<!-- WRONG: Overriding design system colors -->
+<div class="bg-background" [style.background-color]="'#custom-color'">
+  Overriding design system
+</div>
+```
+
+## Validation
+
+### Linting Commands
+
+```bash
+# Check for color violations
+npm run lint:colors
+
+# Check for inline styles
+npm run lint:styles
+
+# Check for border violations
+npm run lint:borders
+```
+
+## Key Takeaways
+
+1. **Use Design System Colors**: Always use `bg-background`, `text-foreground`, etc.
+2. **Never Use Raw Variables**: Don't use `var(--modus-wc-color-*)` directly
+3. **Never Use Hardcoded Colors**: No hex, RGB, or generic Tailwind colors
+4. **Test Color Combinations**: Ensure proper contrast and accessibility
+5. **Follow Color Patterns**: Use established patterns for consistency

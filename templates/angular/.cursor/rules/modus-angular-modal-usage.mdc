@@ -1,0 +1,115 @@
+---
+description: Comprehensive rules for opening and closing Modus modals in Angular
+globs: ["**/*.ts", "**/*.html", "**/*.scss", "**/*.css"]
+alwaysApply: false
+---
+
+# Modal Usage Rules
+
+Comprehensive rules for opening and closing Modus modals in Angular applications.
+
+## CORRECT: How to Open/Close Modals
+
+### Pattern: Use `document.getElementById()` with HTMLDialogElement
+
+**The Modus modal component creates an HTML `<dialog>` element with the `modalId` as its `id` attribute. Always use the native HTMLDialogElement API to open/close modals.**
+
+```typescript
+openModal(): void {
+  const dialog = document.getElementById('modal-id') as HTMLDialogElement | null;
+  if (dialog && typeof dialog.showModal === 'function') {
+    dialog.showModal();
+  }
+}
+
+closeModal(): void {
+  const dialog = document.getElementById('modal-id') as HTMLDialogElement | null;
+  if (dialog && typeof dialog.close === 'function') {
+    dialog.close();
+  }
+}
+```
+
+### Template Usage
+
+```html
+<modus-button color="primary" (buttonClick)="openModal()">Open Modal</modus-button>
+<modus-modal modalId="modal-id" [showClose]="true">
+  <h3 slot="header">Modal Title</h3>
+  <div slot="content">
+    <p>Modal content here</p>
+  </div>
+  <div slot="footer">
+    <modus-button color="secondary" (buttonClick)="closeModal()">Close</modus-button>
+  </div>
+</modus-modal>
+```
+
+## WRONG: Common Mistakes
+
+### DON'T Use `querySelector` with Web Component Selector
+
+```typescript
+// WRONG: This doesn't work
+openModal(): void {
+  const modal = document.querySelector('modus-wc-modal[modal-id="modal-id"]') as any;
+  if (modal) {
+    modal.open(); // Web component doesn't have an open() method
+  }
+}
+```
+
+### DON'T Use Template References on Wrapper Component
+
+```typescript
+// WRONG: Can't directly call methods on Angular wrapper
+@ViewChild(ModusModalComponent) modal!: ModusModalComponent;
+
+openModal(): void {
+  this.modal.open(); // Method doesn't exist
+}
+```
+
+## Best Practices
+
+### 1. Always Use `getElementById` with ModalId
+
+```typescript
+openModal(modalId: string): void {
+  const dialog = document.getElementById(modalId) as HTMLDialogElement | null;
+  if (dialog && typeof dialog.showModal === 'function') {
+    dialog.showModal();
+  }
+}
+```
+
+### 2. Always Check for Method Existence
+
+```typescript
+const dialog = document.getElementById('modal-id') as HTMLDialogElement | null;
+if (dialog && typeof dialog.showModal === 'function') {
+  dialog.showModal();
+}
+```
+
+### 3. Use Consistent ModalId Naming
+
+```typescript
+<modus-modal modalId="basic-modal" />
+<modus-modal modalId="confirmation-modal" />
+<modus-modal modalId="fullscreen-modal" />
+```
+
+## Key Rules Summary
+
+1. **ALWAYS use `document.getElementById(modalId)`** - The modalId is used as the dialog element's id
+2. **ALWAYS cast to `HTMLDialogElement | null`** - Type-safe casting
+3. **ALWAYS check for method existence** - `typeof dialog.showModal === 'function'`
+4. **ALWAYS use `dialog.showModal()`** - Native HTMLDialogElement API
+5. **ALWAYS use `dialog.close()`** - Native HTMLDialogElement API
+6. **NEVER use `querySelector` with web component selectors**
+7. **NEVER try to call `open()` on the web component**
+
+---
+
+**Remember**: Modals use the native HTML `<dialog>` element API. Always use `document.getElementById(modalId)` to find the dialog element, then call `showModal()` or `close()` on it.

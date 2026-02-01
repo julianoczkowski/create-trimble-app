@@ -1,0 +1,23 @@
+---
+description: Critical pattern for ModusButton inside ModusButtonGroup
+globs: ["**/components/ModusButton*.tsx", "**/demos/**/page.tsx"]
+alwaysApply: true
+---
+
+# Modus Button Group Usage - Short
+
+Critical pattern to avoid styling conflicts in button groups.
+
+## Key Rules
+
+- **No defaults for variant/color in ModusButton** - Defaults override button group settings
+- **Use conditional prop spreading** - `{...(variant && { variant })}` to only pass when defined
+- **Group controls styling** - ModusButtonGroup applies variant/color to all child buttons
+- **Don't set variant/color on buttons inside groups** - Let the group control them
+- **Explicitly set props for standalone buttons** - When not in a group, set variant and color
+- **Group uses setAttribute after load** - DOM manipulation requires no conflicting React props
+- **Test all three variants** - Outlined, filled, and borderless should look distinct
+
+## Reference
+
+For detailed patterns, web component internals, and testing checklist, fetch the full rule: `modus-button-group-usage-react`

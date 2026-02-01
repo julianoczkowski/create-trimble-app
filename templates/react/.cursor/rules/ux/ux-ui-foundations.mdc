@@ -1,0 +1,211 @@
+---
+description: UI/UX foundations for AI agents with validated Modus 2 + Tailwind integration
+globs: ["**/*.tsx", "**/*.ts"]
+alwaysApply: false
+---
+
+# UI/UX Foundations for AI Agents (Validated Modus 2 + Tailwind)
+
+**Scope**: Modus 2 React Components + Tailwind (Real Config Alignment)
+
+> This file is grounded in your **real Modus 2 React + Tailwind setup**. It uses the exact variables, color tokens, and CSS conventions from your implementation (`--modus-wc-color-*`, `--background`, etc.).
+
+# Foundation & Setup
+
+## 1 Color System — From Real Tailwind Config
+
+### Semantic Mapping
+
+Use Tailwind tokens defined in your `tailwind.config.js`. **Do not use arbitrary colors.**
+
+| Purpose     | Tailwind Token                                   | CSS Variable (from index.css)                         |
+| ----------- | ------------------------------------------------ | ----------------------------------------------------- |
+| Background  | `bg-background`                                  | `--background` → `var(--modus-wc-color-base-page)`    |
+| Foreground  | `text-foreground`                                | `--foreground` → `var(--modus-wc-color-base-content)` |
+| Card        | `bg-card`                                        | `--card` → `var(--modus-wc-color-base-100)`           |
+| Card Text   | `text-card-foreground`                           | `--card-foreground`                                   |
+| Primary     | `bg-primary` / `text-primary-foreground`         | `--modus-wc-color-info`                               |
+| Secondary   | `bg-secondary` / `text-secondary-foreground`     | `--modus-wc-color-base-300`                           |
+| Muted       | `bg-muted` / `text-muted-foreground`             | `--modus-wc-color-base-200`                           |
+| Accent      | `bg-accent` / `text-accent-foreground`           | `--modus-wc-color-info`                               |
+| Destructive | `bg-destructive` / `text-destructive-foreground` | `--modus-wc-color-error`                              |
+| Warning     | `bg-warning` / `text-warning-foreground`         | `--modus-wc-color-warning`                            |
+| Success     | `bg-success` / `text-success-foreground`         | `--modus-wc-color-success`                            |
+| Border      | `border-border`                                  | `--modus-wc-color-base-200`                           |
+| Ring        | `ring`                                           | `--modus-wc-color-info`                               |
+
+**Rules:**
+
+- Never use `#hex`, RGB, or inline color CSS.
+- All visual hierarchy comes from semantic tokens.
+- Respect light/dark context (CSS variables auto-handle switching).
+
+## 2 Tailwind Config Alignment
+
+Your real config already defines the following mapping (keep as-is):
+
+```js
+colors: {
+  background: 'var(--background)',
+  foreground: 'var(--foreground)',
+  card: 'var(--card)',
+  'card-foreground': 'var(--card-foreground)',
+  primary: 'var(--primary)',
+  'primary-foreground': 'var(--primary-foreground)',
+  secondary: 'var(--secondary)',
+  'secondary-foreground': 'var(--secondary-foreground)',
+  muted: 'var(--muted)',
+  'muted-foreground': 'var(--muted-foreground)',
+  accent: 'var(--accent)',
+  'accent-foreground': 'var(--accent-foreground)',
+  destructive: 'var(--destructive)',
+  'destructive-foreground': 'var(--destructive-foreground)',
+  border: 'var(--border)',
+}
+```
+
+# Component System
+
+## 3 Example Component System — Modus 2 React Wrappers
+
+**REFERENCE**: For more information referance `.cursor/rules/modus-components-reference.mdc`
+
+| Component | React Wrapper      | Props                                       | Usage Rule                                                            |          |                        |        |         |                                                       |
+| --------- | ------------------ | ------------------------------------------- | --------------------------------------------------------------------- | -------- | ---------------------- | ------ | ------- | ----------------------------------------------------- |
+| Button    | `<ModusButton />`  | `variant="primary                           | secondary                                                             | tertiary | danger"`, `size="small | medium | large"` | One primary action per surface. Destructive uses red. |
+| Card      | `<ModusCard />`    | `elevation`, `padding`, `bordered`          | For grouping or sectioning. Use `bg-card` + `border-border`.          |          |                        |        |         |                                                       |
+| Input     | `<ModusInput />`   | `label`, `error`, `disabled`                | Must have a visible `<label>`. Use inline error text + ARIA bindings. |          |                        |        |         |                                                       |
+| Select    | `<ModusSelect />`  | `options`, `placeholder`                    | Never rely on placeholder as label.                                   |          |                        |        |         |                                                       |
+| Table     | `<ModusTable />`   | `columns`, `data`, `sortable`, `onRowClick` | Include empty and loading states.                                     |          |                        |        |         |                                                       |
+| Modal     | `<ModusModal />`   | `isOpen`, `onClose`, `title`                | Trap focus. ESC closes. Max 3 actions.                                |          |                        |        |         |                                                       |
+| Tabs      | `<ModusTabs />`    | `tabs`, `activeKey`, `onChange`             | Keyboard accessible.                                                  |          |                        |        |         |                                                       |
+| Tooltip   | `<ModusTooltip />` | `text`, `position`                          | Short contextual hints only.                                          |          |                        |        |         |                                                       |
+| Icon      | `<ModusIcon />`    | `name`, `size`, `color`                     | Follows real Modus naming (kebab-case, outlined default).             |          |                        |        |         |                                                       |
+
+## 4 Iconography
+
+**REFERENCE**: For complete icon usage guidelines see `.cursor/rules/modus-icons-react.mdc`
+**REFERENCE**: For allowed list of Modus icon names see `.cursor/rules/modus-icon-names.mdc`
+
+### Import (already handled globally)
+
+```css
+@import url("https://cdn.jsdelivr.net/npm/@trimble-oss/modus-icons@1.17.0/dist/field-systems/fonts/modus-icons.css");
+```
+
+### Supported Usage Patterns
+
+#### A) React Wrapper (preferred)
+
+```tsx
+// Informational icon (announced by SR)
+<ModusIcon name="user-add" size="lg" decorative={false} aria-label="Add user" />
+
+// Decorative icon (not announced)
+<ModusIcon name="chevron-right" size="md" decorative />
+```
+
+- **Props:** `name` (kebab-case), `size`: `sm | md | lg` (mapped to Tailwind text sizes), `decorative`: boolean.
+- **Accessibility:** If `decorative={false}`, include `aria-label`.
+- **Do not** pass numeric pixel sizes like `{24}`.
+
+#### B) Bare `<i>` Glyph (CDN font)
+
+```tsx
+// Decorative icon
+<i className="modus-icons text-lg" aria-hidden="true">user-add</i>
+
+// Informational icon
+<i className="modus-icons text-md" role="img" aria-label="Settings">settings</i>
+```
+
+- Size using Tailwind text utilities (`text-sm`, `text-md`, `text-lg`).
+- Keep color semantic (`text-foreground`, `text-muted-foreground`, etc.).
+
+### Rules
+
+- Naming: **kebab-case** (`file-upload`, `user-add`).
+- Style: outlined default; filled for active/selected states only.
+- One icon per control.
+- In buttons: icon left, `gap-2` between icon and label, aligned baseline.
+
+# Design Principles
+
+## 5 Gestalt Laws in Practice (UI Layout Rules)
+
+**REFERENCE**: For more information referance `.cursor/rules/ux/gestalt-laws-detailed.mdc`
+
+| Law                 | Implementation                                                               |
+| ------------------- | ---------------------------------------------------------------------------- |
+| **Proximity**       | `gap-2` within a group; `gap-6`–`gap-8` between groups.                      |
+| **Similarity**      | Same purpose = same variant, same size.                                      |
+| **Common Region**   | Group with `<ModusCard className="p-6 bg-card border-border rounded-lg" />`. |
+| **Figure/Ground**   | Use `bg-card` over `bg-background` with shadow or border.                    |
+| **Continuity**      | Maintain alignment using `flex`, `items-start`, `justify-between`.           |
+| **Hick's**          | Max 3 visible CTAs per context. Overflow extra in menu.                      |
+| **Fitts's**         | Keep primary CTAs near edited content, 44×44px minimum.                      |
+| **Serial Position** | Primary actions at start or end of flow.                                     |
+| **Prägnanz**        | Remove unnecessary divs, borders, or text. Prefer whitespace.                |
+
+# Implementation Examples
+
+## 6 Example Snippets
+
+### Form Card
+
+```tsx
+<ModusCard className="bg-card border border-border rounded-lg p-6">
+  <div className="flex items-center justify-between">
+    <div className="text-foreground text-lg font-medium">Profile</div>
+    <ModusButton variant="primary">Save</ModusButton>
+  </div>
+
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+    <div className="flex flex-col gap-2">
+      <label htmlFor="email" className="text-sm text-muted-foreground">
+        Email
+      </label>
+      <ModusInput id="email" name="email" type="email" required />
+      <div className="text-xs text-muted-foreground">
+        Used for notifications
+      </div>
+    </div>
+  </div>
+</ModusCard>
+```
+
+### Toolbar
+
+```tsx
+<div className="flex items-center justify-between gap-4 border-b border-border pb-4">
+  <div className="flex items-center gap-2">
+    <ModusIcon name="filter-list" size="md" decorative />
+    <ModusSelect placeholder="Sort by" options={sortOptions} />
+  </div>
+  <ModusButton variant="primary" icon="plus">
+    New
+  </ModusButton>
+</div>
+```
+
+# AI Guidelines
+
+## 7 AI Output Contract
+
+- Use `<ModusIcon size="sm|md|lg" />`, never numeric.
+- Use `decorative` and `aria-label` correctly.
+- Accept either `<ModusIcon>` or `<i className="modus-icons">` per context.
+- All Tailwind utilities must use semantic tokens from config.
+- Accessibility attributes required for all interactive elements.
+- All motion ≤250ms; respect `prefers-reduced-motion`.
+
+## 8 PR / QA Checklist
+
+- [ ] All UI uses `<Modus*>` wrappers.
+- [ ] Tailwind tokens match config.
+- [ ] ARIA, labels, keyboard, and focus verified.
+- [ ] Empty/loading/error states present.
+- [ ] Only one primary CTA per surface.
+- [ ] Spacing follows 4/8 rhythm (`gap-2`, `gap-4`, `gap-8`).
+- [ ] Colors from real variables only (`--modus-wc-color-*`).
+- [ ] No theme attributes; dark/light handled via root vars.
