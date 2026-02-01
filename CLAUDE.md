@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-`create-modus-app` is an interactive CLI tool that scaffolds Modus 2.0 web component applications for React and Angular. Templates are **bundled directly in the npm package** (not downloaded at runtime) for security, offline support, and consistency.
+`create-trimble-app` is an interactive CLI tool that scaffolds Modus 2.0 web component applications for React and Angular. Templates are **bundled directly in the npm package** (not downloaded at runtime) for security, offline support, and consistency.
 
 ## Development Commands
 
@@ -28,7 +28,7 @@ npm run prepublishOnly
 
 ### Flow
 ```
-bin/create-modus-app.js (entry point)
+bin/create-trimble-app.js (entry point)
   └→ src/cli.js (Commander.js argument parsing)
       └→ src/scaffold.js (main orchestration)
           ├→ src/frameworks.js (loads templates/config.json)
@@ -86,8 +86,8 @@ Vitest tests in `tests/`:
 ## Testing Locally
 
 ```bash
-node bin/create-modus-app.js --help
-node bin/create-modus-app.js my-app --framework react --dry-run
+node bin/create-trimble-app.js --help
+node bin/create-trimble-app.js my-app --framework react --dry-run
 ```
 
 Use `--dry-run` to preview, `--verbose` for debug output.

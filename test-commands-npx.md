@@ -12,9 +12,9 @@ npx . --help
 npx . --version
 
 # Test help from any directory
-npx /home/julian/Documents/Development/create-modus-app --help
+npx /home/julian/Documents/Development/create-trimble-app --help
 
-npx /Users/julianoczkowski/Desktop/Development/create-modus-app
+npx /Users/julianoczkowski/Desktop/Development/create-trimble-app
 
 ## Full Integration Tests (With Template Installation)
 
@@ -28,7 +28,7 @@ mkdir test-current-folder
 cd test-current-folder
 
 # Test current folder mode with Vue (will install in current directory)
-npx /home/julian/Documents/Development/create-modus-app --current-folder --framework vue --no-install
+npx /home/julian/Documents/Development/create-trimble-app --current-folder --framework vue --no-install
 
 # Check if package.json was created with correct name
 cat package.json | grep '"name"'
@@ -43,22 +43,22 @@ rm -rf test-current-folder
 ```bash
 # Test with Vue (should work)
 mkdir test-vue && cd test-vue
-npx /home/julian/Documents/Development/create-modus-app --current-folder --framework vue --no-install
+npx /home/julian/Documents/Development/create-trimble-app --current-folder --framework vue --no-install
 cd .. && rm -rf test-vue
 
 # Test with React (should fail - repo not available)
 mkdir test-react && cd test-react
-npx /home/julian/Documents/Development/create-modus-app --current-folder --framework react --no-install
+npx /home/julian/Documents/Development/create-trimble-app --current-folder --framework react --no-install
 cd .. && rm -rf test-react
 
 # Test with Angular (should fail - repo not available)
 mkdir test-angular && cd test-angular
-npx /home/julian/Documents/Development/create-modus-app --current-folder --framework angular --no-install
+npx /home/julian/Documents/Development/create-trimble-app --current-folder --framework angular --no-install
 cd .. && rm -rf test-angular
 
 # Test with HTML (should fail - repo not available)
 mkdir test-html && cd test-html
-npx /home/julian/Documents/Development/create-modus-app --current-folder --framework html --no-install
+npx /home/julian/Documents/Development/create-trimble-app --current-folder --framework html --no-install
 cd .. && rm -rf test-html
 ```
 
@@ -66,7 +66,7 @@ cd .. && rm -rf test-html
 
 ```bash
 # Test traditional mode still works
-npx /home/julian/Documents/Development/create-modus-app test-traditional --framework vue --no-install
+npx /home/julian/Documents/Development/create-trimble-app test-traditional --framework vue --no-install
 
 # Check if directory was created
 ls -la | grep test-traditional
@@ -81,13 +81,13 @@ rm -rf test-traditional
 # Test from home directory
 cd ~
 mkdir test-from-home && cd test-from-home
-npx /home/julian/Documents/Development/create-modus-app --current-folder --framework vue --no-install
+npx /home/julian/Documents/Development/create-trimble-app --current-folder --framework vue --no-install
 cd .. && rm -rf test-from-home
 
 # Test from /tmp directory
 cd /tmp
 mkdir test-from-tmp && cd test-from-tmp
-npx /home/julian/Documents/Development/create-modus-app --current-folder --framework vue --no-install
+npx /home/julian/Documents/Development/create-trimble-app --current-folder --framework vue --no-install
 cd .. && rm -rf test-from-tmp
 ```
 
@@ -97,10 +97,10 @@ cd .. && rm -rf test-from-tmp
 
 ```bash
 # Test invalid framework
-npx /home/julian/Documents/Development/create-modus-app --current-folder --framework invalid
+npx /home/julian/Documents/Development/create-trimble-app --current-folder --framework invalid
 
 # Test conflicting options
-npx /home/julian/Documents/Development/create-modus-app my-app --current-folder
+npx /home/julian/Documents/Development/create-trimble-app my-app --current-folder
 ```
 
 ### 6. Test Edge Cases
@@ -109,7 +109,7 @@ npx /home/julian/Documents/Development/create-modus-app my-app --current-folder
 # Test in directory with special characters
 mkdir "test-folder_with-special.chars"
 cd "test-folder_with-special.chars"
-npx /home/julian/Documents/Development/create-modus-app --current-folder --framework vue --no-install
+npx /home/julian/Documents/Development/create-trimble-app --current-folder --framework vue --no-install
 cd .. && rm -rf "test-folder_with-special.chars"
 ```
 
@@ -120,7 +120,7 @@ cd .. && rm -rf "test-folder_with-special.chars"
 ```bash
 # Test full installation (this will take longer)
 mkdir test-full-install && cd test-full-install
-npx /home/julian/Documents/Development/create-modus-app --current-folder --framework vue
+npx /home/julian/Documents/Development/create-trimble-app --current-folder --framework vue
 # This will install dependencies and take a few minutes
 cd .. && rm -rf test-full-install
 ```
@@ -155,7 +155,7 @@ rm -rf test-* my-modus-app my-app
 cd /path/to/your/dhh/folder
 
 # Install the app in current folder (dhh) with Vue framework
-npx /home/julian/Documents/Development/create-modus-app --current-folder --framework vue
+npx /home/julian/Documents/Development/create-trimble-app --current-folder --framework vue
 
 # The app will be installed in your dhh folder with package.json name "dhh"
 ```
@@ -164,7 +164,7 @@ npx /home/julian/Documents/Development/create-modus-app --current-folder --frame
 
 ```bash
 # From anywhere, create a new dhh folder with the app
-npx /home/julian/Documents/Development/create-modus-app dhh --framework vue
+npx /home/julian/Documents/Development/create-trimble-app dhh --framework vue
 ```
 
 ## Real Test Results
@@ -177,8 +177,8 @@ npx /home/julian/Documents/Development/create-modus-app dhh --framework vue
 | Vue + current folder     | `npx . --current-folder --framework vue`                                   | Works                  | ✅ PASS |
 | React + current folder   | `npx . --current-folder --framework react`                                 | Fails                  | ✅ PASS |
 | Traditional Vue          | `npx . test-app --framework vue`                                           | Works                  | ✅ PASS |
-| From different directory | `npx /home/julian/Documents/Development/create-modus-app --current-folder` | Works                  | ✅ PASS |
+| From different directory | `npx /home/julian/Documents/Development/create-trimble-app --current-folder` | Works                  | ✅ PASS |
 | Package.json naming      | Check package.json name                                                    | Matches folder         | ✅ PASS |
 
 On mac
-node /Users/julianoczkowski/Desktop/Development/create-modus-app/bin/create-modus-app.js
+node /Users/julianoczkowski/Desktop/Development/create-trimble-app/bin/create-trimble-app.js

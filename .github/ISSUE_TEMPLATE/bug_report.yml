@@ -18,7 +18,7 @@ body:
       options:
         - label: I have searched existing issues to avoid duplicates
           required: true
-        - label: I have tested this with the latest version of create-modus-app
+        - label: I have tested this with the latest version of create-trimble-app
           required: true
         - label: I have verified my Node.js version meets requirements (18+)
           required: true
@@ -38,7 +38,7 @@ body:
       label: Steps to Reproduce
       description: Detailed steps to reproduce the behavior
       placeholder: |
-        1. Run 'npx @julianoczkowski/create-modus-app'
+        1. Run 'npx @julianoczkowski/create-trimble-app'
         2. Select framework '...'
         3. Enter project name '...'
         4. See error
@@ -122,8 +122,8 @@ body:
     id: cli-version
     attributes:
       label: Create Modus App Version
-      description: What version of create-modus-app are you using?
-      placeholder: e.g., 1.0.0 (run `npx @julianoczkowski/create-modus-app --version`)
+      description: What version of create-trimble-app are you using?
+      placeholder: e.g., 1.0.0 (run `npx @julianoczkowski/create-trimble-app --version`)
 
   - type: textarea
     id: project-details

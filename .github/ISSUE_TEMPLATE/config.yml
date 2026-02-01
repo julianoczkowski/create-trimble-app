@@ -1,10 +1,10 @@
 blank_issues_enabled: false
 contact_links:
   - name: 💬 GitHub Discussions
-    url: https://github.com/julianoczkowski/create-modus-app/discussions
+    url: https://github.com/julianoczkowski/create-trimble-app/discussions
     about: Ask questions and discuss ideas with the community
   - name: 🔒 Security Vulnerability
-    url: https://github.com/julianoczkowski/create-modus-app/security/advisories/new
+    url: https://github.com/julianoczkowski/create-trimble-app/security/advisories/new
     about: Report security vulnerabilities privately via GitHub Security Advisories
   - name: 📚 Modus Web Components Documentation
     url: https://trimble-oss.github.io/modus-wc-2.0/main/

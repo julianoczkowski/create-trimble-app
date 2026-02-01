@@ -67,8 +67,8 @@ We welcome several types of contributions:
 
 ```bash
 # Fork and clone the repository
-git clone https://github.com/YOUR-USERNAME/create-modus-app.git
-cd create-modus-app
+git clone https://github.com/YOUR-USERNAME/create-trimble-app.git
+cd create-trimble-app
 
 # Install dependencies
 npm install
@@ -77,8 +77,8 @@ npm install
 npm run dev
 
 # Test with specific arguments
-node bin/create-modus-app.js --help
-node bin/create-modus-app.js test-app --framework vue
+node bin/create-trimble-app.js --help
+node bin/create-trimble-app.js test-app --framework vue
 ```
 
 ### Testing Your Changes
@@ -88,23 +88,23 @@ node bin/create-modus-app.js test-app --framework vue
 npm run dev
 
 # Test all frameworks
-node bin/create-modus-app.js test-react --framework react
-node bin/create-modus-app.js test-vue --framework vue
-node bin/create-modus-app.js test-angular --framework angular
-node bin/create-modus-app.js test-html --framework html
+node bin/create-trimble-app.js test-react --framework react
+node bin/create-trimble-app.js test-vue --framework vue
+node bin/create-trimble-app.js test-angular --framework angular
+node bin/create-trimble-app.js test-html --framework html
 
 # Test command line options
-node bin/create-modus-app.js test-app --no-install
-node bin/create-modus-app.js --version
-node bin/create-modus-app.js --help
+node bin/create-trimble-app.js test-app --no-install
+node bin/create-trimble-app.js --version
+node bin/create-trimble-app.js --help
 ```
 
 ## 📁 Project Structure
 
 ```
-create-modus-app/
+create-trimble-app/
 ├── bin/
-│   └── create-modus-app.js      # CLI entry point
+│   └── create-trimble-app.js      # CLI entry point
 ├── src/
 │   ├── cli.js                   # Main CLI logic
 │   ├── frameworks.js            # Framework configurations
@@ -211,18 +211,18 @@ Before submitting a PR, test the following scenarios:
 
 ```bash
 # Test normal flow
-node bin/create-modus-app.js my-test-app --framework vue
+node bin/create-trimble-app.js my-test-app --framework vue
 
 # Test with no installation
-node bin/create-modus-app.js my-test-app --framework react --no-install
+node bin/create-trimble-app.js my-test-app --framework react --no-install
 
 # Test invalid inputs
-node bin/create-modus-app.js "invalid/name" --framework vue
-node bin/create-modus-app.js my-app --framework invalid
+node bin/create-trimble-app.js "invalid/name" --framework vue
+node bin/create-trimble-app.js my-app --framework invalid
 
 # Test existing directory
 mkdir existing-dir
-node bin/create-modus-app.js existing-dir --framework vue
+node bin/create-trimble-app.js existing-dir --framework vue
 ```
 
 ## 🔄 Pull Request Process

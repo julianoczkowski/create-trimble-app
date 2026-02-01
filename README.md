@@ -7,7 +7,7 @@ Interactive CLI to scaffold Modus 2.0 web component applications for React and A
 ## Quick Start
 
 ```bash
-npx @julianoczkowski/create-modus-app
+npx @julianoczkowski/create-trimble-app
 ```
 
 ## Features
@@ -24,7 +24,7 @@ npx @julianoczkowski/create-modus-app
 ### Interactive Mode (Recommended)
 
 ```bash
-npx @julianoczkowski/create-modus-app
+npx @julianoczkowski/create-trimble-app
 ```
 
 This will guide you through:
@@ -38,28 +38,28 @@ This will guide you through:
 
 ```bash
 # Create with project name
-npx @julianoczkowski/create-modus-app my-app
+npx @julianoczkowski/create-trimble-app my-app
 
 # Specify framework
-npx @julianoczkowski/create-modus-app my-app --framework react
+npx @julianoczkowski/create-trimble-app my-app --framework react
 
 # Install in current folder
-npx @julianoczkowski/create-modus-app --current-folder
+npx @julianoczkowski/create-trimble-app --current-folder
 
 # Preview without creating files
-npx @julianoczkowski/create-modus-app my-app --dry-run
+npx @julianoczkowski/create-trimble-app my-app --dry-run
 
 # Enable verbose output
-npx @julianoczkowski/create-modus-app my-app --verbose
+npx @julianoczkowski/create-trimble-app my-app --verbose
 
 # Show CLI information
-npx @julianoczkowski/create-modus-app --info
+npx @julianoczkowski/create-trimble-app --info
 
 # Skip dependency installation
-npx @julianoczkowski/create-modus-app my-app --no-install
+npx @julianoczkowski/create-trimble-app my-app --no-install
 
 # Show help
-npx @julianoczkowski/create-modus-app --help
+npx @julianoczkowski/create-trimble-app --help
 ```
 
 ## CLI Options
@@ -104,7 +104,7 @@ your-project/
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                    npx create-modus-app                      │
+│                    npx create-trimble-app                      │
 ├─────────────────────────────────────────────────────────────┤
 │  1. Parse CLI arguments (Commander.js)                       │
 │  2. Interactive prompts (if needed)                          │
@@ -141,8 +141,8 @@ Unlike other scaffolding tools that download templates from GitHub at runtime, t
 
 ```bash
 # Clone this repository
-git clone https://github.com/julianoczkowski/create-modus-app.git
-cd create-modus-app
+git clone https://github.com/julianoczkowski/create-trimble-app.git
+cd create-trimble-app
 
 # Install dependencies
 npm install
@@ -154,8 +154,8 @@ npm run dev
 npm test
 
 # Test specific commands
-node bin/create-modus-app.js --help
-node bin/create-modus-app.js my-app --framework react --dry-run
+node bin/create-trimble-app.js --help
+node bin/create-trimble-app.js my-app --framework react --dry-run
 ```
 
 For detailed testing instructions, see [docs/local-testing.md](docs/local-testing.md).

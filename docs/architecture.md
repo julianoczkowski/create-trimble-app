@@ -1,14 +1,14 @@
 # CLI Architecture
 
-This document describes the architecture and internal workings of the `create-modus-app` CLI tool.
+This document describes the architecture and internal workings of the `create-trimble-app` CLI tool.
 
 ## Overview
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                        create-modus-app                          │
+│                        create-trimble-app                          │
 ├─────────────────────────────────────────────────────────────────┤
-│  bin/create-modus-app.js  →  Entry point (shebang script)       │
+│  bin/create-trimble-app.js  →  Entry point (shebang script)       │
 │         ↓                                                        │
 │  src/cli.js               →  Commander.js argument parsing       │
 │         ↓                                                        │
@@ -23,9 +23,9 @@ This document describes the architecture and internal workings of the `create-mo
 ## Directory Structure
 
 ```
-create-modus-app/
+create-trimble-app/
 ├── bin/
-│   └── create-modus-app.js    # npm bin entry point
+│   └── create-trimble-app.js    # npm bin entry point
 ├── src/
 │   ├── cli.js                 # CLI argument parsing (Commander.js)
 │   ├── scaffold.js            # Main scaffolding logic
@@ -46,7 +46,7 @@ create-modus-app/
 ## Data Flow
 
 ```
-User runs: npx @julianoczkowski/create-modus-app my-app --framework react
+User runs: npx @julianoczkowski/create-trimble-app my-app --framework react
 
     ┌──────────────┐
     │   npm/npx    │
@@ -88,7 +88,7 @@ User runs: npx @julianoczkowski/create-modus-app my-app --framework react
 
 ## Core Modules
 
-### 1. `bin/create-modus-app.js`
+### 1. `bin/create-trimble-app.js`
 
 The npm bin entry point. Simple wrapper that imports and runs the CLI.
 

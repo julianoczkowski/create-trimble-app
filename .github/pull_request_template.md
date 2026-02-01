@@ -30,7 +30,7 @@ Fixes #(issue number)
 
 ### Manual Testing Checklist
 
-- [ ] **CLI runs without errors** (`npm run dev` or `node bin/create-modus-app.js`)
+- [ ] **CLI runs without errors** (`npm run dev` or `node bin/create-trimble-app.js`)
 - [ ] **Interactive mode works** (prompts display correctly)
 - [ ] **Command line arguments work** (--framework, --no-install, etc.)
 - [ ] **All frameworks scaffold correctly** (React, Vue, Angular, HTML)
@@ -164,10 +164,10 @@ Tested on:
 
 2. **Test the CLI functionality:**
 
-   - Try interactive mode: `node bin/create-modus-app.js`
-   - Test with arguments: `node bin/create-modus-app.js test-app --framework vue`
-   - Test help: `node bin/create-modus-app.js --help`
-   - Test version: `node bin/create-modus-app.js --version`
+   - Try interactive mode: `node bin/create-trimble-app.js`
+   - Test with arguments: `node bin/create-trimble-app.js test-app --framework vue`
+   - Test help: `node bin/create-trimble-app.js --help`
+   - Test version: `node bin/create-trimble-app.js --version`
 
 3. **Test scaffolding:**
 

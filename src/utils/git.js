@@ -28,8 +28,8 @@ export async function copyTemplate(templateName, targetPath) {
     throw new Error(
       `Template "${templateName}" not found.\n` +
         `Expected at: ${bundledPath}\n\n` +
-        `This is a bug in create-modus-app. Please report it at:\n` +
-        `https://github.com/julianoczkowski/create-modus-app/issues`,
+        `This is a bug in create-trimble-app. Please report it at:\n` +
+        `https://github.com/julianoczkowski/create-trimble-app/issues`,
     );
   }
 
@@ -135,6 +135,6 @@ export function getDetailedErrorMessage(error) {
   return (
     `Failed to create project: ${message}\n\n` +
     `If this problem persists, please report it at:\n` +
-    `https://github.com/julianoczkowski/create-modus-app/issues`
+    `https://github.com/julianoczkowski/create-trimble-app/issues`
   );
 }

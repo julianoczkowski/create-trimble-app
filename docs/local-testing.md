@@ -1,11 +1,11 @@
 # Local Testing Guide
 
-This guide explains how to test the `create-modus-app` CLI locally during development.
+This guide explains how to test the `create-trimble-app` CLI locally during development.
 
 ## Prerequisites
 
 ```bash
-cd /home/julian/Documents/Development/MODUS/create-modus-app
+cd /home/julian/Documents/Development/MODUS/create-trimble-app
 npm install
 ```
 
@@ -17,26 +17,26 @@ The fastest way to test during development:
 
 ```bash
 # Show help
-node bin/create-modus-app.js --help
+node bin/create-trimble-app.js --help
 
 # Show version
-node bin/create-modus-app.js --version
+node bin/create-trimble-app.js --version
 
 # Show CLI info
-node bin/create-modus-app.js --info
+node bin/create-trimble-app.js --info
 
 # Dry-run (preview without creating files)
-node bin/create-modus-app.js my-app --framework react --dry-run
-node bin/create-modus-app.js my-app --framework angular --dry-run
+node bin/create-trimble-app.js my-app --framework react --dry-run
+node bin/create-trimble-app.js my-app --framework angular --dry-run
 
 # Create a React project (skip install for faster testing)
-node bin/create-modus-app.js /tmp/test-react --framework react --no-install
+node bin/create-trimble-app.js /tmp/test-react --framework react --no-install
 
 # Create an Angular project
-node bin/create-modus-app.js /tmp/test-angular --framework angular --no-install
+node bin/create-trimble-app.js /tmp/test-angular --framework angular --no-install
 
 # Interactive mode
-node bin/create-modus-app.js
+node bin/create-trimble-app.js
 ```
 
 ### 2. Using npm link (Simulates Global Install)
@@ -48,11 +48,11 @@ Test as if the CLI was installed globally:
 npm link
 
 # Now use it from anywhere
-create-modus-app my-app --framework react --dry-run
-create-modus-app --help
+create-trimble-app my-app --framework react --dry-run
+create-trimble-app --help
 
 # When done testing, unlink
-npm unlink -g @julianoczkowski/create-modus-app
+npm unlink -g @julianoczkowski/create-trimble-app
 ```
 
 ### 3. Using npx with Local Path
@@ -61,10 +61,10 @@ Test from any directory:
 
 ```bash
 # From anywhere on your system
-npx /home/julian/Documents/Development/MODUS/create-modus-app my-app --framework react --dry-run
+npx /home/julian/Documents/Development/MODUS/create-trimble-app my-app --framework react --dry-run
 
 # Or use the npm run dev script
-cd /home/julian/Documents/Development/MODUS/create-modus-app
+cd /home/julian/Documents/Development/MODUS/create-trimble-app
 npm run dev
 ```
 
@@ -76,7 +76,7 @@ The `package.json` includes a dev script:
 npm run dev
 ```
 
-This runs `node bin/create-modus-app.js` and starts interactive mode.
+This runs `node bin/create-trimble-app.js` and starts interactive mode.
 
 ## Test Scenarios
 
@@ -84,11 +84,11 @@ This runs `node bin/create-modus-app.js` and starts interactive mode.
 
 ```bash
 # Run all basic commands
-node bin/create-modus-app.js --help
-node bin/create-modus-app.js --version
-node bin/create-modus-app.js --info
-node bin/create-modus-app.js test-app --framework react --dry-run
-node bin/create-modus-app.js test-app --framework angular --dry-run
+node bin/create-trimble-app.js --help
+node bin/create-trimble-app.js --version
+node bin/create-trimble-app.js --info
+node bin/create-trimble-app.js test-app --framework react --dry-run
+node bin/create-trimble-app.js test-app --framework angular --dry-run
 ```
 
 ### Full Integration Test
@@ -98,7 +98,7 @@ node bin/create-modus-app.js test-app --framework angular --dry-run
 mkdir -p /tmp/cli-test && cd /tmp/cli-test
 
 # Test React template
-node /home/julian/Documents/Development/MODUS/create-modus-app/bin/create-modus-app.js test-react --framework react --no-install
+node /home/julian/Documents/Development/MODUS/create-trimble-app/bin/create-trimble-app.js test-react --framework react --no-install
 
 # Verify React project structure
 ls -la test-react/
@@ -107,7 +107,7 @@ ls -la test-react/.github/
 ls -la test-react/src/
 
 # Test Angular template
-node /home/julian/Documents/Development/MODUS/create-modus-app/bin/create-modus-app.js test-angular --framework angular --no-install
+node /home/julian/Documents/Development/MODUS/create-trimble-app/bin/create-trimble-app.js test-angular --framework angular --no-install
 
 # Verify Angular project structure
 ls -la test-angular/
@@ -124,7 +124,7 @@ cd ~ && rm -rf /tmp/cli-test
 mkdir -p /tmp/current-folder-test && cd /tmp/current-folder-test
 
 # Install in current folder
-node /home/julian/Documents/Development/MODUS/create-modus-app/bin/create-modus-app.js --current-folder --framework react --no-install
+node /home/julian/Documents/Development/MODUS/create-trimble-app/bin/create-trimble-app.js --current-folder --framework react --no-install
 
 # Verify files were created in current directory
 ls -la
@@ -136,7 +136,7 @@ cd ~ && rm -rf /tmp/current-folder-test
 ### Test Verbose Mode
 
 ```bash
-node bin/create-modus-app.js /tmp/verbose-test --framework react --verbose --no-install
+node bin/create-trimble-app.js /tmp/verbose-test --framework react --verbose --no-install
 rm -rf /tmp/verbose-test
 ```
 
@@ -174,13 +174,13 @@ cat templates/angular/package.json
 
 ```bash
 # Quick React test (create, verify, cleanup)
-node bin/create-modus-app.js /tmp/quick-react --framework react --no-install && ls -la /tmp/quick-react/.cursor && rm -rf /tmp/quick-react
+node bin/create-trimble-app.js /tmp/quick-react --framework react --no-install && ls -la /tmp/quick-react/.cursor && rm -rf /tmp/quick-react
 
 # Quick Angular test
-node bin/create-modus-app.js /tmp/quick-angular --framework angular --no-install && ls -la /tmp/quick-angular/src && rm -rf /tmp/quick-angular
+node bin/create-trimble-app.js /tmp/quick-angular --framework angular --no-install && ls -la /tmp/quick-angular/src && rm -rf /tmp/quick-angular
 
 # Test all CLI options work
-node bin/create-modus-app.js --help && node bin/create-modus-app.js --version && node bin/create-modus-app.js --info && echo "All CLI options work!"
+node bin/create-trimble-app.js --help && node bin/create-trimble-app.js --version && node bin/create-trimble-app.js --info && echo "All CLI options work!"
 ```
 
 ## Common Issues
@@ -190,7 +190,7 @@ node bin/create-modus-app.js --help && node bin/create-modus-app.js --version &&
 Run `npm install` in the project root:
 
 ```bash
-cd /home/julian/Documents/Development/MODUS/create-modus-app
+cd /home/julian/Documents/Development/MODUS/create-trimble-app
 npm install
 ```
 
@@ -216,13 +216,13 @@ Run the full test suite and verify everything works:
 npm test
 
 # Test all CLI commands
-node bin/create-modus-app.js --help
-node bin/create-modus-app.js --info
-node bin/create-modus-app.js test --framework react --dry-run
-node bin/create-modus-app.js test --framework angular --dry-run
+node bin/create-trimble-app.js --help
+node bin/create-trimble-app.js --info
+node bin/create-trimble-app.js test --framework react --dry-run
+node bin/create-trimble-app.js test --framework angular --dry-run
 
 # Full integration test
-node bin/create-modus-app.js /tmp/final-test --framework react --no-install
+node bin/create-trimble-app.js /tmp/final-test --framework react --no-install
 ls -la /tmp/final-test
 rm -rf /tmp/final-test
 

@@ -55,19 +55,19 @@ jobs:
       - name: Test CLI functionality
         run: |
           echo "Testing CLI help command..."
-          node bin/create-modus-app.js --help
+          node bin/create-trimble-app.js --help
           echo "✓ Help command works"
 
           echo "Testing CLI version command..."
-          node bin/create-modus-app.js --version
+          node bin/create-trimble-app.js --version
           echo "✓ Version command works"
 
           echo "Testing CLI info command..."
-          node bin/create-modus-app.js --info
+          node bin/create-trimble-app.js --info
           echo "✓ Info command works"
 
           echo "Testing CLI dry-run..."
-          node bin/create-modus-app.js test-app --framework react --dry-run
+          node bin/create-trimble-app.js test-app --framework react --dry-run
           echo "✓ Dry-run command works"
 
       - name: Verify bundled templates
@@ -130,17 +130,17 @@ jobs:
 
             **Interactive mode:**
             ```bash
-            npx @julianoczkowski/create-modus-app
+            npx @julianoczkowski/create-trimble-app
             ```
 
             **With project name and framework:**
             ```bash
-            npx @julianoczkowski/create-modus-app my-app --framework react
+            npx @julianoczkowski/create-trimble-app my-app --framework react
             ```
 
             **Preview without creating files:**
             ```bash
-            npx @julianoczkowski/create-modus-app my-app --dry-run
+            npx @julianoczkowski/create-trimble-app my-app --dry-run
             ```
 
             ### CLI Options

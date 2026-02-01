@@ -124,7 +124,7 @@ body:
       placeholder: |
         ```bash
         # Example usage
-        npx @julianoczkowski/create-modus-app --new-feature
+        npx @julianoczkowski/create-trimble-app --new-feature
         ```
 
   - type: checkboxes

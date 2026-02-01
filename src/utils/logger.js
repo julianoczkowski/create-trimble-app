@@ -64,7 +64,7 @@ export const logger = {
 ║                                                             ║
 ║            Create Your Trimble Application v1.0.0           ║
 ║                     Modus 2 Web Components                  ║
-║             Icons + Theming + MCP + Rules +Skills           ║
+║            Icons + Theming + MCP + Rules + Skills           ║
 ║                                                             ║
 ║                     by Julian Oczkowski                     ║
 ║                                                             ║

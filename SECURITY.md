@@ -74,7 +74,7 @@ The Create Modus App CLI performs the following operations that have security im
 
 When using Create Modus App:
 
-1. **Verify the source**: Only use the official npm package `@julianoczkowski/create-modus-app`
+1. **Verify the source**: Only use the official npm package `@julianoczkowski/create-trimble-app`
 2. **Check project names**: Avoid special characters or paths that could cause issues
 3. **Review generated code**: Inspect the scaffolded project before running
 4. **Update dependencies**: Keep generated project dependencies up to date

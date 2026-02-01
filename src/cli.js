@@ -31,7 +31,7 @@ async function checkForUpdates() {
 const program = new Command();
 
 program
-  .name("create-modus-app")
+  .name("create-trimble-app")
   .description(
     "Interactive CLI to scaffold Modus 2.0 web component applications",
   )
@@ -55,19 +55,19 @@ program
     `
 ${chalk.cyan("Examples:")}
   ${chalk.gray("# Interactive mode - choose framework and name")}
-  $ npx @julianoczkowski/create-modus-app
+  $ npx @julianoczkowski/create-trimble-app
 
   ${chalk.gray("# Create a React project")}
-  $ npx @julianoczkowski/create-modus-app my-app --framework react
+  $ npx @julianoczkowski/create-trimble-app my-app --framework react
 
   ${chalk.gray("# Create an Angular project")}
-  $ npx @julianoczkowski/create-modus-app my-app --framework angular
+  $ npx @julianoczkowski/create-trimble-app my-app --framework angular
 
   ${chalk.gray("# Install in current folder")}
-  $ npx @julianoczkowski/create-modus-app --current-folder
+  $ npx @julianoczkowski/create-trimble-app --current-folder
 
   ${chalk.gray("# Preview without creating files")}
-  $ npx @julianoczkowski/create-modus-app my-app --dry-run
+  $ npx @julianoczkowski/create-trimble-app my-app --dry-run
 
 ${chalk.cyan("Frameworks:")}
   ${chalk.white("react")}    - React with Vite and Modus 2.0 Components
@@ -79,7 +79,7 @@ ${chalk.cyan("Security:")}
   Use ${chalk.yellow("--info")} for more details.
 
 ${chalk.cyan("More information:")}
-  ${chalk.blue("https://github.com/julianoczkowski/create-modus-app")}
+  ${chalk.blue("https://github.com/julianoczkowski/create-trimble-app")}
 `,
   )
   .action(async (projectName, options) => {

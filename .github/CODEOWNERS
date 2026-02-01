@@ -22,7 +22,7 @@ src/ @julianoczkowski
 bin/ @julianoczkowski
 
 # CLI entry point
-bin/create-modus-app.js @julianoczkowski
+bin/create-trimble-app.js @julianoczkowski
 
 # Core CLI logic
 src/cli.js @julianoczkowski

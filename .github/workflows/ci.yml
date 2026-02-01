@@ -36,10 +36,10 @@ jobs:
 
       - name: Test CLI commands
         run: |
-          node bin/create-modus-app.js --help
-          node bin/create-modus-app.js --version
-          node bin/create-modus-app.js --info
-          node bin/create-modus-app.js test-app --framework react --dry-run
+          node bin/create-trimble-app.js --help
+          node bin/create-trimble-app.js --version
+          node bin/create-trimble-app.js --info
+          node bin/create-trimble-app.js test-app --framework react --dry-run
 
   security:
     runs-on: ubuntu-latest

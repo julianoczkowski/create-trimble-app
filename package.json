@@ -1,11 +1,11 @@
 {
-  "name": "@julianoczkowski/create-modus-app",
+  "name": "@julianoczkowski/create-trimble-app",
   "version": "2.0.0",
   "description": "Interactive CLI to scaffold Modus 2.0 web component applications for React and Angular - templates bundled, works offline",
   "type": "module",
   "main": "src/cli.js",
   "bin": {
-    "create-modus-app": "bin/create-modus-app.js"
+    "create-trimble-app": "bin/create-trimble-app.js"
   },
   "files": [
     "bin/",
@@ -13,7 +13,7 @@
     "templates/"
   ],
   "scripts": {
-    "dev": "node bin/create-modus-app.js",
+    "dev": "node bin/create-trimble-app.js",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
@@ -38,12 +38,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/julianoczkowski/create-modus-app.git"
+    "url": "https://github.com/julianoczkowski/create-trimble-app.git"
   },
   "bugs": {
-    "url": "https://github.com/julianoczkowski/create-modus-app/issues"
+    "url": "https://github.com/julianoczkowski/create-trimble-app/issues"
   },
-  "homepage": "https://github.com/julianoczkowski/create-modus-app#readme",
+  "homepage": "https://github.com/julianoczkowski/create-trimble-app#readme",
   "engines": {
     "node": ">=18"
   },
