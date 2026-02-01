@@ -22,7 +22,7 @@ export const logger = {
     console.log(
       chalk.cyan(`
 ╔════════════════════════════════════════════════════════════╗
-║              CREATE MODUS APP - INFORMATION                ║
+║              CREATE TRIMBLE APP - INFORMATION              ║
 ╠════════════════════════════════════════════════════════════╣
 ║                                                            ║
 ║  Templates are bundled directly in this npm package.       ║
@@ -38,11 +38,11 @@ export const logger = {
 ║  • Published with npm provenance                           ║
 ║                                                            ║
 ║  Source repositories:                                      ║
-║  • github.com/julianoczkowski/modus-react-app              ║
-║  • github.com/julianoczkowski/modus-angular-app            ║
+║  • github.com/julianoczkowski/react-app                    ║
+║  • github.com/julianoczkowski/angular-app                  ║
 ║                                                            ║
 ║  Report issues:                                            ║
-║  https://github.com/julianoczkowski/create-modus-app       ║
+║  https://github.com/julianoczkowski/create-trimble-app     ║
 ║                                                            ║
 ╚════════════════════════════════════════════════════════════╝
     `),
@@ -62,11 +62,11 @@ export const logger = {
 ║      ██║   ██║  ██║██║██║ ╚═╝ ██║██████╔╝███████╗███████╗   ║
 ║      ╚═╝   ╚═╝  ╚═╝╚═╝╚═╝     ╚═╝╚═════╝ ╚══════╝╚══════╝   ║
 ║                                                             ║
-║                Create Your Trimble Application              ║
+║            Create Your Trimble Application v1.0.0           ║
 ║                     Modus 2 Web Components                  ║
-║                 Icons + Theming + MCP + Rules               ║
+║             Icons + Theming + MCP + Rules +Skills           ║
 ║                                                             ║
-║                         by Julian                           ║
+║                     by Julian Oczkowski                     ║
 ║                                                             ║
 ╚════════════════════════════════════════════════════════════ +
     `),
@@ -94,7 +94,7 @@ ${chalk.gray("═".repeat(60))}
 ${chalk.gray("Next steps:")}
 ${chalk.cyan(openCommand)}
 ${!shouldInstall ? chalk.cyan(`run: npm install`) + "\n" : ""}${chalk.cyan(
-        `run: npm run dev`,
+        `run: ${framework === "Angular" ? "npm run start" : "npm run dev"}`,
       )}
 
 ${chalk.gray("═".repeat(60))}

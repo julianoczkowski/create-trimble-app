@@ -5,7 +5,7 @@ This guide explains how to test the `create-modus-app` CLI locally during develo
 ## Prerequisites
 
 ```bash
-cd /Users/julianoczkowski/Desktop/Development/create-modus-app
+cd /home/julian/Documents/Development/MODUS/create-modus-app
 npm install
 ```
 
@@ -61,10 +61,10 @@ Test from any directory:
 
 ```bash
 # From anywhere on your system
-npx /Users/julianoczkowski/Desktop/Development/create-modus-app my-app --framework react --dry-run
+npx /home/julian/Documents/Development/MODUS/create-modus-app my-app --framework react --dry-run
 
 # Or use the npm run dev script
-cd /Users/julianoczkowski/Desktop/Development/create-modus-app
+cd /home/julian/Documents/Development/MODUS/create-modus-app
 npm run dev
 ```
 
@@ -98,7 +98,7 @@ node bin/create-modus-app.js test-app --framework angular --dry-run
 mkdir -p /tmp/cli-test && cd /tmp/cli-test
 
 # Test React template
-node /Users/julianoczkowski/Desktop/Development/create-modus-app/bin/create-modus-app.js test-react --framework react --no-install
+node /home/julian/Documents/Development/MODUS/create-modus-app/bin/create-modus-app.js test-react --framework react --no-install
 
 # Verify React project structure
 ls -la test-react/
@@ -107,7 +107,7 @@ ls -la test-react/.github/
 ls -la test-react/src/
 
 # Test Angular template
-node /Users/julianoczkowski/Desktop/Development/create-modus-app/bin/create-modus-app.js test-angular --framework angular --no-install
+node /home/julian/Documents/Development/MODUS/create-modus-app/bin/create-modus-app.js test-angular --framework angular --no-install
 
 # Verify Angular project structure
 ls -la test-angular/
@@ -124,7 +124,7 @@ cd ~ && rm -rf /tmp/cli-test
 mkdir -p /tmp/current-folder-test && cd /tmp/current-folder-test
 
 # Install in current folder
-node /Users/julianoczkowski/Desktop/Development/create-modus-app/bin/create-modus-app.js --current-folder --framework react --no-install
+node /home/julian/Documents/Development/MODUS/create-modus-app/bin/create-modus-app.js --current-folder --framework react --no-install
 
 # Verify files were created in current directory
 ls -la
@@ -190,7 +190,7 @@ node bin/create-modus-app.js --help && node bin/create-modus-app.js --version &&
 Run `npm install` in the project root:
 
 ```bash
-cd /Users/julianoczkowski/Desktop/Development/create-modus-app
+cd /home/julian/Documents/Development/MODUS/create-modus-app
 npm install
 ```
 
