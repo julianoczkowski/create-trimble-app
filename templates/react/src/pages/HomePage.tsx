@@ -12,9 +12,6 @@ export default function HomePage() {
         <div className="max-w-4xl w-full space-y-8">
           {/* Header */}
           <div className="text-center space-y-4">
-            <div className="flex items-center justify-center gap-3">
-              <i className="modus-icons text-5xl text-primary">launch</i>
-            </div>
             <div className="text-4xl font-bold text-foreground">
               Modus React App
             </div>

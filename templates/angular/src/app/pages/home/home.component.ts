@@ -24,9 +24,6 @@ import { ModusButtonComponent } from '../../components/modus-button.component';
         <div class="max-w-4xl w-full space-y-8">
           <!-- Header -->
           <div class="text-center space-y-4">
-            <div class="flex items-center justify-center gap-3">
-              <i class="modus-icons text-5xl text-primary">launch</i>
-            </div>
             <div class="text-4xl font-bold text-foreground">Modus Angular App</div>
             <div class="text-xl text-foreground-60">
               A production-ready Angular boilerplate with Modus Design System integration.
@@ -224,19 +221,9 @@ import { ModusButtonComponent } from '../../components/modus-button.component';
           <!-- Footer -->
           <div class="text-center pt-8 box-content">
             <div class="flex items-center justify-center gap-3 mb-3">
-              <img
-                src="/angular-icon.svg"
-                alt="Angular"
-                class="h-6 w-6"
-                aria-hidden="true"
-              />
+              <img src="/angular-icon.svg" alt="Angular" class="h-6 w-6" aria-hidden="true" />
               <div class="text-foreground-40">+</div>
-              <img
-                src="/vite.svg"
-                alt="Vite"
-                class="h-6 w-6"
-                aria-hidden="true"
-              />
+              <img src="/vite.svg" alt="Vite" class="h-6 w-6" aria-hidden="true" />
             </div>
             <div class="text-sm font-mono text-foreground-40">
               2026 Modus Angular App v1.0.0 + Angular 20 + Vite + Tailwind CSS - Created by Julian

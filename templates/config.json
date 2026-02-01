@@ -1,18 +1,18 @@
 {
   "frameworks": {
     "react": {
-      "name": "React App",
-      "description": "Build with React, Vite and Modus 2.0 Components",
+      "name": "React + Vite + Modus 2.0 Components",
+      "description": "Theming + Icons + MCP + Skills",
       "supportsTypeScript": true,
       "badge": "●",
-      "note": "Most Popular • Huge Ecosystem • Great for Complex UIs • AI Support: Very Strong"
+      "note": "Most Popular"
     },
     "angular": {
-      "name": "Angular",
-      "description": "Build with Angular and Modus 2.0 Web Components",
+      "name": "Angular + Modus 2.0 Web Components",
+      "description": "Theming + Icons + MCP + Skills",
       "supportsTypeScript": true,
       "badge": "■",
-      "note": "Enterprise Grade • TypeScript First • Complete Framework • AI Support: Moderate"
+      "note": "Enterprise Grade"
     }
   },
   "meta": {
