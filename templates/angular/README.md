@@ -1,92 +1,435 @@
-# AngularVite
+# Modus Angular Boilerplate
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.3.8.
+![Angular](https://img.shields.io/badge/Angular-20-DD0031?logo=angular&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-v4-06B6D4?logo=tailwindcss&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178C6?logo=typescript&logoColor=white)
+![Modus](https://img.shields.io/badge/Modus-2.0-00A3E0)
 
-## Development server
+A production-ready Angular 20 boilerplate with **Trimble Modus Design System** integration, featuring 47 wrapped components, comprehensive dev tools, and enforced design system compliance.
 
-To start a local development server, run:
+---
 
-```bash
-ng serve
-```
-
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+## Quick Start
 
 ```bash
-ng generate component component-name
+# 1. Install dependencies
+npm install
+
+# 2. Start development server
+npm start
+
+# 3. Open in browser
+open http://localhost:4200
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+Press <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>D</kbd> to open the **Dev Panel** and explore components, themes, and icons.
 
-```bash
-ng generate --help
+---
+
+## What's Included
+
+| Feature                   | Description                                                                            |
+| ------------------------- | -------------------------------------------------------------------------------------- |
+| **47 Wrapper Components** | Angular wrappers for all Modus Web Components with signal-based APIs                   |
+| **46 Component Demos**    | Interactive demos organized by category (Display, Feedback, Forms, Layout, Navigation) |
+| **Dev Panel**             | Floating panel with theme switcher, color palette, icon browser, and component gallery |
+| **8 Lint Scripts**        | Automated design system compliance checking (colors, icons, borders, opacity, styles)  |
+| **52 AI Rules**           | Cursor/Copilot rules for guided development with Modus patterns                        |
+| **6 Themes**              | Classic, Modern, and Connect themes in light/dark variants                             |
+| **Pre-commit Hooks**      | Automatic linting on every commit via Husky                                            |
+
+---
+
+## Tech Stack
+
+| Technology             | Version    | Package                                   |
+| ---------------------- | ---------- | ----------------------------------------- |
+| Angular                | 20.3.0     | `@angular/core`                           |
+| Modus Web Components   | 1.0.6      | `@trimble-oss/moduswebcomponents`         |
+| Modus Angular Wrappers | 1.0.6-ng19 | `@trimble-oss/moduswebcomponents-angular` |
+| Modus Icons            | 1.18.0     | `@trimble-oss/modus-icons`                |
+| Tailwind CSS           | 4.1.16     | `tailwindcss`                             |
+| TypeScript             | 5.9.2      | `typescript`                              |
+
+---
+
+## Project Structure
+
+```
+src/app/
+├── pages/                 # Your application pages (START HERE)
+│   └── home/              # Home page - edit to build your app
+├── components/            # 47 Modus wrapper components (use as-is)
+├── demos/                 # 46 component demos (reference only)
+│   ├── display/           # Avatar, Badge, Icon, Logo, Pagination...
+│   ├── feedback/          # Alert, Loader, Modal, Progress, Toast...
+│   ├── forms/             # Button, Checkbox, Input, Select, Slider...
+│   ├── layout/            # Accordion, Card, Collapse, Panel
+│   ├── navigation/        # Breadcrumbs, Menu, Navbar, Tabs...
+│   └── system/            # Theme Switcher
+├── dev/                   # Dev Panel infrastructure
+│   ├── dev-panel/         # Floating panel UI
+│   └── theme-switcher-dropdown/
+├── dev-pages/             # Reference pages (dev only)
+│   ├── color-palette/     # Design system colors
+│   ├── icons/             # 700+ icons browser
+│   └── components-gallery/
+├── services/              # Theme service with localStorage persistence
+└── data/                  # Shared data (icons list, etc.)
 ```
 
-## Building
+### Where to Build Your App
 
-To build the project run:
+| Directory             | Action    | Description                     |
+| --------------------- | --------- | ------------------------------- |
+| `src/app/pages/`      | **WRITE** | Add your application pages here |
+| `src/app/components/` | READ      | Use wrapper components as-is    |
+| `src/app/demos/`      | READ      | Reference for component usage   |
 
-```bash
-ng build
+---
+
+## Dev Panel
+
+Toggle with <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>D</kbd> (or <kbd>Cmd</kbd>+<kbd>Shift</kbd>+<kbd>D</kbd> on Mac)
+
+### Features
+
+| Tab            | Description                                                        |
+| -------------- | ------------------------------------------------------------------ |
+| **Themes**     | Switch between 6 Modus themes (Classic/Modern/Connect, Light/Dark) |
+| **Colors**     | View the 9-color design system palette with CSS variables          |
+| **Icons**      | Browse 700+ Modus icons with click-to-copy functionality           |
+| **Components** | Gallery of all 47 wrapped components                               |
+| **Demos**      | 46 interactive component demos                                     |
+
+### Dev Routes
+
+| Route             | Description                |
+| ----------------- | -------------------------- |
+| `/dev/colors`     | Color palette reference    |
+| `/dev/icons`      | Icon library browser       |
+| `/dev/components` | Component gallery          |
+| `/dev/demos/*`    | Individual component demos |
+
+> **Note:** Dev Panel and dev routes are automatically excluded from production builds.
+
+---
+
+## Available Components
+
+### Display (9)
+
+| Component  | Selector             | Description                        |
+| ---------- | -------------------- | ---------------------------------- |
+| Avatar     | `<modus-avatar>`     | User avatar with image or initials |
+| Badge      | `<modus-badge>`      | Status indicators and counters     |
+| Chip       | `<modus-chip>`       | Tags and filter chips              |
+| Icon       | `<modus-icon>`       | 700+ Modus icons                   |
+| Logo       | `<modus-logo>`       | Trimble logo variants              |
+| Pagination | `<modus-pagination>` | Page navigation                    |
+| Skeleton   | `<modus-skeleton>`   | Loading placeholders               |
+| Stepper    | `<modus-stepper>`    | Multi-step indicators              |
+| Table      | `<modus-table>`      | Data tables                        |
+
+### Feedback (10)
+
+| Component      | Selector                 | Description                |
+| -------------- | ------------------------ | -------------------------- |
+| Alert          | `<modus-alert>`          | Notifications and messages |
+| Handle         | `<modus-handle>`         | Resize handles             |
+| Input Feedback | `<modus-input-feedback>` | Form validation messages   |
+| Input Label    | `<modus-input-label>`    | Form labels                |
+| Loader         | `<modus-loader>`         | Loading spinners           |
+| Modal          | `<modus-modal>`          | Dialog windows             |
+| Progress       | `<modus-progress>`       | Progress bars              |
+| Rating         | `<modus-rating>`         | Star ratings               |
+| Toast          | `<modus-toast>`          | Temporary notifications    |
+| Tooltip        | `<modus-tooltip>`        | Hover tooltips             |
+
+### Forms (15)
+
+| Component     | Selector                | Description             |
+| ------------- | ----------------------- | ----------------------- |
+| Autocomplete  | `<modus-autocomplete>`  | Search with suggestions |
+| Button        | `<modus-button>`        | Action buttons          |
+| Button Group  | `<modus-button-group>`  | Grouped buttons         |
+| Checkbox      | `<modus-checkbox>`      | Checkbox inputs         |
+| Date          | `<modus-date>`          | Date picker             |
+| Dropdown Menu | `<modus-dropdown-menu>` | Dropdown selections     |
+| File Dropzone | `<modus-file-dropzone>` | File upload area        |
+| Number Input  | `<modus-number-input>`  | Numeric inputs          |
+| Radio         | `<modus-radio>`         | Radio buttons           |
+| Select        | `<modus-select>`        | Select dropdowns        |
+| Slider        | `<modus-slider>`        | Range sliders           |
+| Switch        | `<modus-switch>`        | Toggle switches         |
+| Text Input    | `<modus-text-input>`    | Text fields             |
+| Textarea      | `<modus-textarea>`      | Multi-line text         |
+| Time Input    | `<modus-time-input>`    | Time picker             |
+
+### Layout (4)
+
+| Component     | Selector                | Description          |
+| ------------- | ----------------------- | -------------------- |
+| Accordion     | `<modus-accordion>`     | Collapsible sections |
+| Card          | `<modus-card>`          | Content cards        |
+| Collapse      | `<modus-collapse>`      | Expandable content   |
+| Utility Panel | `<modus-utility-panel>` | Slide-out panels     |
+
+### Navigation (6)
+
+| Component       | Selector                  | Description        |
+| --------------- | ------------------------- | ------------------ |
+| Breadcrumbs     | `<modus-breadcrumbs>`     | Navigation trail   |
+| Menu            | `<modus-menu>`            | Dropdown menus     |
+| Navbar          | `<modus-navbar>`          | Top navigation bar |
+| Side Navigation | `<modus-side-navigation>` | Sidebar navigation |
+| Tabs            | `<modus-tabs>`            | Tabbed content     |
+| Toolbar         | `<modus-toolbar>`         | Action toolbars    |
+
+### System (1)
+
+| Component      | Selector                 | Description     |
+| -------------- | ------------------------ | --------------- |
+| Theme Switcher | `<modus-theme-switcher>` | Theme selection |
+
+---
+
+## Design System
+
+### 9-Color Palette
+
+#### Base Colors
+
+| Color      | Tailwind Class    | Usage              |
+| ---------- | ----------------- | ------------------ |
+| Background | `bg-background`   | Page backgrounds   |
+| Card       | `bg-card`         | Card surfaces      |
+| Muted      | `bg-muted`        | Muted backgrounds  |
+| Secondary  | `bg-secondary`    | Secondary surfaces |
+| Foreground | `text-foreground` | Primary text       |
+
+#### Status Colors
+
+| Color   | Tailwind Class                | Usage                        |
+| ------- | ----------------------------- | ---------------------------- |
+| Primary | `bg-primary` / `text-primary` | Primary actions, info states |
+| Success | `bg-success` / `text-success` | Success states               |
+| Warning | `bg-warning` / `text-warning` | Warning states               |
+| Error   | `bg-error` / `text-error`     | Error states                 |
+
+### Usage Example
+
+```html
+<!-- Correct: Design system colors -->
+<div class="bg-background text-foreground p-4">
+  <div class="bg-card rounded-lg p-4 border-default">
+    <div class="text-primary font-semibold">Title</div>
+    <div class="text-muted-foreground">Description</div>
+  </div>
+</div>
+
+<!-- Wrong: Generic Tailwind colors (will fail lint) -->
+<div class="bg-gray-100 text-gray-900"></div>
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+### Opacity Utilities
 
-## Running unit tests
+Use custom opacity classes instead of Tailwind's `/80` syntax:
 
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+```html
+<!-- Correct -->
+<div class="text-foreground-80">80% opacity text</div>
 
-```bash
-ng test
+<!-- Wrong (doesn't work with CSS variables) -->
+<div class="text-foreground/80"></div>
 ```
 
-## Running end-to-end tests
+---
 
-For end-to-end (e2e) testing, run:
+## Commands
 
-```bash
-ng e2e
+### Development
+
+| Command         | Description                          |
+| --------------- | ------------------------------------ |
+| `npm start`     | Start dev server on `localhost:4200` |
+| `npm run build` | Production build to `dist/`          |
+| `npm test`      | Run unit tests with Karma            |
+| `npm run watch` | Build with watch mode                |
+
+### Linting
+
+| Command                   | Description                  |
+| ------------------------- | ---------------------------- |
+| `npm run lint:all`        | Run all design system checks |
+| `npm run type-check`      | TypeScript validation        |
+| `npm run lint:colors`     | Check color compliance       |
+| `npm run lint:styles`     | Check for inline styles      |
+| `npm run lint:borders`    | Check border patterns        |
+| `npm run lint:opacity`    | Check opacity utilities      |
+| `npm run lint:icons`      | Check icon library usage     |
+| `npm run lint:icon-names` | Validate icon names (700+)   |
+
+### Pre-commit Hooks
+
+All lint commands run automatically on `git commit` via Husky. Commits are blocked if any check fails.
+
+---
+
+## Getting Started
+
+### 1. Build Your App
+
+Edit `src/app/pages/home/home.component.ts` to start building:
+
+```typescript
+import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { ModusButtonComponent } from '@/app/components';
+
+@Component({
+  selector: 'app-home',
+  imports: [ModusButtonComponent],
+  template: `
+    <div class="bg-background text-foreground p-8">
+      <div class="text-2xl font-bold mb-4">My App</div>
+      <modus-button color="primary" (buttonClick)="handleClick()"> Get Started </modus-button>
+    </div>
+  `,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class HomeComponent {
+  handleClick() {
+    console.log('Button clicked!');
+  }
+}
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+### 2. Use Components
 
-## Deployment to AWS Amplify
+Import from `@/app/components`:
 
-This project includes an `amplify.yml` configuration file for AWS Amplify deployment.
+```typescript
+import {
+  ModusButtonComponent,
+  ModusAlertComponent,
+  ModusIconComponent,
+  ModusCardComponent,
+} from '@/app/components';
+```
 
-### Setup Steps
+### 3. Test All Themes
 
-1. **Build Configuration**: The `amplify.yml` file is already configured with:
+Use the Dev Panel (<kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>D</kbd>) to test your UI in all 6 themes:
 
-   - Build commands: `npm ci` → `npm run build`
-   - Output directory: `dist/angular-vite/browser`
-   - Caching for `node_modules`
+- Modus Classic Light / Dark
+- Modus Modern Light / Dark
+- Connect Light / Dark
 
-2. **Redirect Rules** (Important for Angular Routing):
+---
 
-   After deploying to AWS Amplify, you **must** configure redirect rules in the Amplify Console for client-side routing to work:
+## Deployment
 
-   - Go to your Amplify app in the AWS Console
-   - Navigate to **App settings** → **Rewrites and redirects**
-   - Add a redirect rule:
-     - **Source**: `/<*>`
-     - **Target**: `/index.html`
-     - **Type**: `200 (Rewrite)`
+### AWS Amplify
 
-   This ensures all routes (like `/theme-demo`, `/button-demo`) are handled by Angular's client-side router.
+Pre-configured `amplify.yml` included:
 
-### Build Output
+```yaml
+version: 1
+frontend:
+  phases:
+    preBuild:
+      commands:
+        - npm ci
+    build:
+      commands:
+        - npm run build
+  artifacts:
+    baseDirectory: dist/modus-angular-app/browser
+    files:
+      - '**/*'
+  cache:
+    paths:
+      - node_modules/**/*
+```
 
-The build outputs to `dist/angular-vite/browser/` with:
+**Important:** Configure rewrite rules in Amplify Console for Angular routing:
 
-- Production-optimized bundles
-- Hashed filenames for caching
-- Static assets from `public/` directory
+| Source | Target        | Type          |
+| ------ | ------------- | ------------- |
+| `/<*>` | `/index.html` | 200 (Rewrite) |
 
-## Additional Resources
+---
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+## AI-Powered Development
+
+### Cursor/Copilot Rules
+
+52 development rules in `.cursor/rules/` covering:
+
+- Component patterns and state management
+- Design system compliance
+- Angular 20 best practices
+- Known issues and workarounds
+
+### AGENTS.MD
+
+Comprehensive guide for AI agents in `AGENTS.MD`:
+
+- Commands reference
+- Design system rules
+- Critical bug fixes
+- Boundaries (Always/Ask/Never)
+
+### MCP Servers
+
+Pre-configured Model Context Protocol servers:
+
+| Server       | Purpose                            |
+| ------------ | ---------------------------------- |
+| `modus-docs` | Modus component documentation      |
+| `context7`   | Angular, Tailwind, dependency docs |
+
+---
+
+## Angular 20 Patterns
+
+This boilerplate uses modern Angular patterns:
+
+```typescript
+// Signal-based inputs (not @Input decorator)
+readonly color = input<ButtonColor>('primary');
+
+// Signal-based outputs (not @Output decorator)
+readonly buttonClick = output<MouseEvent>();
+
+// inject() for DI (not constructor)
+private readonly service = inject(MyService);
+
+// Modern control flow (not *ngIf/*ngFor)
+@if (isVisible()) {
+  <div>Content</div>
+}
+@for (item of items(); track item.id) {
+  <div>{{ item.name }}</div>
+}
+
+// OnPush change detection (required)
+changeDetection: ChangeDetectionStrategy.OnPush
+```
+
+---
+
+## Resources
+
+| Resource                                                                                                                  | Description                      |
+| ------------------------------------------------------------------------------------------------------------------------- | -------------------------------- |
+| [Modus 2 Web Components](https://trimble-oss.github.io/modus-wc-2.0/main/?path=/docs/documentation-getting-started--docs) | Official component documentation |
+| [Modus Design System](https://modus.trimble.com/)                                                                         | Design guidelines and patterns   |
+| [Angular Signals](https://angular.dev/guide/signals)                                                                      | Signal-based reactivity guide    |
+| [Tailwind CSS v4](https://tailwindcss.com/docs)                                                                           | Utility-first CSS framework      |
+
+---
+
+## License
+
+MIT
