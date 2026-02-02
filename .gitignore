@@ -60,7 +60,6 @@ jspm_packages/
 # dotenv environment variables file
 .env
 .env.test
-.env.production
 
 # parcel-bundler cache
 .cache
@@ -75,7 +74,6 @@ dist
 
 # Gatsby files
 .cache/
-public
 
 # Storybook build outputs
 .out
@@ -96,7 +94,6 @@ pids
 *.pid.lock
 
 # IDE
-.vscode/
 .idea/
 *.swp
 *.swo
