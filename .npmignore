@@ -52,3 +52,12 @@ yarn.lock
 
 # Implementation guides (development only)
 implementation_guides/
+
+# BUT include everything in templates (they are the product!)
+!templates/
+!templates/**
+!templates/**/.vscode/
+!templates/**/.vscode/**
+!templates/**/.env*
+!templates/**/public/
+!templates/**/public/**
