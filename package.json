@@ -1,6 +1,6 @@
 {
   "name": "@julianoczkowski/create-trimble-app",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "Interactive CLI to scaffold Modus 2.0 web component applications for React and Angular - templates bundled, works offline",
   "type": "module",
   "main": "src/cli.js",
