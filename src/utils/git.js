@@ -52,7 +52,9 @@ async function copyDirectory(src, dest) {
 
   for (const entry of entries) {
     const srcPath = path.join(src, entry.name);
-    const destPath = path.join(dest, entry.name);
+    // Rename dot-npmrc to .npmrc when copying (npm excludes .npmrc during publish)
+    const destName = entry.name === "dot-npmrc" ? ".npmrc" : entry.name;
+    const destPath = path.join(dest, destName);
 
     if (entry.isDirectory()) {
       await copyDirectory(srcPath, destPath);
