@@ -30,13 +30,13 @@ import { ModusLogoComponent, LogoName } from '../../components/modus-logo.compon
         <div class="grid grid-cols-2 gap-8">
           @for (logo of trimbleLogos; track logo.name) {
             <div
-              class="flex flex-col items-center gap-4 p-6 bg-muted rounded-lg"
+              class="flex flex-col items-center gap-4 p-6 bg-background rounded-lg border-thick-dashed"
             >
               <div class="h-20 flex items-center justify-center">
                 <modus-logo [name]="logo.name" customClass="max-h-20 max-w-64" />
               </div>
               <div class="text-sm text-muted-foreground text-center">{{ logo.display }}</div>
-              <code class="text-xs bg-background px-2 py-1 rounded">{{ logo.name }}</code>
+              <code class="text-xs bg-muted px-2 py-1 rounded">{{ logo.name }}</code>
             </div>
           }
         </div>
@@ -49,13 +49,13 @@ import { ModusLogoComponent, LogoName } from '../../components/modus-logo.compon
         <div class="grid grid-cols-2 gap-8">
           @for (logo of viewpointLogos; track logo.name) {
             <div
-              class="flex flex-col items-center gap-4 p-6 bg-muted rounded-lg"
+              class="flex flex-col items-center gap-4 p-6 bg-background rounded-lg border-thick-dashed"
             >
               <div class="h-20 flex items-center justify-center">
                 <modus-logo [name]="logo.name" customClass="max-h-20 max-w-64" />
               </div>
               <div class="text-sm text-muted-foreground text-center">{{ logo.display }}</div>
-              <code class="text-xs bg-background px-2 py-1 rounded">{{ logo.name }}</code>
+              <code class="text-xs bg-muted px-2 py-1 rounded">{{ logo.name }}</code>
             </div>
           }
         </div>

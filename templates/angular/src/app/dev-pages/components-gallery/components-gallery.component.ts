@@ -446,16 +446,9 @@ const categories: Category[] = [
             class="h-6 w-6"
             aria-hidden="true"
           />
-          <div class="text-foreground-40">+</div>
-          <img
-            src="/vite.svg"
-            alt="Vite"
-            class="h-6 w-6"
-            aria-hidden="true"
-          />
         </div>
         <div class="text-sm font-mono text-foreground-40">
-          2026 Modus Angular App v1.0.0 + Angular 20 + Vite + Tailwind CSS -
+          2026 Modus Angular App v1.0.0 + Angular 20 + Tailwind CSS -
           Created by Julian Oczkowski
         </div>
       </div>

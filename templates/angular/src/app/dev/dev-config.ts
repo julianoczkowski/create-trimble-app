@@ -40,38 +40,9 @@ export const devNavItems: DevNavItem[] = [
 
 /**
  * Component demo categories for the Dev Panel navigation.
- * Categories and items are sorted alphabetically.
+ * Categories match the gallery filter categories for consistent UX.
  */
 export const demoCategories: DevNavCategory[] = [
-  {
-    label: 'Display',
-    items: [
-      { label: 'Avatar', path: '/dev/demos/avatar' },
-      { label: 'Badge', path: '/dev/demos/badge' },
-      { label: 'Chip', path: '/dev/demos/chip' },
-      { label: 'Icon', path: '/dev/demos/icon' },
-      { label: 'Logo', path: '/dev/demos/logo' },
-      { label: 'Pagination', path: '/dev/demos/pagination' },
-      { label: 'Skeleton', path: '/dev/demos/skeleton' },
-      { label: 'Stepper', path: '/dev/demos/stepper' },
-      { label: 'Table', path: '/dev/demos/table' },
-    ],
-  },
-  {
-    label: 'Feedback',
-    items: [
-      { label: 'Alert', path: '/dev/demos/alert' },
-      { label: 'Handle', path: '/dev/demos/handle' },
-      { label: 'Input Feedback', path: '/dev/demos/input-feedback' },
-      { label: 'Input Label', path: '/dev/demos/input-label' },
-      { label: 'Loader', path: '/dev/demos/loader' },
-      { label: 'Modal', path: '/dev/demos/modal' },
-      { label: 'Progress', path: '/dev/demos/progress' },
-      { label: 'Rating', path: '/dev/demos/rating' },
-      { label: 'Toast', path: '/dev/demos/toast' },
-      { label: 'Tooltip', path: '/dev/demos/tooltip' },
-    ],
-  },
   {
     label: 'Forms',
     items: [
@@ -80,10 +51,12 @@ export const demoCategories: DevNavCategory[] = [
       { label: 'Button Group', path: '/dev/demos/button-group' },
       { label: 'Checkbox', path: '/dev/demos/checkbox' },
       { label: 'Date', path: '/dev/demos/date' },
-      { label: 'Dropdown', path: '/dev/demos/dropdown' },
       { label: 'File Dropzone', path: '/dev/demos/file-dropzone' },
+      { label: 'Input Feedback', path: '/dev/demos/input-feedback' },
+      { label: 'Input Label', path: '/dev/demos/input-label' },
       { label: 'Number Input', path: '/dev/demos/number-input' },
       { label: 'Radio', path: '/dev/demos/radio' },
+      { label: 'Rating', path: '/dev/demos/rating' },
       { label: 'Select', path: '/dev/demos/select' },
       { label: 'Slider', path: '/dev/demos/slider' },
       { label: 'Switch', path: '/dev/demos/switch' },
@@ -97,7 +70,9 @@ export const demoCategories: DevNavCategory[] = [
     items: [
       { label: 'Accordion', path: '/dev/demos/accordion' },
       { label: 'Card', path: '/dev/demos/card' },
+      { label: 'Handle', path: '/dev/demos/handle' },
       { label: 'Panel', path: '/dev/demos/panel' },
+      { label: 'Toolbar', path: '/dev/demos/toolbar' },
       { label: 'Utility Panel', path: '/dev/demos/utility-panel' },
     ],
   },
@@ -105,15 +80,43 @@ export const demoCategories: DevNavCategory[] = [
     label: 'Navigation',
     items: [
       { label: 'Breadcrumbs', path: '/dev/demos/breadcrumbs' },
+      { label: 'Dropdown Menu', path: '/dev/demos/dropdown' },
       { label: 'Menu', path: '/dev/demos/menu' },
       { label: 'Navbar', path: '/dev/demos/navbar' },
+      { label: 'Pagination', path: '/dev/demos/pagination' },
       { label: 'Side Navigation', path: '/dev/demos/side-navigation' },
+      { label: 'Stepper', path: '/dev/demos/stepper' },
       { label: 'Tabs', path: '/dev/demos/tabs' },
-      { label: 'Toolbar', path: '/dev/demos/toolbar' },
     ],
   },
   {
-    label: 'System',
-    items: [{ label: 'Theme Switcher', path: '/dev/demos/theme-switcher' }],
+    label: 'Display',
+    items: [
+      { label: 'Avatar', path: '/dev/demos/avatar' },
+      { label: 'Badge', path: '/dev/demos/badge' },
+      { label: 'Chip', path: '/dev/demos/chip' },
+      { label: 'Icon', path: '/dev/demos/icon' },
+      { label: 'Logo', path: '/dev/demos/logo' },
+      { label: 'Theme Switcher', path: '/dev/demos/theme-switcher' },
+    ],
+  },
+  {
+    label: 'Feedback',
+    items: [
+      { label: 'Alert', path: '/dev/demos/alert' },
+      { label: 'Loader', path: '/dev/demos/loader' },
+      { label: 'Progress', path: '/dev/demos/progress' },
+      { label: 'Skeleton', path: '/dev/demos/skeleton' },
+      { label: 'Toast', path: '/dev/demos/toast' },
+      { label: 'Tooltip', path: '/dev/demos/tooltip' },
+    ],
+  },
+  {
+    label: 'Overlays',
+    items: [{ label: 'Modal', path: '/dev/demos/modal' }],
+  },
+  {
+    label: 'Data',
+    items: [{ label: 'Table', path: '/dev/demos/table' }],
   },
 ];

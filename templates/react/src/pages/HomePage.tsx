@@ -50,7 +50,7 @@ export default function HomePage() {
             </div>
             <div className="space-y-4 text-foreground-80">
               <div className="flex gap-3">
-                <div className="flex-shrink-0 w-6 h-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-bold">
+                <div className="flex-shrink-0 w-6 h-6 rounded-full bg-muted-foreground text-background flex items-center justify-center text-sm font-bold">
                   1
                 </div>
                 <div>
@@ -71,7 +71,7 @@ export default function HomePage() {
                 </div>
               </div>
               <div className="flex gap-3">
-                <div className="flex-shrink-0 w-6 h-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-bold">
+                <div className="flex-shrink-0 w-6 h-6 rounded-full bg-muted-foreground text-background flex items-center justify-center text-sm font-bold">
                   2
                 </div>
                 <div>
@@ -88,7 +88,7 @@ export default function HomePage() {
                 </div>
               </div>
               <div className="flex gap-3">
-                <div className="flex-shrink-0 w-6 h-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-bold">
+                <div className="flex-shrink-0 w-6 h-6 rounded-full bg-muted-foreground text-background flex items-center justify-center text-sm font-bold">
                   3
                 </div>
                 <div>
@@ -112,7 +112,7 @@ export default function HomePage() {
               development.
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="p-4 bg-muted rounded-lg">
+              <div className="p-4 bg-card rounded-lg border-thick-dashed">
                 <div className="font-medium text-foreground mb-1">
                   Modus Docs MCP
                 </div>
@@ -122,12 +122,12 @@ export default function HomePage() {
                   practices.
                 </div>
               </div>
-              <div className="p-4 bg-muted rounded-lg">
+              <div className="p-4 bg-card rounded-lg border-thick-dashed">
                 <div className="font-medium text-foreground mb-1">
                   Context7 MCP
                 </div>
                 <div className="text-sm text-foreground-60">
-                  Up-to-date library documentation for React, Vite, Tailwind,
+                  Up-to-date library documentation for React, Tailwind,
                   and other dependencies.
                 </div>
               </div>
@@ -146,7 +146,7 @@ export default function HomePage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-3">
                 <div className="flex items-start gap-2">
-                  <i className="modus-icons text-primary mt-0.5">widgets</i>
+                  <i className="modus-icons text-muted-foreground mt-0.5">widgets</i>
                   <div>
                     <div className="font-medium text-foreground">
                       Component Patterns
@@ -158,7 +158,7 @@ export default function HomePage() {
                   </div>
                 </div>
                 <div className="flex items-start gap-2">
-                  <i className="modus-icons text-primary mt-0.5">palette</i>
+                  <i className="modus-icons text-muted-foreground mt-0.5">palette</i>
                   <div>
                     <div className="font-medium text-foreground">
                       Design System Compliance
@@ -170,7 +170,7 @@ export default function HomePage() {
                   </div>
                 </div>
                 <div className="flex items-start gap-2">
-                  <i className="modus-icons text-primary mt-0.5">
+                  <i className="modus-icons text-muted-foreground mt-0.5">
                     accessibility
                   </i>
                   <div>
@@ -186,7 +186,7 @@ export default function HomePage() {
               </div>
               <div className="space-y-3">
                 <div className="flex items-start gap-2">
-                  <i className="modus-icons text-primary mt-0.5">dashboard</i>
+                  <i className="modus-icons text-muted-foreground mt-0.5">dashboard</i>
                   <div>
                     <div className="font-medium text-foreground">
                       UX Foundations
@@ -198,7 +198,7 @@ export default function HomePage() {
                   </div>
                 </div>
                 <div className="flex items-start gap-2">
-                  <i className="modus-icons text-primary mt-0.5">wrench</i>
+                  <i className="modus-icons text-muted-foreground mt-0.5">wrench</i>
                   <div>
                     <div className="font-medium text-foreground">
                       Development Workflow
@@ -209,7 +209,7 @@ export default function HomePage() {
                   </div>
                 </div>
                 <div className="flex items-start gap-2">
-                  <i className="modus-icons text-primary mt-0.5">bug</i>
+                  <i className="modus-icons text-muted-foreground mt-0.5">bug</i>
                   <div>
                     <div className="font-medium text-foreground">
                       Known Issues
@@ -234,7 +234,7 @@ export default function HomePage() {
               quality assurance.
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="p-4 bg-muted rounded-lg">
+              <div className="p-4 bg-card rounded-lg border-thick-dashed">
                 <div className="font-medium text-foreground mb-2">
                   Pre-commit Hooks
                 </div>
@@ -245,7 +245,7 @@ export default function HomePage() {
                   <div>Border and opacity pattern checks</div>
                 </div>
               </div>
-              <div className="p-4 bg-muted rounded-lg">
+              <div className="p-4 bg-card rounded-lg border-thick-dashed">
                 <div className="font-medium text-foreground mb-2">
                   Linting Scripts
                 </div>
@@ -255,7 +255,7 @@ export default function HomePage() {
                   <div>Icon name validation (700+ icons)</div>
                   <div>
                     Run all checks with{" "}
-                    <code className="px-1 py-0.5 bg-background rounded text-xs font-mono">
+                    <code className="px-1 py-0.5 bg-muted rounded text-xs font-mono">
                       npm run lint:all
                     </code>
                   </div>
@@ -267,9 +267,9 @@ export default function HomePage() {
           {/* Footer */}
           <div className="text-center pt-8 box-content">
             <div className="flex items-center justify-center gap-3 mb-3">
-              <img src="/vite.svg" alt="Vite" className="h-6 w-6" />
-              <div className="text-foreground-40">+</div>
               <img src="/react.svg" alt="React" className="h-6 w-6" />
+              <div className="text-foreground-40">+</div>
+              <img src="/vite.svg" alt="Vite" className="h-6 w-6" />
             </div>
             <div className="text-sm font-mono text-foreground-40">
               2026 Modus React App v1.0.0 + React 19 + Vite + Tailwind CSS -

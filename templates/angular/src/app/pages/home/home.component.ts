@@ -46,7 +46,7 @@ import { ModusButtonComponent } from '../../components/modus-button.component';
             <div class="space-y-4 text-foreground-80">
               <div class="flex gap-3">
                 <div
-                  class="flex-shrink-0 w-6 h-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-bold"
+                  class="flex-shrink-0 w-6 h-6 rounded-full bg-muted-foreground text-background flex items-center justify-center text-sm font-bold"
                 >
                   1
                 </div>
@@ -62,7 +62,7 @@ import { ModusButtonComponent } from '../../components/modus-button.component';
               </div>
               <div class="flex gap-3">
                 <div
-                  class="flex-shrink-0 w-6 h-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-bold"
+                  class="flex-shrink-0 w-6 h-6 rounded-full bg-muted-foreground text-background flex items-center justify-center text-sm font-bold"
                 >
                   2
                 </div>
@@ -79,7 +79,7 @@ import { ModusButtonComponent } from '../../components/modus-button.component';
               </div>
               <div class="flex gap-3">
                 <div
-                  class="flex-shrink-0 w-6 h-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-bold"
+                  class="flex-shrink-0 w-6 h-6 rounded-full bg-muted-foreground text-background flex items-center justify-center text-sm font-bold"
                 >
                   3
                 </div>
@@ -100,17 +100,17 @@ import { ModusButtonComponent } from '../../components/modus-button.component';
               Pre-configured Model Context Protocol servers for AI-assisted development.
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div class="p-4 bg-muted rounded-lg">
+              <div class="p-4 bg-card rounded-lg border-thick-dashed">
                 <div class="font-medium text-foreground mb-1">Modus Docs MCP</div>
                 <div class="text-sm text-foreground-60">
                   Access Modus Web Components documentation directly in your AI assistant. Get
                   component props, usage examples, and best practices.
                 </div>
               </div>
-              <div class="p-4 bg-muted rounded-lg">
+              <div class="p-4 bg-card rounded-lg border-thick-dashed">
                 <div class="font-medium text-foreground mb-1">Context7 MCP</div>
                 <div class="text-sm text-foreground-60">
-                  Up-to-date library documentation for Angular, Vite, Tailwind, and other
+                  Up-to-date library documentation for Angular, Tailwind, and other
                   dependencies.
                 </div>
               </div>
@@ -126,7 +126,7 @@ import { ModusButtonComponent } from '../../components/modus-button.component';
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div class="space-y-3">
                 <div class="flex items-start gap-2">
-                  <i class="modus-icons text-primary mt-0.5">widgets</i>
+                  <i class="modus-icons text-muted-foreground mt-0.5">widgets</i>
                   <div>
                     <div class="font-medium text-foreground">Component Patterns</div>
                     <div class="text-sm text-foreground-60">
@@ -135,7 +135,7 @@ import { ModusButtonComponent } from '../../components/modus-button.component';
                   </div>
                 </div>
                 <div class="flex items-start gap-2">
-                  <i class="modus-icons text-primary mt-0.5">palette</i>
+                  <i class="modus-icons text-muted-foreground mt-0.5">palette</i>
                   <div>
                     <div class="font-medium text-foreground">Design System Compliance</div>
                     <div class="text-sm text-foreground-60">
@@ -144,7 +144,7 @@ import { ModusButtonComponent } from '../../components/modus-button.component';
                   </div>
                 </div>
                 <div class="flex items-start gap-2">
-                  <i class="modus-icons text-primary mt-0.5">accessibility</i>
+                  <i class="modus-icons text-muted-foreground mt-0.5">accessibility</i>
                   <div>
                     <div class="font-medium text-foreground">Accessibility Standards</div>
                     <div class="text-sm text-foreground-60">
@@ -155,7 +155,7 @@ import { ModusButtonComponent } from '../../components/modus-button.component';
               </div>
               <div class="space-y-3">
                 <div class="flex items-start gap-2">
-                  <i class="modus-icons text-primary mt-0.5">dashboard</i>
+                  <i class="modus-icons text-muted-foreground mt-0.5">dashboard</i>
                   <div>
                     <div class="font-medium text-foreground">UX Foundations</div>
                     <div class="text-sm text-foreground-60">
@@ -164,7 +164,7 @@ import { ModusButtonComponent } from '../../components/modus-button.component';
                   </div>
                 </div>
                 <div class="flex items-start gap-2">
-                  <i class="modus-icons text-primary mt-0.5">wrench</i>
+                  <i class="modus-icons text-muted-foreground mt-0.5">wrench</i>
                   <div>
                     <div class="font-medium text-foreground">Development Workflow</div>
                     <div class="text-sm text-foreground-60">
@@ -173,7 +173,7 @@ import { ModusButtonComponent } from '../../components/modus-button.component';
                   </div>
                 </div>
                 <div class="flex items-start gap-2">
-                  <i class="modus-icons text-primary mt-0.5">bug</i>
+                  <i class="modus-icons text-muted-foreground mt-0.5">bug</i>
                   <div>
                     <div class="font-medium text-foreground">Known Issues</div>
                     <div class="text-sm text-foreground-60">
@@ -192,7 +192,7 @@ import { ModusButtonComponent } from '../../components/modus-button.component';
               Pre-configured Husky hooks and GitHub workflows for automated quality assurance.
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div class="p-4 bg-muted rounded-lg">
+              <div class="p-4 bg-card rounded-lg border-thick-dashed">
                 <div class="font-medium text-foreground mb-2">Pre-commit Hooks</div>
                 <div class="text-sm text-foreground-60 space-y-1">
                   <div>TypeScript type checking</div>
@@ -201,7 +201,7 @@ import { ModusButtonComponent } from '../../components/modus-button.component';
                   <div>Border and opacity pattern checks</div>
                 </div>
               </div>
-              <div class="p-4 bg-muted rounded-lg">
+              <div class="p-4 bg-card rounded-lg border-thick-dashed">
                 <div class="font-medium text-foreground mb-2">Linting Scripts</div>
                 <div class="text-sm text-foreground-60 space-y-1">
                   <div>Inline style detection</div>
@@ -209,7 +209,7 @@ import { ModusButtonComponent } from '../../components/modus-button.component';
                   <div>Icon name validation (700+ icons)</div>
                   <div>
                     Run all checks with
-                    <code class="px-1 py-0.5 bg-background rounded text-xs font-mono"
+                    <code class="px-1 py-0.5 bg-muted rounded text-xs font-mono"
                       >npm run lint:all</code
                     >
                   </div>
@@ -222,11 +222,9 @@ import { ModusButtonComponent } from '../../components/modus-button.component';
           <div class="text-center pt-8 box-content">
             <div class="flex items-center justify-center gap-3 mb-3">
               <img src="/angular-icon.svg" alt="Angular" class="h-6 w-6" aria-hidden="true" />
-              <div class="text-foreground-40">+</div>
-              <img src="/vite.svg" alt="Vite" class="h-6 w-6" aria-hidden="true" />
             </div>
             <div class="text-sm font-mono text-foreground-40">
-              2026 Modus Angular App v1.0.0 + Angular 20 + Vite + Tailwind CSS - Created by Julian
+              2026 Modus Angular App v1.0.0 + Angular 20 + Tailwind CSS - Created by Julian
               Oczkowski
             </div>
           </div>

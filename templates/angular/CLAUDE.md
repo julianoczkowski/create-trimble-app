@@ -12,7 +12,7 @@ Angular 20 showcase application demonstrating Modus Web Components integration. 
 # Development
 npm start                  # Dev server on localhost:4200
 npm run build              # Production build
-npm test                   # Run unit tests with Karma
+npm test                   # Run unit tests with Vitest
 
 # Linting (all run automatically on pre-commit)
 npm run lint:all           # Run all design system compliance checks

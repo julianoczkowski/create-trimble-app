@@ -75,7 +75,7 @@ export default function LogoDemoPage() {
           {trimbleLogos.map((logo) => (
             <div
               key={logo.name}
-              className="flex flex-col items-center gap-4 p-6 bg-muted rounded-lg"
+              className="flex flex-col items-center gap-4 p-6 bg-background rounded-lg border-thick-dashed"
             >
               <div className="h-20 flex items-center justify-center">
                 <ModusLogo name={logo.name} customClass="max-h-20 max-w-64" />
@@ -83,7 +83,7 @@ export default function LogoDemoPage() {
               <div className="text-sm text-muted-foreground text-center">
                 {logo.displayName}
               </div>
-              <code className="text-xs bg-background px-2 py-1 rounded">
+              <code className="text-xs bg-muted px-2 py-1 rounded">
                 {logo.name}
               </code>
             </div>
@@ -99,7 +99,7 @@ export default function LogoDemoPage() {
           {viewpointLogos.map((logo) => (
             <div
               key={logo.name}
-              className="flex flex-col items-center gap-4 p-6 bg-muted rounded-lg"
+              className="flex flex-col items-center gap-4 p-6 bg-background rounded-lg border-thick-dashed"
             >
               <div className="h-20 flex items-center justify-center">
                 <ModusLogo name={logo.name} customClass="max-h-20 max-w-64" />
@@ -107,7 +107,7 @@ export default function LogoDemoPage() {
               <div className="text-sm text-muted-foreground text-center">
                 {logo.displayName}
               </div>
-              <code className="text-xs bg-background px-2 py-1 rounded">
+              <code className="text-xs bg-muted px-2 py-1 rounded">
                 {logo.name}
               </code>
             </div>

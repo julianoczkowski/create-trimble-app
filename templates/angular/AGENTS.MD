@@ -41,7 +41,7 @@ npm run lint:icon-names # Icon name validation (700+ icons)
 ```bash
 npm start               # Dev server on localhost:4200
 npm run build           # Production build
-npm test                # Run unit tests with Karma
+npm test                # Run unit tests with Vitest
 ```
 
 ### Pre-commit Hook

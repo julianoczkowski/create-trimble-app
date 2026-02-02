@@ -32,7 +32,7 @@ Press <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>D</kbd> to open the **Dev Panel** an
 | Feature                   | Description                                                                            |
 | ------------------------- | -------------------------------------------------------------------------------------- |
 | **49 Wrapper Components** | React wrappers for all Modus Web Components with TypeScript support                    |
-| **48 Component Demos**    | Interactive demos organized by category (Display, Feedback, Forms, Layout, Navigation) |
+| **48 Component Demos**    | Interactive demos organized by category (Forms, Layout, Navigation, Display, Feedback, Overlays, Data) |
 | **Dev Panel**             | Floating panel with theme switcher, color palette, icon browser, and component gallery |
 | **8 Lint Scripts**        | Automated design system compliance checking (colors, icons, borders, opacity, styles)  |
 | **40+ AI Rules**          | Cursor/Copilot rules for guided development with Modus patterns                        |
@@ -118,88 +118,85 @@ Toggle with <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>D</kbd> (or <kbd>Cmd</kbd>+<kb
 
 ## Available Components
 
-### Display (7)
+### Forms (17)
 
-| Component  | Wrapper              | Description                        |
-| ---------- | -------------------- | ---------------------------------- |
-| Avatar     | `<ModusAvatar>`      | User avatar with image or initials |
-| Badge      | `<ModusBadge>`       | Status indicators and counters     |
-| Chip       | `<ModusChip>`        | Tags and filter chips              |
-| Icon       | `<ModusIcon>`        | 700+ Modus icons                   |
-| Logo       | `<ModusLogo>`        | Trimble logo variants              |
-| Progress   | `<ModusProgress>`    | Linear and radial indicators       |
-| Table      | `<ModusTable>`       | Data tables with sorting           |
+| Component      | Wrapper                | Description              |
+| -------------- | ---------------------- | ------------------------ |
+| Autocomplete   | `<ModusAutocomplete>`  | Search with suggestions  |
+| Button         | `<ModusButton>`        | Action buttons           |
+| Button Group   | `<ModusButtonGroup>`   | Grouped buttons          |
+| Checkbox       | `<ModusCheckbox>`      | Checkbox inputs          |
+| Date           | `<ModusDate>`          | Date picker              |
+| File Dropzone  | `<ModusFileDropzone>`  | File upload area         |
+| Input Feedback | `<ModusInputFeedback>` | Form validation messages |
+| Input Label    | `<ModusInputLabel>`    | Form labels              |
+| Number Input   | `<ModusNumberInput>`   | Numeric inputs           |
+| Radio          | `<ModusRadio>`         | Radio buttons            |
+| Rating         | `<ModusRating>`        | Star ratings             |
+| Select         | `<ModusSelect>`        | Select dropdowns         |
+| Slider         | `<ModusSlider>`        | Range sliders            |
+| Switch         | `<ModusSwitch>`        | Toggle switches          |
+| Text Input     | `<ModusTextInput>`     | Text fields              |
+| Textarea       | `<ModusTextarea>`      | Multi-line text          |
+| Time Input     | `<ModusTimeInput>`     | Time picker              |
+
+### Layout (6)
+
+| Component     | Wrapper               | Description          |
+| ------------- | --------------------- | -------------------- |
+| Accordion     | `<ModusAccordion>`    | Collapsible sections |
+| Card          | `<ModusCard>`         | Content cards        |
+| Handle        | `<ModusHandle>`       | Resize handles       |
+| Panel         | `<ModusPanel>`        | Content panels       |
+| Toolbar       | `<ModusToolbar>`      | Action toolbars      |
+| Utility Panel | `<ModusUtilityPanel>` | Slide-out panels     |
+
+### Navigation (8)
+
+| Component       | Wrapper                 | Description          |
+| --------------- | ----------------------- | -------------------- |
+| Breadcrumbs     | `<ModusBreadcrumbs>`    | Navigation trail     |
+| Dropdown Menu   | `<ModusDropdownMenu>`   | Dropdown selections  |
+| Menu            | `<ModusMenu>`           | Dropdown menus       |
+| Navbar          | `<ModusNavbar>`         | Top navigation bar   |
+| Pagination      | `<ModusPagination>`     | Page navigation      |
+| Side Navigation | `<ModusSideNavigation>` | Sidebar navigation   |
+| Stepper         | `<ModusStepper>`        | Multi-step flow      |
+| Tabs            | `<ModusTabs>`           | Tabbed content       |
+
+### Display (6)
+
+| Component      | Wrapper                | Description                        |
+| -------------- | ---------------------- | ---------------------------------- |
+| Avatar         | `<ModusAvatar>`        | User avatar with image or initials |
+| Badge          | `<ModusBadge>`         | Status indicators and counters     |
+| Chip           | `<ModusChip>`          | Tags and filter chips              |
+| Icon           | `<ModusIcon>`          | 700+ Modus icons                   |
+| Logo           | `<ModusLogo>`          | Trimble logo variants              |
+| Theme Switcher | `<ModusThemeSwitcher>` | Theme selection                    |
 
 ### Feedback (6)
 
-| Component      | Wrapper                  | Description                |
-| -------------- | ------------------------ | -------------------------- |
-| Alert          | `<ModusAlert>`           | Notifications and messages |
-| Input Feedback | `<ModusInputFeedback>`   | Form validation messages   |
-| Input Label    | `<ModusInputLabel>`      | Form labels                |
-| Loader         | `<ModusLoader>`          | Loading spinners           |
-| Toast          | `<ModusToast>`           | Temporary notifications    |
-| Tooltip        | `<ModusTooltip>`         | Hover tooltips             |
+| Component | Wrapper           | Description                |
+| --------- | ----------------- | -------------------------- |
+| Alert     | `<ModusAlert>`    | Notifications and messages |
+| Loader    | `<ModusLoader>`   | Loading spinners           |
+| Progress  | `<ModusProgress>` | Progress bars              |
+| Skeleton  | `<ModusSkeleton>` | Loading placeholders       |
+| Toast     | `<ModusToast>`    | Temporary notifications    |
+| Tooltip   | `<ModusTooltip>`  | Hover tooltips             |
 
-### Forms (15)
+### Overlays (1)
 
-| Component     | Wrapper                 | Description             |
-| ------------- | ----------------------- | ----------------------- |
-| Autocomplete  | `<ModusAutocomplete>`   | Search with suggestions |
-| Button        | `<ModusButton>`         | Action buttons          |
-| Button Group  | `<ModusButtonGroup>`    | Grouped buttons         |
-| Checkbox      | `<ModusCheckbox>`       | Checkbox inputs         |
-| Date          | `<ModusDate>`           | Date picker             |
-| Dropdown Menu | `<ModusDropdownMenu>`   | Dropdown selections     |
-| File Dropzone | `<ModusFileDropzone>`   | File upload area        |
-| Number Input  | `<ModusNumberInput>`    | Numeric inputs          |
-| Radio         | `<ModusRadio>`          | Radio buttons           |
-| Select        | `<ModusSelect>`         | Select dropdowns        |
-| Slider        | `<ModusSlider>`         | Range sliders           |
-| Switch        | `<ModusSwitch>`         | Toggle switches         |
-| Text Input    | `<ModusTextInput>`      | Text fields             |
-| Textarea      | `<ModusTextarea>`       | Multi-line text         |
-| Time Input    | `<ModusTimeInput>`      | Time picker             |
+| Component | Wrapper        | Description    |
+| --------- | -------------- | -------------- |
+| Modal     | `<ModusModal>` | Dialog windows |
 
-### Layout (7)
+### Data (1)
 
-| Component     | Wrapper                 | Description          |
-| ------------- | ----------------------- | -------------------- |
-| Accordion     | `<ModusAccordion>`      | Collapsible sections |
-| Card          | `<ModusCard>`           | Content cards        |
-| Handle        | `<ModusHandle>`         | Resize handles       |
-| Panel         | `<ModusPanel>`          | Content panels       |
-| Skeleton      | `<ModusSkeleton>`       | Loading placeholders |
-| Toolbar       | `<ModusToolbar>`        | Action toolbars      |
-| Utility Panel | `<ModusUtilityPanel>`   | Slide-out panels     |
-
-### Navigation (9)
-
-| Component       | Wrapper                   | Description        |
-| --------------- | ------------------------- | ------------------ |
-| Breadcrumbs     | `<ModusBreadcrumbs>`      | Navigation trail   |
-| Menu            | `<ModusMenu>`             | Dropdown menus     |
-| Menu Item       | `<ModusMenuItem>`         | Individual items   |
-| Navbar          | `<ModusNavbar>`           | Top navigation bar |
-| Pagination      | `<ModusPagination>`       | Page navigation    |
-| Side Navigation | `<ModusSideNavigation>`   | Sidebar navigation |
-| Stepper         | `<ModusStepper>`          | Multi-step flow    |
-| Tabs            | `<ModusTabs>`             | Tabbed content     |
-
-### Overlay (1)
-
-| Component | Wrapper        | Description     |
-| --------- | -------------- | --------------- |
-| Modal     | `<ModusModal>` | Dialog windows  |
-
-### System (4)
-
-| Component              | Wrapper                      | Description          |
-| ---------------------- | ---------------------------- | -------------------- |
-| Provider               | `<ModusProvider>`            | Context provider     |
-| Theme Switcher         | `<ModusThemeSwitcher>`       | Theme selection      |
-| Theme Switcher Dropdown| `<ThemeSwitcherDropdown>`    | Dropdown selector    |
-| Theme Toggle Simple    | `<ThemeToggleSimple>`        | Light/dark toggle    |
+| Component | Wrapper        | Description            |
+| --------- | -------------- | ---------------------- |
+| Table     | `<ModusTable>` | Data tables with sorting |
 
 ---
 

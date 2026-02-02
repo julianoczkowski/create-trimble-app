@@ -159,7 +159,7 @@ const componentDemos: ComponentDemo[] = [
     description:
       "Trimble and Viewpoint product logos with theme-aware light/dark switching and emblem variants",
     url: "/dev/demos/logo-demo",
-    category: "Branding",
+    category: "Display",
     status: "demo",
   },
   {
@@ -318,7 +318,7 @@ const componentDemos: ComponentDemo[] = [
     description:
       "Toggle between light and dark Modus themes with persisted preferences",
     url: "/dev/demos/theme-switcher-demo",
-    category: "Appearance",
+    category: "Display",
     status: "demo",
   },
   {
@@ -372,8 +372,6 @@ const categories = [
   { name: "Feedback", value: "feedback" },
   { name: "Overlays", value: "overlays" },
   { name: "Data", value: "data" },
-  { name: "Branding", value: "branding" },
-  { name: "Appearance", value: "appearance" },
 ];
 
 /**
@@ -475,9 +473,9 @@ export default function ComponentsGalleryPage() {
       {/* Footer */}
       <div className="text-center pt-8 box-content">
         <div className="flex items-center justify-center gap-3 mb-3">
-          <img src="/vite.svg" alt="Vite" className="h-6 w-6" />
-          <div className="text-foreground-40">+</div>
           <img src="/react.svg" alt="React" className="h-6 w-6" />
+          <div className="text-foreground-40">+</div>
+          <img src="/vite.svg" alt="Vite" className="h-6 w-6" />
         </div>
         <div className="text-sm font-mono text-foreground-40">
           2026 Modus React App v1.0.0 + React 19 + Vite + Tailwind CSS -

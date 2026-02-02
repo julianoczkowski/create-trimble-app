@@ -31,7 +31,7 @@ Press <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>D</kbd> to open the **Dev Panel** an
 | Feature                   | Description                                                                            |
 | ------------------------- | -------------------------------------------------------------------------------------- |
 | **47 Wrapper Components** | Angular wrappers for all Modus Web Components with signal-based APIs                   |
-| **46 Component Demos**    | Interactive demos organized by category (Display, Feedback, Forms, Layout, Navigation) |
+| **46 Component Demos**    | Interactive demos organized by category (Forms, Layout, Navigation, Display, Feedback, Overlays, Data) |
 | **Dev Panel**             | Floating panel with theme switcher, color palette, icon browser, and component gallery |
 | **8 Lint Scripts**        | Automated design system compliance checking (colors, icons, borders, opacity, styles)  |
 | **52 AI Rules**           | Cursor/Copilot rules for guided development with Modus patterns                        |
@@ -61,12 +61,13 @@ src/app/
 │   └── home/              # Home page - edit to build your app
 ├── components/            # 47 Modus wrapper components (use as-is)
 ├── demos/                 # 46 component demos (reference only)
-│   ├── display/           # Avatar, Badge, Icon, Logo, Pagination...
-│   ├── feedback/          # Alert, Loader, Modal, Progress, Toast...
 │   ├── forms/             # Button, Checkbox, Input, Select, Slider...
-│   ├── layout/            # Accordion, Card, Collapse, Panel
-│   ├── navigation/        # Breadcrumbs, Menu, Navbar, Tabs...
-│   └── system/            # Theme Switcher
+│   ├── layout/            # Accordion, Card, Handle, Panel, Toolbar...
+│   ├── navigation/        # Breadcrumbs, Menu, Navbar, Tabs, Stepper...
+│   ├── display/           # Avatar, Badge, Icon, Logo, Theme Switcher...
+│   ├── feedback/          # Alert, Loader, Progress, Skeleton, Toast...
+│   ├── overlays/          # Modal
+│   └── data/              # Table
 ├── dev/                   # Dev Panel infrastructure
 │   ├── dev-panel/         # Floating panel UI
 │   └── theme-switcher-dropdown/
@@ -117,80 +118,85 @@ Toggle with <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>D</kbd> (or <kbd>Cmd</kbd>+<kb
 
 ## Available Components
 
-### Display (9)
+### Forms (17)
 
-| Component  | Selector             | Description                        |
-| ---------- | -------------------- | ---------------------------------- |
-| Avatar     | `<modus-avatar>`     | User avatar with image or initials |
-| Badge      | `<modus-badge>`      | Status indicators and counters     |
-| Chip       | `<modus-chip>`       | Tags and filter chips              |
-| Icon       | `<modus-icon>`       | 700+ Modus icons                   |
-| Logo       | `<modus-logo>`       | Trimble logo variants              |
-| Pagination | `<modus-pagination>` | Page navigation                    |
-| Skeleton   | `<modus-skeleton>`   | Loading placeholders               |
-| Stepper    | `<modus-stepper>`    | Multi-step indicators              |
-| Table      | `<modus-table>`      | Data tables                        |
+| Component      | Selector                 | Description              |
+| -------------- | ------------------------ | ------------------------ |
+| Autocomplete   | `<modus-autocomplete>`   | Search with suggestions  |
+| Button         | `<modus-button>`         | Action buttons           |
+| Button Group   | `<modus-button-group>`   | Grouped buttons          |
+| Checkbox       | `<modus-checkbox>`       | Checkbox inputs          |
+| Date           | `<modus-date>`           | Date picker              |
+| File Dropzone  | `<modus-file-dropzone>`  | File upload area         |
+| Input Feedback | `<modus-input-feedback>` | Form validation messages |
+| Input Label    | `<modus-input-label>`    | Form labels              |
+| Number Input   | `<modus-number-input>`   | Numeric inputs           |
+| Radio          | `<modus-radio>`          | Radio buttons            |
+| Rating         | `<modus-rating>`         | Star ratings             |
+| Select         | `<modus-select>`         | Select dropdowns         |
+| Slider         | `<modus-slider>`         | Range sliders            |
+| Switch         | `<modus-switch>`         | Toggle switches          |
+| Text Input     | `<modus-text-input>`     | Text fields              |
+| Textarea       | `<modus-textarea>`       | Multi-line text          |
+| Time Input     | `<modus-time-input>`     | Time picker              |
 
-### Feedback (10)
-
-| Component      | Selector                 | Description                |
-| -------------- | ------------------------ | -------------------------- |
-| Alert          | `<modus-alert>`          | Notifications and messages |
-| Handle         | `<modus-handle>`         | Resize handles             |
-| Input Feedback | `<modus-input-feedback>` | Form validation messages   |
-| Input Label    | `<modus-input-label>`    | Form labels                |
-| Loader         | `<modus-loader>`         | Loading spinners           |
-| Modal          | `<modus-modal>`          | Dialog windows             |
-| Progress       | `<modus-progress>`       | Progress bars              |
-| Rating         | `<modus-rating>`         | Star ratings               |
-| Toast          | `<modus-toast>`          | Temporary notifications    |
-| Tooltip        | `<modus-tooltip>`        | Hover tooltips             |
-
-### Forms (15)
-
-| Component     | Selector                | Description             |
-| ------------- | ----------------------- | ----------------------- |
-| Autocomplete  | `<modus-autocomplete>`  | Search with suggestions |
-| Button        | `<modus-button>`        | Action buttons          |
-| Button Group  | `<modus-button-group>`  | Grouped buttons         |
-| Checkbox      | `<modus-checkbox>`      | Checkbox inputs         |
-| Date          | `<modus-date>`          | Date picker             |
-| Dropdown Menu | `<modus-dropdown-menu>` | Dropdown selections     |
-| File Dropzone | `<modus-file-dropzone>` | File upload area        |
-| Number Input  | `<modus-number-input>`  | Numeric inputs          |
-| Radio         | `<modus-radio>`         | Radio buttons           |
-| Select        | `<modus-select>`        | Select dropdowns        |
-| Slider        | `<modus-slider>`        | Range sliders           |
-| Switch        | `<modus-switch>`        | Toggle switches         |
-| Text Input    | `<modus-text-input>`    | Text fields             |
-| Textarea      | `<modus-textarea>`      | Multi-line text         |
-| Time Input    | `<modus-time-input>`    | Time picker             |
-
-### Layout (4)
+### Layout (6)
 
 | Component     | Selector                | Description          |
 | ------------- | ----------------------- | -------------------- |
 | Accordion     | `<modus-accordion>`     | Collapsible sections |
 | Card          | `<modus-card>`          | Content cards        |
-| Collapse      | `<modus-collapse>`      | Expandable content   |
+| Handle        | `<modus-handle>`        | Resize handles       |
+| Panel         | `<modus-panel>`         | Content panels       |
+| Toolbar       | `<modus-toolbar>`       | Action toolbars      |
 | Utility Panel | `<modus-utility-panel>` | Slide-out panels     |
 
-### Navigation (6)
+### Navigation (8)
 
-| Component       | Selector                  | Description        |
-| --------------- | ------------------------- | ------------------ |
-| Breadcrumbs     | `<modus-breadcrumbs>`     | Navigation trail   |
-| Menu            | `<modus-menu>`            | Dropdown menus     |
-| Navbar          | `<modus-navbar>`          | Top navigation bar |
-| Side Navigation | `<modus-side-navigation>` | Sidebar navigation |
-| Tabs            | `<modus-tabs>`            | Tabbed content     |
-| Toolbar         | `<modus-toolbar>`         | Action toolbars    |
+| Component       | Selector                  | Description          |
+| --------------- | ------------------------- | -------------------- |
+| Breadcrumbs     | `<modus-breadcrumbs>`     | Navigation trail     |
+| Dropdown Menu   | `<modus-dropdown-menu>`   | Dropdown selections  |
+| Menu            | `<modus-menu>`            | Dropdown menus       |
+| Navbar          | `<modus-navbar>`          | Top navigation bar   |
+| Pagination      | `<modus-pagination>`      | Page navigation      |
+| Side Navigation | `<modus-side-navigation>` | Sidebar navigation   |
+| Stepper         | `<modus-stepper>`         | Multi-step flow      |
+| Tabs            | `<modus-tabs>`            | Tabbed content       |
 
-### System (1)
+### Display (6)
 
-| Component      | Selector                 | Description     |
-| -------------- | ------------------------ | --------------- |
-| Theme Switcher | `<modus-theme-switcher>` | Theme selection |
+| Component      | Selector                 | Description                        |
+| -------------- | ------------------------ | ---------------------------------- |
+| Avatar         | `<modus-avatar>`         | User avatar with image or initials |
+| Badge          | `<modus-badge>`          | Status indicators and counters     |
+| Chip           | `<modus-chip>`           | Tags and filter chips              |
+| Icon           | `<modus-icon>`           | 700+ Modus icons                   |
+| Logo           | `<modus-logo>`           | Trimble logo variants              |
+| Theme Switcher | `<modus-theme-switcher>` | Theme selection                    |
+
+### Feedback (6)
+
+| Component | Selector            | Description                |
+| --------- | ------------------- | -------------------------- |
+| Alert     | `<modus-alert>`     | Notifications and messages |
+| Loader    | `<modus-loader>`    | Loading spinners           |
+| Progress  | `<modus-progress>`  | Progress bars              |
+| Skeleton  | `<modus-skeleton>`  | Loading placeholders       |
+| Toast     | `<modus-toast>`     | Temporary notifications    |
+| Tooltip   | `<modus-tooltip>`   | Hover tooltips             |
+
+### Overlays (1)
+
+| Component | Selector        | Description    |
+| --------- | --------------- | -------------- |
+| Modal     | `<modus-modal>` | Dialog windows |
+
+### Data (1)
+
+| Component | Selector        | Description |
+| --------- | --------------- | ----------- |
+| Table     | `<modus-table>` | Data tables |
 
 ---
 
@@ -254,7 +260,7 @@ Use custom opacity classes instead of Tailwind's `/80` syntax:
 | --------------- | ------------------------------------ |
 | `npm start`     | Start dev server on `localhost:4200` |
 | `npm run build` | Production build to `dist/`          |
-| `npm test`      | Run unit tests with Karma            |
+| `npm test`      | Run unit tests with Vitest           |
 | `npm run watch` | Build with watch mode                |
 
 ### Linting

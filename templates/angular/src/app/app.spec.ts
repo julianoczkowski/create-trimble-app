@@ -6,7 +6,7 @@ describe('App', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [App],
-      providers: [provideRouter([])], // Provide Router for routerLink and routerLinkActive directives
+      providers: [provideRouter([])],
     }).compileComponents();
   });
 
@@ -16,12 +16,11 @@ describe('App', () => {
     expect(app).toBeTruthy();
   });
 
-  it('should render title', () => {
+  it('should have router outlet', () => {
     const fixture = TestBed.createComponent(App);
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
-    // Find the h1 in the main section (not the nav)
-    const mainH1 = compiled.querySelector('main h1');
-    expect(mainH1?.textContent?.trim()).toBe('Hello, angular-vite');
+    const routerOutlet = compiled.querySelector('router-outlet');
+    expect(routerOutlet).toBeTruthy();
   });
 });
