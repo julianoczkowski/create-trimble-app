@@ -94,7 +94,7 @@ ${chalk.gray("═".repeat(60))}
 ${chalk.gray("Next steps:")}
 ${chalk.cyan(openCommand)}
 ${!shouldInstall ? chalk.cyan(`run: npm install`) + "\n" : ""}${chalk.cyan(
-        `run: ${framework === "Angular" ? "npm run start" : "npm run dev"}`,
+        `run: ${framework.toLowerCase().includes("angular") ? "npm run start" : "npm run dev"}`,
       )}
 
 ${chalk.gray("═".repeat(60))}
