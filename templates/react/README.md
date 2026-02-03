@@ -427,6 +427,27 @@ Comprehensive guide for AI agents in `AGENTS.MD`:
 | `fix-modus-component-event-issues` | Debug event handling problems      |
 | `style-modus-components-with-tailwind` | Apply custom utilities         |
 
+### Cursor Commands
+
+AI-powered scaffolding commands in `.cursor/commands/`:
+
+| Command              | Description                                                                                           |
+| -------------------- | ----------------------------------------------------------------------------------------------------- |
+| `scaffold-shell-app` | Create a complete app shell with ModusNavbar, ModusSideNavigation, and React Router nested routing    |
+
+**Usage:** Open Cursor IDE, press `Cmd+K` (Mac) or `Ctrl+K` (Windows/Linux), and run the command. The AI guides you through a conversational setup:
+
+1. Enter your navigation menu labels (e.g., "Dashboard, Projects, Settings")
+2. AI creates `AppShell.tsx` layout with navbar and side navigation
+3. AI creates placeholder pages for each navigation item
+4. AI updates `App.tsx` with nested routing
+
+**Features:**
+- SPA navigation (no page reloads)
+- Hamburger menu synced with side navigation
+- Push mode side nav with icon-only collapsed state
+- Preserves all Dev Panel and demo content
+
 ### MCP Servers
 
 Pre-configured Model Context Protocol servers:

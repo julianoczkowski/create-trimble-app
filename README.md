@@ -92,6 +92,8 @@ Both templates come fully configured with:
 ```
 your-project/
 ├── .cursor/           # Cursor IDE rules for Modus development
+│   ├── rules/         # 40+ AI development rules
+│   └── commands/      # AI-powered scaffolding commands
 ├── .github/           # Issue templates, PR template, CI workflows
 ├── .husky/            # Git hooks (pre-commit)
 ├── .vscode/           # VS Code extensions & settings
@@ -101,6 +103,16 @@ your-project/
 ├── package.json       # All dependencies configured
 └── README.md          # Getting started guide
 ```
+
+### Cursor Commands
+
+Both templates include AI-powered Cursor commands for rapid scaffolding:
+
+| Command              | Description                                                       |
+| -------------------- | ----------------------------------------------------------------- |
+| `scaffold-shell-app` | Create a complete app shell with navbar, side navigation, routing |
+
+To use: Open Cursor IDE, press `Cmd+K` (Mac) or `Ctrl+K` (Windows/Linux), and run the command. The AI will guide you through a conversational setup flow to customize your navigation items.
 
 ## Architecture
 
