@@ -52,35 +52,52 @@ program
   .option("--info", "Show information about this CLI")
   .addHelpText(
     "after",
-    `
-${chalk.cyan("Examples:")}
-  ${chalk.gray("# Interactive mode - choose framework and name")}
-  $ npx @julianoczkowski/create-trimble-app
-
-  ${chalk.gray("# Create a React project")}
-  $ npx @julianoczkowski/create-trimble-app my-app --framework react
-
-  ${chalk.gray("# Create an Angular project")}
-  $ npx @julianoczkowski/create-trimble-app my-app --framework angular
-
-  ${chalk.gray("# Install in current folder")}
-  $ npx @julianoczkowski/create-trimble-app --current-folder
-
-  ${chalk.gray("# Preview without creating files")}
-  $ npx @julianoczkowski/create-trimble-app my-app --dry-run
-
-${chalk.cyan("Frameworks:")}
-  ${chalk.white("react")}    - React with Vite and Modus 2.0 Components
-  ${chalk.white("angular")}  - Angular with Modus 2.0 Web Components
-
-${chalk.cyan("Security:")}
-  Templates are bundled directly in this CLI package.
-  No external downloads - works offline, always consistent.
-  Use ${chalk.yellow("--info")} for more details.
-
-${chalk.cyan("More information:")}
-  ${chalk.blue("https://github.com/julianoczkowski/create-trimble-app")}
-`,
+    chalk.cyan(`
+╔════════════════════════════════════════════════════════════════════════════╗
+║                          CREATE TRIMBLE APP - HELP                         ║
+╠════════════════════════════════════════════════════════════════════════════╣
+║                                                                            ║
+║  Quick Start:                                                              ║
+║    npx @julianoczkowski/create-trimble-app@latest                          ║
+║                                                                            ║
+╠════════════════════════════════════════════════════════════════════════════╣
+║                                                                            ║
+║  Examples:                                                                 ║
+║    # Interactive mode - choose framework and name                          ║
+║    npx @julianoczkowski/create-trimble-app@latest                          ║
+║                                                                            ║
+║    # Create a React project                                                ║
+║    npx @julianoczkowski/create-trimble-app@latest my-app --framework react ║
+║                                                                            ║
+║    # Create an Angular project                                             ║
+║    npx @julianoczkowski/create-trimble-app@latest my-app -f angular        ║
+║                                                                            ║
+║    # Install in current folder                                             ║
+║    npx @julianoczkowski/create-trimble-app@latest --current-folder         ║
+║                                                                            ║
+║    # Preview without creating files                                        ║
+║    npx @julianoczkowski/create-trimble-app@latest my-app --dry-run         ║
+║                                                                            ║
+╠════════════════════════════════════════════════════════════════════════════╣
+║                                                                            ║
+║  Frameworks:                                                               ║
+║    react    - React with Vite and Modus 2.0 Components                     ║
+║    angular  - Angular with Modus 2.0 Web Components                        ║
+║                                                                            ║
+╠════════════════════════════════════════════════════════════════════════════╣
+║                                                                            ║
+║  Security:                                                                 ║
+║    Templates are bundled directly in this CLI package.                     ║
+║    No external downloads - works offline, always consistent.               ║
+║    Use --info for more details.                                            ║
+║                                                                            ║
+╠════════════════════════════════════════════════════════════════════════════╣
+║                                                                            ║
+║  More information:                                                         ║
+║    https://github.com/julianoczkowski/trimble-app                          ║
+║                                                                            ║
+╚════════════════════════════════════════════════════════════════════════════╝
+`),
   )
   .action(async (projectName, options) => {
     // Check for updates in background

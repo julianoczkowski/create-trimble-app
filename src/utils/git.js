@@ -4,6 +4,23 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
+// Directories to skip when copying templates (development artifacts)
+const SKIP_DIRECTORIES = new Set([
+  "node_modules",
+  "dist",
+  ".angular",
+  ".git",
+  "coverage",
+  ".nyc_output",
+]);
+
+// Files to skip when copying templates (lock files should be generated fresh)
+const SKIP_FILES = new Set([
+  "package-lock.json",
+  "yarn.lock",
+  "pnpm-lock.yaml",
+]);
+
 /**
  * Copy bundled template to target directory
  * @param {string} templateName - Name of the template (react, angular)
@@ -51,6 +68,16 @@ async function copyDirectory(src, dest) {
   const entries = await fs.readdir(src, { withFileTypes: true });
 
   for (const entry of entries) {
+    // Skip excluded directories (node_modules, dist, .angular, etc.)
+    if (entry.isDirectory() && SKIP_DIRECTORIES.has(entry.name)) {
+      continue;
+    }
+
+    // Skip excluded files (lock files should be generated fresh)
+    if (!entry.isDirectory() && SKIP_FILES.has(entry.name)) {
+      continue;
+    }
+
     const srcPath = path.join(src, entry.name);
     // Rename dot-npmrc to .npmrc when copying (npm excludes .npmrc during publish)
     const destName = entry.name === "dot-npmrc" ? ".npmrc" : entry.name;

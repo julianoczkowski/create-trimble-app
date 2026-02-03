@@ -37,12 +37,12 @@ export const logger = {
 ║  • Templates verified at publish time                      ║
 ║  • Published with npm provenance                           ║
 ║                                                            ║
-║  Source repositories:                                      ║
-║  • github.com/julianoczkowski/react-app                    ║
-║  • github.com/julianoczkowski/angular-app                  ║
+║  Source repositories (private):                            ║
+║  • github.com/julianoczkowski/modus-react-app              ║
+║  • github.com/julianoczkowski/modus-angular-app            ║
 ║                                                            ║
-║  Report issues:                                            ║
-║  https://github.com/julianoczkowski/create-trimble-app     ║
+║  Report issues & discuss:                                  ║
+║  https://github.com/julianoczkowski/trimble-app            ║
 ║                                                            ║
 ╚════════════════════════════════════════════════════════════╝
     `),
@@ -98,23 +98,9 @@ ${!shouldInstall ? chalk.cyan(`run: npm install`) + "\n" : ""}${chalk.cyan(
       )}
 
 ${chalk.gray("═".repeat(60))}
-${chalk.gray("How to use this project:")} ${createClickableLink(
-        "https://youtube.com",
-        "Watch Tutorial on YouTube",
-      )}
-${chalk.gray("═".repeat(60))}
-${chalk.gray("Additional Links:")}
-${chalk.gray("Modus 2.0 Storybook:")} ${createClickableLink(
-        "https://trimble-oss.github.io/modus-wc-2.0/main/?path=/docs/documentation-getting-started--docs",
-        "Modus 2.0 Storybook",
-      )}
-${chalk.gray("Modus Icons:")} ${createClickableLink(
-        "https://modus-icons.trimble.com/",
-        "Modus Icons",
-      )}
-${chalk.gray("Figma Modus MCP:")} ${createClickableLink(
-        "https://trimble-oss.github.io/modus-wc-2.0/main/?path=/docs/documentation-modus-figma-mcp-integration-guide--docs",
-        "Figma Modus MCP",
+${createClickableLink(
+        "https://github.com/julianoczkowski/trimble-app",
+        "More Information, issues, discussions, tutorials",
       )}
 ${chalk.gray("═".repeat(60))}
 

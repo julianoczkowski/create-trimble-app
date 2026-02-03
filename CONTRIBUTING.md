@@ -68,7 +68,7 @@ We welcome several types of contributions:
 ```bash
 # Fork and clone the repository
 git clone https://github.com/YOUR-USERNAME/create-trimble-app.git
-cd create-trimble-app
+cd trimble-app
 
 # Install dependencies
 npm install
@@ -78,7 +78,7 @@ npm run dev
 
 # Test with specific arguments
 node bin/create-trimble-app.js --help
-node bin/create-trimble-app.js test-app --framework vue
+node bin/create-trimble-app.js test-app --framework react
 ```
 
 ### Testing Your Changes
@@ -89,9 +89,7 @@ npm run dev
 
 # Test all frameworks
 node bin/create-trimble-app.js test-react --framework react
-node bin/create-trimble-app.js test-vue --framework vue
 node bin/create-trimble-app.js test-angular --framework angular
-node bin/create-trimble-app.js test-html --framework html
 
 # Test command line options
 node bin/create-trimble-app.js test-app --no-install
@@ -190,9 +188,7 @@ Before submitting a PR, test the following scenarios:
 #### Framework Testing
 
 - [ ] React template scaffolds successfully
-- [ ] Vue template scaffolds successfully
 - [ ] Angular template scaffolds successfully
-- [ ] HTML template scaffolds successfully
 
 #### Edge Cases
 
@@ -211,18 +207,18 @@ Before submitting a PR, test the following scenarios:
 
 ```bash
 # Test normal flow
-node bin/create-trimble-app.js my-test-app --framework vue
+node bin/create-trimble-app.js my-test-app --framework react
 
 # Test with no installation
-node bin/create-trimble-app.js my-test-app --framework react --no-install
+node bin/create-trimble-app.js my-test-app --framework angular --no-install
 
 # Test invalid inputs
-node bin/create-trimble-app.js "invalid/name" --framework vue
+node bin/create-trimble-app.js "invalid/name" --framework react
 node bin/create-trimble-app.js my-app --framework invalid
 
 # Test existing directory
 mkdir existing-dir
-node bin/create-trimble-app.js existing-dir --framework vue
+node bin/create-trimble-app.js existing-dir --framework react
 ```
 
 ## 🔄 Pull Request Process

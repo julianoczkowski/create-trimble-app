@@ -1,143 +1,231 @@
-# 🧪 Local Testing Commands for --current-folder Feature (Using npx .)
+# Local Testing Commands for create-trimble-app
+
+## Platform-Specific Paths
+
+### Linux
+```bash
+CLI_PATH="/home/julian/Documents/Development/MODUS/create-trimble-app"
+```
+
+### macOS
+```bash
+CLI_PATH="/Users/julianoczkowski/Desktop/Development/MODUS/create-trimble-app"
+```
+
+---
 
 ## Quick Tests (No Installation)
 
 ### 1. Help and Version Tests
 
-````bash
-# Test help shows new option (from project root)
+```bash
+# From project root directory
 npx . --help
-
-# Test version (from project root)
 npx . --version
+npx . --info
 
-# Test help from any directory
+# From any directory (Linux)
 npx /home/julian/Documents/Development/MODUS/create-trimble-app --help
+npx /home/julian/Documents/Development/MODUS/create-trimble-app --version
+npx /home/julian/Documents/Development/MODUS/create-trimble-app --info
 
-npx /Users/julianoczkowski/Desktop/Development/MODUS/create-trimble-app
+# From any directory (macOS)
+npx /Users/julianoczkowski/Desktop/Development/MODUS/create-trimble-app --help
+npx /Users/julianoczkowski/Desktop/Development/MODUS/create-trimble-app --version
+npx /Users/julianoczkowski/Desktop/Development/MODUS/create-trimble-app --info
 
-## Full Integration Tests (With Template Installation)
+# Alternative: use node directly
+node bin/create-trimble-app.js --help
+node bin/create-trimble-app.js --version
+node bin/create-trimble-app.js --info
+```
 
-### 2. Test Current Folder Mode with npx .
+---
 
-#### Create a test directory and test current folder mode:
+## Full Integration Tests
+
+### 2. Dry Run Tests (Preview without creating files)
 
 ```bash
-# Create test directory
-mkdir test-current-folder
-cd test-current-folder
+# Linux
+npx /home/julian/Documents/Development/MODUS/create-trimble-app my-app --framework react --dry-run
+npx /home/julian/Documents/Development/MODUS/create-trimble-app my-app --framework angular --dry-run
 
-# Test current folder mode with Vue (will install in current directory)
-npx /home/julian/Documents/Development/MODUS/create-trimble-app --current-folder --framework vue --no-install
+# macOS
+npx /Users/julianoczkowski/Desktop/Development/MODUS/create-trimble-app my-app --framework react --dry-run
+npx /Users/julianoczkowski/Desktop/Development/MODUS/create-trimble-app my-app --framework angular --dry-run
+```
 
-# Check if package.json was created with correct name
+### 3. Test Current Folder Mode
+
+```bash
+# Create test directory and test current folder mode
+
+# Linux
+mkdir test-current-folder && cd test-current-folder
+npx /home/julian/Documents/Development/MODUS/create-trimble-app --current-folder --framework react --no-install
 cat package.json | grep '"name"'
+cd .. && rm -rf test-current-folder
 
-# Clean up
-cd ..
-rm -rf test-current-folder
-````
+# macOS
+mkdir test-current-folder && cd test-current-folder
+npx /Users/julianoczkowski/Desktop/Development/MODUS/create-trimble-app --current-folder --framework react --no-install
+cat package.json | grep '"name"'
+cd .. && rm -rf test-current-folder
+```
 
-#### Test with different frameworks:
+### 4. Test with Different Frameworks
 
 ```bash
-# Test with Vue (should work)
-mkdir test-vue && cd test-vue
-npx /home/julian/Documents/Development/MODUS/create-trimble-app --current-folder --framework vue --no-install
-cd .. && rm -rf test-vue
-
-# Test with React (should fail - repo not available)
+# Linux - React
 mkdir test-react && cd test-react
 npx /home/julian/Documents/Development/MODUS/create-trimble-app --current-folder --framework react --no-install
 cd .. && rm -rf test-react
 
-# Test with Angular (should fail - repo not available)
+# Linux - Angular
 mkdir test-angular && cd test-angular
 npx /home/julian/Documents/Development/MODUS/create-trimble-app --current-folder --framework angular --no-install
 cd .. && rm -rf test-angular
 
-# Test with HTML (should fail - repo not available)
-mkdir test-html && cd test-html
-npx /home/julian/Documents/Development/MODUS/create-trimble-app --current-folder --framework html --no-install
-cd .. && rm -rf test-html
+# macOS - React
+mkdir test-react && cd test-react
+npx /Users/julianoczkowski/Desktop/Development/MODUS/create-trimble-app --current-folder --framework react --no-install
+cd .. && rm -rf test-react
+
+# macOS - Angular
+mkdir test-angular && cd test-angular
+npx /Users/julianoczkowski/Desktop/Development/MODUS/create-trimble-app --current-folder --framework angular --no-install
+cd .. && rm -rf test-angular
 ```
 
-### 3. Test Traditional Mode with npx . (Backward Compatibility)
+### 5. Test Traditional Mode (Backward Compatibility)
 
 ```bash
-# Test traditional mode still works
-npx /home/julian/Documents/Development/MODUS/create-trimble-app test-traditional --framework vue --no-install
-
-# Check if directory was created
+# Linux
+npx /home/julian/Documents/Development/MODUS/create-trimble-app test-traditional --framework react --no-install
 ls -la | grep test-traditional
+rm -rf test-traditional
 
-# Clean up
+# macOS
+npx /Users/julianoczkowski/Desktop/Development/MODUS/create-trimble-app test-traditional --framework react --no-install
+ls -la | grep test-traditional
 rm -rf test-traditional
 ```
 
-### 4. Test from Different Directories
+### 6. Test from Different Directories
 
 ```bash
-# Test from home directory
+# Linux - from home directory
 cd ~
 mkdir test-from-home && cd test-from-home
-npx /home/julian/Documents/Development/MODUS/create-trimble-app --current-folder --framework vue --no-install
+npx /home/julian/Documents/Development/MODUS/create-trimble-app --current-folder --framework react --no-install
 cd .. && rm -rf test-from-home
 
-# Test from /tmp directory
+# Linux - from /tmp directory
 cd /tmp
 mkdir test-from-tmp && cd test-from-tmp
-npx /home/julian/Documents/Development/MODUS/create-trimble-app --current-folder --framework vue --no-install
+npx /home/julian/Documents/Development/MODUS/create-trimble-app --current-folder --framework angular --no-install
+cd .. && rm -rf test-from-tmp
+
+# macOS - from home directory
+cd ~
+mkdir test-from-home && cd test-from-home
+npx /Users/julianoczkowski/Desktop/Development/MODUS/create-trimble-app --current-folder --framework react --no-install
+cd .. && rm -rf test-from-home
+
+# macOS - from /tmp directory
+cd /tmp
+mkdir test-from-tmp && cd test-from-tmp
+npx /Users/julianoczkowski/Desktop/Development/MODUS/create-trimble-app --current-folder --framework angular --no-install
 cd .. && rm -rf test-from-tmp
 ```
 
+---
+
 ## Error Handling Tests
 
-### 5. Test Invalid Arguments
+### 7. Test Invalid Arguments
 
 ```bash
-# Test invalid framework
+# Test invalid framework (should fail with helpful message)
+# Linux
 npx /home/julian/Documents/Development/MODUS/create-trimble-app --current-folder --framework invalid
 
-# Test conflicting options
-npx /home/julian/Documents/Development/MODUS/create-trimble-app my-app --current-folder
+# macOS
+npx /Users/julianoczkowski/Desktop/Development/MODUS/create-trimble-app --current-folder --framework invalid
 ```
 
-### 6. Test Edge Cases
+### 8. Test Edge Cases
 
 ```bash
 # Test in directory with special characters
+# Linux
 mkdir "test-folder_with-special.chars"
 cd "test-folder_with-special.chars"
-npx /home/julian/Documents/Development/MODUS/create-trimble-app --current-folder --framework vue --no-install
+npx /home/julian/Documents/Development/MODUS/create-trimble-app --current-folder --framework react --no-install
+cd .. && rm -rf "test-folder_with-special.chars"
+
+# macOS
+mkdir "test-folder_with-special.chars"
+cd "test-folder_with-special.chars"
+npx /Users/julianoczkowski/Desktop/Development/MODUS/create-trimble-app --current-folder --framework react --no-install
 cd .. && rm -rf "test-folder_with-special.chars"
 ```
 
+---
+
 ## Performance Tests
 
-### 7. Test with Dependencies Installation
+### 9. Test with Full Dependencies Installation
 
 ```bash
-# Test full installation (this will take longer)
+# This will install dependencies (takes longer)
+
+# Linux
 mkdir test-full-install && cd test-full-install
-npx /home/julian/Documents/Development/MODUS/create-trimble-app --current-folder --framework vue
-# This will install dependencies and take a few minutes
+npx /home/julian/Documents/Development/MODUS/create-trimble-app --current-folder --framework react
+cd .. && rm -rf test-full-install
+
+# macOS
+mkdir test-full-install && cd test-full-install
+npx /Users/julianoczkowski/Desktop/Development/MODUS/create-trimble-app --current-folder --framework react
 cd .. && rm -rf test-full-install
 ```
+
+---
+
+## Unit Tests
+
+```bash
+# Run all unit tests
+npm test
+
+# Run tests in watch mode
+npm run test:watch
+
+# Run tests with coverage
+npm run test:coverage
+```
+
+---
 
 ## Verification Checklist
 
 After running tests, verify:
 
-- [ ] Help shows `--current-folder` option
+- [ ] `--help` shows all options including `--current-folder`
+- [ ] `--info` shows correct repo URLs (modus-react-app, modus-angular-app)
+- [ ] `--version` shows current version
 - [ ] Current folder mode uses directory name as project name
 - [ ] Package.json is created with correct name
-- [ ] Template files are installed in current directory
-- [ ] Traditional mode still works
+- [ ] Template files are installed correctly
+- [ ] Traditional mode (with project name) still works
 - [ ] Error handling works for invalid inputs
-- [ ] Dependencies install correctly in current folder mode
+- [ ] Dependencies install correctly (husky doesn't break)
 - [ ] Success messages show correct paths
-- [ ] Works from any directory using npx .
+- [ ] Works from any directory
+
+---
 
 ## Cleanup Commands
 
@@ -146,39 +234,26 @@ After running tests, verify:
 rm -rf test-* my-modus-app my-app
 ```
 
-## Real-World Example: Installing in a Subfolder
+---
 
-### Example: Installing in a `dhh` subfolder
+## Available Frameworks
 
-```bash
-# Navigate to your dhh folder
-cd /path/to/your/dhh/folder
+| Framework | Description |
+|-----------|-------------|
+| `react` | React + Vite + Modus 2.0 Components |
+| `angular` | Angular + Modus 2.0 Web Components |
 
-# Install the app in current folder (dhh) with Vue framework
-npx /home/julian/Documents/Development/MODUS/create-trimble-app --current-folder --framework vue
+---
 
-# The app will be installed in your dhh folder with package.json name "dhh"
-```
+## Test Results
 
-### Alternative: Create a new dhh folder
-
-```bash
-# From anywhere, create a new dhh folder with the app
-npx /home/julian/Documents/Development/MODUS/create-trimble-app dhh --framework vue
-```
-
-## Real Test Results
-
-✅ **All tests passed successfully:**
-
-| Test Case                | Command                                                                            | Expected               | Result  |
-| ------------------------ | ---------------------------------------------------------------------------------- | ---------------------- | ------- |
-| Help from project root   | `npx . --help`                                                                     | Shows --current-folder | ✅ PASS |
-| Vue + current folder     | `npx . --current-folder --framework vue`                                           | Works                  | ✅ PASS |
-| React + current folder   | `npx . --current-folder --framework react`                                         | Fails                  | ✅ PASS |
-| Traditional Vue          | `npx . test-app --framework vue`                                                   | Works                  | ✅ PASS |
-| From different directory | `npx /home/julian/Documents/Development/MODUS/create-trimble-app --current-folder` | Works                  | ✅ PASS |
-| Package.json naming      | Check package.json name                                                            | Matches folder         | ✅ PASS |
-
-On mac
-node /Users/julianoczkowski/Desktop/Development/MODUS/create-trimble-app/bin/create-trimble-app.js
+| Test Case | Expected | Status |
+|-----------|----------|--------|
+| Help shows --current-folder | Shows option | ✅ |
+| Info shows correct URLs | trimble-app repo | ✅ |
+| React + current folder | Works | ✅ |
+| Angular + current folder | Works | ✅ |
+| Traditional mode | Works | ✅ |
+| Package.json naming | Matches folder | ✅ |
+| Dry-run mode | Preview only | ✅ |
+| Invalid framework | Error message | ✅ |

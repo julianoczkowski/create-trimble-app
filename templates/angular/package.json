@@ -16,7 +16,7 @@
     "lint:icons": "node scripts/check-modus-icons.js",
     "lint:icon-names": "node scripts/check-icon-names.js",
     "lint:all": "npm run type-check && npm run lint:colors && npm run lint:styles && npm run lint:borders && npm run lint:opacity && npm run lint:icons && npm run lint:icon-names",
-    "prepare": "husky"
+    "prepare": "husky || true"
   },
   "prettier": {
     "printWidth": 100,

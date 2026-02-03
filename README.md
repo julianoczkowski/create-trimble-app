@@ -4,11 +4,13 @@ Interactive CLI to scaffold Modus 2.0 web component applications for React and A
 
 **Templates are bundled directly** - no external downloads, works fully offline.
 
-## Quick Start
+> **Get Started Now:**
+>
+> ```bash
+> npx @julianoczkowski/create-trimble-app@latest
+> ```
 
-```bash
-npx @julianoczkowski/create-trimble-app
-```
+---
 
 ## Features
 
@@ -24,7 +26,7 @@ npx @julianoczkowski/create-trimble-app
 ### Interactive Mode (Recommended)
 
 ```bash
-npx @julianoczkowski/create-trimble-app
+npx @julianoczkowski/create-trimble-app@latest
 ```
 
 This will guide you through:
@@ -38,28 +40,28 @@ This will guide you through:
 
 ```bash
 # Create with project name
-npx @julianoczkowski/create-trimble-app my-app
+npx @julianoczkowski/create-trimble-app@latest my-app
 
 # Specify framework
-npx @julianoczkowski/create-trimble-app my-app --framework react
+npx @julianoczkowski/create-trimble-app@latest my-app --framework react
 
 # Install in current folder
-npx @julianoczkowski/create-trimble-app --current-folder
+npx @julianoczkowski/create-trimble-app@latest --current-folder
 
 # Preview without creating files
-npx @julianoczkowski/create-trimble-app my-app --dry-run
+npx @julianoczkowski/create-trimble-app@latest my-app --dry-run
 
 # Enable verbose output
-npx @julianoczkowski/create-trimble-app my-app --verbose
+npx @julianoczkowski/create-trimble-app@latest my-app --verbose
 
 # Show CLI information
-npx @julianoczkowski/create-trimble-app --info
+npx @julianoczkowski/create-trimble-app@latest --info
 
 # Skip dependency installation
-npx @julianoczkowski/create-trimble-app my-app --no-install
+npx @julianoczkowski/create-trimble-app@latest my-app --no-install
 
 # Show help
-npx @julianoczkowski/create-trimble-app --help
+npx @julianoczkowski/create-trimble-app@latest --help
 ```
 
 ## CLI Options
@@ -104,14 +106,14 @@ your-project/
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                    npx create-trimble-app                      │
+│                    npx create-trimble-app                   │
 ├─────────────────────────────────────────────────────────────┤
-│  1. Parse CLI arguments (Commander.js)                       │
-│  2. Interactive prompts (if needed)                          │
-│  3. Copy bundled template (local file copy)                  │
-│  4. Update package.json with project name                    │
-│  5. Install dependencies (optional)                          │
-│  6. Show success message                                     │
+│  1. Parse CLI arguments (Commander.js)                      │
+│  2. Interactive prompts (if needed)                         │
+│  3. Copy bundled template (local file copy)                 │
+│  4. Update package.json with project name                   │
+│  5. Install dependencies (optional)                         │
+│  6. Show success message                                    │
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -180,6 +182,12 @@ For detailed testing instructions, see [docs/local-testing.md](docs/local-testin
 
 MIT © Julian Oczkowski
 
+## Issues & Discussions
+
+Report bugs, request features, and discuss ideas:
+
+- [GitHub Issues & Discussions](https://github.com/julianoczkowski/trimble-app)
+
 ## Related
 
 - [Modus Web Components Documentation](https://trimble-oss.github.io/modus-wc-2.0/main/?path=/docs/documentation-getting-started--docs)
@@ -188,4 +196,4 @@ MIT © Julian Oczkowski
 
 ---
 
-**Made with ❤️ for the Modus community**
+**Made with ❤️ for the Trimble community**
