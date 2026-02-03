@@ -3,13 +3,15 @@
 ## Platform-Specific Paths
 
 ### Linux
+
 ```bash
 CLI_PATH="/home/julian/Documents/Development/MODUS/create-trimble-app"
 ```
 
 ### macOS
+
 ```bash
-CLI_PATH="/Users/julianoczkowski/Desktop/Development/MODUS/create-trimble-app"
+CLI_PATH="/Users/julianoczkowski/Desktop/Development/create-trimble-app"
 ```
 
 ---
@@ -30,9 +32,9 @@ npx /home/julian/Documents/Development/MODUS/create-trimble-app --version
 npx /home/julian/Documents/Development/MODUS/create-trimble-app --info
 
 # From any directory (macOS)
-npx /Users/julianoczkowski/Desktop/Development/MODUS/create-trimble-app --help
-npx /Users/julianoczkowski/Desktop/Development/MODUS/create-trimble-app --version
-npx /Users/julianoczkowski/Desktop/Development/MODUS/create-trimble-app --info
+npx /Users/julianoczkowski/Desktop/Development/create-trimble-app --help
+npx /Users/julianoczkowski/Desktop/Development/create-trimble-app --version
+npx /Users/julianoczkowski/Desktop/Development/create-trimble-app --info
 
 # Alternative: use node directly
 node bin/create-trimble-app.js --help
@@ -52,8 +54,8 @@ npx /home/julian/Documents/Development/MODUS/create-trimble-app my-app --framewo
 npx /home/julian/Documents/Development/MODUS/create-trimble-app my-app --framework angular --dry-run
 
 # macOS
-npx /Users/julianoczkowski/Desktop/Development/MODUS/create-trimble-app my-app --framework react --dry-run
-npx /Users/julianoczkowski/Desktop/Development/MODUS/create-trimble-app my-app --framework angular --dry-run
+npx /Users/julianoczkowski/Desktop/Development/create-trimble-app my-app --framework react --dry-run
+npx /Users/julianoczkowski/Desktop/Development/create-trimble-app my-app --framework angular --dry-run
 ```
 
 ### 3. Test Current Folder Mode
@@ -69,7 +71,7 @@ cd .. && rm -rf test-current-folder
 
 # macOS
 mkdir test-current-folder && cd test-current-folder
-npx /Users/julianoczkowski/Desktop/Development/MODUS/create-trimble-app --current-folder --framework react --no-install
+npx /Users/julianoczkowski/Desktop/Development/create-trimble-app --current-folder --framework react --no-install
 cat package.json | grep '"name"'
 cd .. && rm -rf test-current-folder
 ```
@@ -89,12 +91,12 @@ cd .. && rm -rf test-angular
 
 # macOS - React
 mkdir test-react && cd test-react
-npx /Users/julianoczkowski/Desktop/Development/MODUS/create-trimble-app --current-folder --framework react --no-install
+npx /Users/julianoczkowski/Desktop/Development/create-trimble-app --current-folder --framework react --no-install
 cd .. && rm -rf test-react
 
 # macOS - Angular
 mkdir test-angular && cd test-angular
-npx /Users/julianoczkowski/Desktop/Development/MODUS/create-trimble-app --current-folder --framework angular --no-install
+npx /Users/julianoczkowski/Desktop/Development/create-trimble-app --current-folder --framework angular --no-install
 cd .. && rm -rf test-angular
 ```
 
@@ -107,7 +109,7 @@ ls -la | grep test-traditional
 rm -rf test-traditional
 
 # macOS
-npx /Users/julianoczkowski/Desktop/Development/MODUS/create-trimble-app test-traditional --framework react --no-install
+npx /Users/julianoczkowski/Desktop/Development/create-trimble-app test-traditional --framework react --no-install
 ls -la | grep test-traditional
 rm -rf test-traditional
 ```
@@ -130,13 +132,13 @@ cd .. && rm -rf test-from-tmp
 # macOS - from home directory
 cd ~
 mkdir test-from-home && cd test-from-home
-npx /Users/julianoczkowski/Desktop/Development/MODUS/create-trimble-app --current-folder --framework react --no-install
+npx /Users/julianoczkowski/Desktop/Development/create-trimble-app --current-folder --framework react --no-install
 cd .. && rm -rf test-from-home
 
 # macOS - from /tmp directory
 cd /tmp
 mkdir test-from-tmp && cd test-from-tmp
-npx /Users/julianoczkowski/Desktop/Development/MODUS/create-trimble-app --current-folder --framework angular --no-install
+npx /Users/julianoczkowski/Desktop/Development/create-trimble-app --current-folder --framework angular --no-install
 cd .. && rm -rf test-from-tmp
 ```
 
@@ -152,7 +154,7 @@ cd .. && rm -rf test-from-tmp
 npx /home/julian/Documents/Development/MODUS/create-trimble-app --current-folder --framework invalid
 
 # macOS
-npx /Users/julianoczkowski/Desktop/Development/MODUS/create-trimble-app --current-folder --framework invalid
+npx /Users/julianoczkowski/Desktop/Development/create-trimble-app --current-folder --framework invalid
 ```
 
 ### 8. Test Edge Cases
@@ -168,7 +170,7 @@ cd .. && rm -rf "test-folder_with-special.chars"
 # macOS
 mkdir "test-folder_with-special.chars"
 cd "test-folder_with-special.chars"
-npx /Users/julianoczkowski/Desktop/Development/MODUS/create-trimble-app --current-folder --framework react --no-install
+npx /Users/julianoczkowski/Desktop/Development/create-trimble-app --current-folder --framework react --no-install
 cd .. && rm -rf "test-folder_with-special.chars"
 ```
 
@@ -188,7 +190,7 @@ cd .. && rm -rf test-full-install
 
 # macOS
 mkdir test-full-install && cd test-full-install
-npx /Users/julianoczkowski/Desktop/Development/MODUS/create-trimble-app --current-folder --framework react
+npx /Users/julianoczkowski/Desktop/Development/create-trimble-app --current-folder --framework react
 cd .. && rm -rf test-full-install
 ```
 
@@ -238,22 +240,22 @@ rm -rf test-* my-modus-app my-app
 
 ## Available Frameworks
 
-| Framework | Description |
-|-----------|-------------|
-| `react` | React + Vite + Modus 2.0 Components |
-| `angular` | Angular + Modus 2.0 Web Components |
+| Framework | Description                         |
+| --------- | ----------------------------------- |
+| `react`   | React + Vite + Modus 2.0 Components |
+| `angular` | Angular + Modus 2.0 Web Components  |
 
 ---
 
 ## Test Results
 
-| Test Case | Expected | Status |
-|-----------|----------|--------|
-| Help shows --current-folder | Shows option | ✅ |
-| Info shows correct URLs | trimble-app repo | ✅ |
-| React + current folder | Works | ✅ |
-| Angular + current folder | Works | ✅ |
-| Traditional mode | Works | ✅ |
-| Package.json naming | Matches folder | ✅ |
-| Dry-run mode | Preview only | ✅ |
-| Invalid framework | Error message | ✅ |
+| Test Case                   | Expected         | Status |
+| --------------------------- | ---------------- | ------ |
+| Help shows --current-folder | Shows option     | ✅     |
+| Info shows correct URLs     | trimble-app repo | ✅     |
+| React + current folder      | Works            | ✅     |
+| Angular + current folder    | Works            | ✅     |
+| Traditional mode            | Works            | ✅     |
+| Package.json naming         | Matches folder   | ✅     |
+| Dry-run mode                | Preview only     | ✅     |
+| Invalid framework           | Error message    | ✅     |
