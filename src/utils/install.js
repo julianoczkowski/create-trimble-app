@@ -9,12 +9,32 @@ export async function installDependencies(projectPath) {
   const packageManager = detectPackageManager(cwd);
 
   try {
+    // Use pipe instead of inherit to capture and suppress output
+    // This allows spinners to animate and hides npm noise
     await execa(packageManager, ["install"], {
       cwd,
-      stdio: "inherit",
+      stdio: "pipe",
+      env: {
+        ...process.env,
+        // Suppress npm warnings and audit
+        npm_config_loglevel: "error",
+        npm_config_audit: "false",
+        npm_config_fund: "false",
+        // Prevent husky from running during install
+        HUSKY: "0",
+      },
     });
   } catch (error) {
-    throw new Error(`Failed to install dependencies: ${error.message}`);
+    // Extract meaningful error message from stderr
+    const stderr = error.stderr || "";
+    const meaningfulLines = stderr
+      .split("\n")
+      .filter((line) => line.includes("ERR!") || line.includes("error"))
+      .join("\n");
+
+    throw new Error(
+      meaningfulLines || `Failed to install dependencies: ${error.message}`,
+    );
   }
 }
 

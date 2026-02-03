@@ -1,6 +1,4 @@
-import prompts from "prompts";
-import ora from "ora";
-import chalk from "chalk";
+import * as p from "@clack/prompts";
 import { loadFrameworks, getFrameworkById } from "./frameworks.js";
 import {
   updatePackageJson,
@@ -10,6 +8,7 @@ import {
 import { installDependencies } from "./utils/install.js";
 import { copyTemplate, getDetailedErrorMessage } from "./utils/git.js";
 import { logger } from "./utils/logger.js";
+import { colors } from "./utils/colors.js";
 
 export async function scaffold(options = {}) {
   const { verbose = false, dryRun = false } = options;
@@ -30,34 +29,34 @@ export async function scaffold(options = {}) {
 
   const frameworks = loadFrameworks();
 
+  // Start clack intro (creates the threaded UI)
+  p.intro(colors.brand("Project Configuration"));
+
   // 1. Framework Selection
   let framework = options.framework;
 
   if (!framework) {
-    const result = await prompts({
-      type: "select",
-      name: "framework",
+    framework = await p.select({
       message: "Select your framework:",
-      choices: frameworks.map((f) => ({
-        title: `${f.badge} ${f.name}`,
-        description: f.description + (f.note ? ` (${f.note})` : ""),
+      options: frameworks.map((f) => ({
+        label: `${f.badge} ${f.name}`,
         value: f.id,
+        hint: f.note || f.description,
       })),
     });
-    framework = result.framework;
-  }
 
-  if (!framework) {
-    console.log(chalk.yellow("X Cancelled"));
-    process.exit(0);
+    if (p.isCancel(framework)) {
+      p.cancel("Operation cancelled");
+      process.exit(0);
+    }
   }
 
   const config = getFrameworkById(frameworks, framework);
 
   if (!config) {
-    console.error(chalk.red(`Error: Unknown framework "${framework}"`));
+    p.cancel(`Unknown framework "${framework}"`);
     console.log(
-      chalk.yellow(
+      colors.warning(
         `Available frameworks: ${frameworks.map((f) => f.id).join(", ")}`,
       ),
     );
@@ -71,139 +70,128 @@ export async function scaffold(options = {}) {
   if (!installInCurrentFolder && !projectName) {
     const currentFolderName = getCurrentFolderName();
 
-    const result = await prompts({
-      type: "select",
-      name: "installLocation",
-      message: "Where would you like to install your app?",
-      choices: [
+    const location = await p.select({
+      message: "Where would you like to install?",
+      options: [
         {
-          title: `📁 Install in current directory (${currentFolderName})`,
-          description: "Use the current folder as your project directory",
+          label: `Current directory (./${currentFolderName})`,
           value: "current",
+          hint: "Use this folder as your project",
         },
         {
-          title: "📂 Create new directory",
-          description: "Create a new folder for your project",
+          label: "Create new directory",
           value: "new",
+          hint: "Specify a new folder name",
         },
       ],
     });
 
-    if (!result.installLocation) {
-      console.log(chalk.yellow("X Cancelled"));
+    if (p.isCancel(location)) {
+      p.cancel("Operation cancelled");
       process.exit(0);
     }
 
-    installInCurrentFolder = result.installLocation === "current";
+    installInCurrentFolder = location === "current";
   }
 
   // 3. Project Name
   if (installInCurrentFolder) {
     projectName = getCurrentFolderName();
-    console.log(chalk.blue(`📁 Using current folder name: ${projectName}`));
+    p.log.info(`Using current folder: ${colors.brand(projectName)}`);
   } else if (!projectName) {
-    const result = await prompts({
-      type: "text",
-      name: "projectName",
+    projectName = await p.text({
       message: "Project name:",
-      initial: "my-modus-app",
-      validate: (name) => validateProjectName(name, false),
+      placeholder: "my-modus-app",
+      defaultValue: "my-modus-app",
+      validate: (name) => {
+        const result = validateProjectName(name, false);
+        if (result !== true) return result;
+      },
     });
-    projectName = result.projectName;
+
+    if (p.isCancel(projectName)) {
+      p.cancel("Operation cancelled");
+      process.exit(0);
+    }
   } else {
+    // Validate CLI-provided project name
     const validation = validateProjectName(projectName, false);
     if (validation !== true) {
-      console.error(chalk.red(`Error: ${validation}`));
+      p.cancel(validation);
       process.exit(1);
     }
-  }
-
-  if (!projectName) {
-    console.log(chalk.yellow("X Cancelled"));
-    process.exit(0);
   }
 
   const projectPath = installInCurrentFolder ? "." : projectName;
 
   // Dry-run mode: show what would be created without executing
   if (dryRun) {
-    console.log(chalk.cyan("\n🔍 Dry-run mode - no changes will be made\n"));
-    console.log(chalk.white("Would create project with:"));
-    console.log(chalk.gray(`  Framework: ${config.name}`));
-    console.log(chalk.gray(`  Project name: ${projectName}`));
-    console.log(
-      chalk.gray(
-        `  Location: ${installInCurrentFolder ? "Current directory" : `New directory: ${projectName}`}`,
-      ),
+    p.log.info(colors.brand("Dry-run mode - no changes will be made"));
+    p.log.message(`Framework: ${config.name}`);
+    p.log.message(`Project: ${projectName}`);
+    p.log.message(
+      `Location: ${installInCurrentFolder ? "Current directory" : projectName}`,
     );
-    console.log(chalk.gray(`  Template: Bundled (included in CLI package)`));
-    console.log();
+    p.outro("Preview complete");
     process.exit(0);
   }
 
-  // 4. Copy Template
-  const spinner = ora(`📦 Creating ${config.name} project...`).start();
+  // 4. Copy Template with spinner
+  const copySpinner = p.spinner();
+  copySpinner.start(`Creating ${config.name} project`);
 
   try {
     await copyTemplate(framework, projectPath);
-    spinner.succeed(chalk.green(`Project created successfully!`));
+    copySpinner.stop(`${colors.success("\u2713")} Project created`);
 
     // 5. Update package.json with project name
     try {
       await updatePackageJson(projectPath, {
         name: projectName,
       });
-      logger.success("Updated project configuration");
     } catch (error) {
-      logger.warning("Could not update package.json name");
       if (verbose) {
-        console.log(chalk.gray(`  Error: ${error.message}`));
+        p.log.warn(`Could not update package.json: ${error.message}`);
       }
     }
   } catch (error) {
-    spinner.fail(chalk.red(`Failed to create project`));
+    copySpinner.stop(`${colors.error("\u2717")} Failed to create project`);
     const detailedMessage = getDetailedErrorMessage(error);
-    console.error(chalk.red(`\n${detailedMessage}`));
+    p.cancel(detailedMessage);
     process.exit(1);
   }
-
-  // Visual separator before dependency installation
-  console.log(chalk.gray("═".repeat(60)));
 
   // 6. Install Dependencies (optional)
   let install = options.install;
 
   if (install === undefined) {
-    const result = await prompts({
-      type: "confirm",
-      name: "install",
-      message: "📦 Install dependencies now (default: yes)?",
-      initial: true,
+    install = await p.confirm({
+      message: "Install dependencies now?",
+      initialValue: true,
     });
-    install = result.install;
-  }
 
-  if (install) {
-    const installSpinner = ora("Installing dependencies...").start();
-    try {
-      await installDependencies(projectPath);
-      installSpinner.succeed(chalk.green("Dependencies installed"));
-    } catch (error) {
-      installSpinner.fail(chalk.red("Failed to install dependencies"));
-      console.error(chalk.red(error.message));
-      console.log(
-        chalk.yellow(`\n💡 You can install dependencies manually by running:`),
-      );
-      const installCommand = installInCurrentFolder
-        ? "npm install"
-        : `cd ${projectName} && npm install`;
-      console.log(chalk.cyan(`   ${installCommand}`));
+    if (p.isCancel(install)) {
+      install = false; // Don't exit, just skip installation
     }
   }
 
-  // Visual separator before final success message
-  console.log(chalk.gray("═".repeat(60)));
+  if (install) {
+    const installSpinner = p.spinner();
+    installSpinner.start("Fetching dependencies... (This may take a moment)");
 
-  // 7. Success Message
+    try {
+      await installDependencies(projectPath);
+      installSpinner.stop(`${colors.success("\u2713")} Dependencies installed`);
+    } catch (error) {
+      installSpinner.stop(`${colors.error("\u2717")} Installation failed`);
+      p.log.warn(error.message);
+      p.log.info("You can install dependencies manually later");
+    }
+  }
+
+  // 7. Success outro
+  p.outro(colors.success("Done! Configuration updated."));
+
+  // 8. Detailed next steps
   logger.nextSteps(projectName, config.name, install, installInCurrentFolder);
 }

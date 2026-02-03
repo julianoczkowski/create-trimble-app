@@ -18,7 +18,7 @@ Interactive CLI to scaffold Modus 2.0 web component applications for React and A
 - 🔒 **Secure** - No runtime external dependencies
 - ⚛️ **React** - React + Vite + Modus 2.0 Components + Cursor Rules
 - 🅰️ **Angular** - Angular + Modus 2.0 Web Components + Cursor Rules
-- 🎯 **Interactive** - Beautiful CLI with framework selection
+- 🎯 **Interactive** - Premium CLI experience with Trimble branding
 - ⚡ **Fast** - Local file copy, instant setup
 
 ## Usage
@@ -109,11 +109,12 @@ your-project/
 │                    npx create-trimble-app                   │
 ├─────────────────────────────────────────────────────────────┤
 │  1. Parse CLI arguments (Commander.js)                      │
-│  2. Interactive prompts (if needed)                         │
-│  3. Copy bundled template (local file copy)                 │
-│  4. Update package.json with project name                   │
-│  5. Install dependencies (optional)                         │
-│  6. Show success message                                    │
+│  2. Show branded welcome header (boxen + Trimble Blue)      │
+│  3. Interactive prompts with threaded UI (@clack/prompts)   │
+│  4. Copy bundled template (local file copy)                 │
+│  5. Update package.json with project name                   │
+│  6. Install dependencies silently (optional)                │
+│  7. Show beginner-friendly success message                  │
 └─────────────────────────────────────────────────────────────┘
 ```
 

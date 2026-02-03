@@ -1,6 +1,6 @@
 {
   "name": "@julianoczkowski/create-trimble-app",
-  "version": "3.1.1",
+  "version": "3.2.0",
   "description": "Interactive CLI to scaffold Modus 2.0 web component applications for React and Angular - templates bundled, works offline",
   "type": "module",
   "main": "src/cli.js",
@@ -52,11 +52,11 @@
     "registry": "https://registry.npmjs.org"
   },
   "dependencies": {
-    "chalk": "^5.3.0",
+    "@clack/prompts": "^1.0.0",
+    "boxen": "^8.0.1",
     "commander": "^12.1.0",
     "execa": "^8.0.1",
-    "ora": "^8.0.1",
-    "prompts": "^2.4.2",
+    "picocolors": "^1.1.1",
     "update-notifier": "^7.0.0"
   },
   "devDependencies": {

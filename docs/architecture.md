@@ -28,13 +28,14 @@ create-trimble-app/
 │   └── create-trimble-app.js    # npm bin entry point
 ├── src/
 │   ├── cli.js                 # CLI argument parsing (Commander.js)
-│   ├── scaffold.js            # Main scaffolding logic
+│   ├── scaffold.js            # Main scaffolding logic (@clack/prompts)
 │   ├── frameworks.js          # Framework configuration loader
 │   └── utils/
+│       ├── colors.js          # Trimble Blue colors & true color support
 │       ├── file.js            # File operations, validation
 │       ├── git.js             # Template copying
-│       ├── install.js         # Dependency installation
-│       └── logger.js          # Console output formatting
+│       ├── install.js         # Silent dependency installation
+│       └── logger.js          # Branded output (boxen, picocolors)
 ├── templates/
 │   ├── config.json            # Framework metadata
 │   ├── react/                 # Complete React template
@@ -71,7 +72,7 @@ User runs: npx @julianoczkowski/create-trimble-app my-app --framework react
            ├─── loadFrameworks() ──→ reads templates/config.json
            │
            ├─── Interactive prompts (if needed)
-           │    └── prompts library for user input
+           │    └── @clack/prompts for threaded UI
            │
            ├─── copyTemplate() ──→ copies templates/react/ to ./my-app/
            │
@@ -180,16 +181,27 @@ Dependency installation.
 - `installDependencies(projectPath)` - Run npm/yarn/pnpm install
 - `detectPackageManager(projectPath)` - Auto-detect package manager
 
-### 8. `src/utils/logger.js`
+### 8. `src/utils/colors.js`
 
-Console output formatting.
+Trimble brand color utilities with true color (24-bit) terminal support.
+
+**Features:**
+
+- `colors.brand()` - Trimble Blue (#0063a3) with 256-color fallback
+- `colors.brandBold()` - Bold brand blue for commands
+- `colors.dimBlue()` - Dimmed blue for secondary text
+- True color detection via COLORTERM environment variable
+
+### 9. `src/utils/logger.js`
+
+Branded console output using boxen and picocolors.
 
 **Functions:**
 
 - `logger.info/success/warning/error()` - Colored log messages
-- `logger.welcome()` - ASCII art banner
-- `logger.securityNotice()` - Security information
-- `logger.nextSteps()` - Post-install instructions
+- `logger.welcome()` - Trimble ASCII art banner with boxen borders
+- `logger.securityNotice()` - Security information box
+- `logger.nextSteps()` - Beginner-friendly post-install instructions
 
 ## Templates
 
@@ -274,14 +286,14 @@ Template copying is entirely local.
 
 ### Runtime Dependencies
 
-| Package           | Purpose                         |
-| ----------------- | ------------------------------- |
-| `chalk`           | Terminal colors                 |
-| `commander`       | CLI argument parsing            |
-| `execa`           | Process execution (npm install) |
-| `ora`             | Loading spinners                |
-| `prompts`         | Interactive prompts             |
-| `update-notifier` | Version update notifications    |
+| Package           | Purpose                                    |
+| ----------------- | ------------------------------------------ |
+| `@clack/prompts`  | Threaded interactive prompts               |
+| `boxen`           | Unicode box borders for branded output     |
+| `commander`       | CLI argument parsing                       |
+| `execa`           | Process execution (silent npm install)     |
+| `picocolors`      | Lightweight terminal colors                |
+| `update-notifier` | Version update notifications               |
 
 ### Dev Dependencies
 

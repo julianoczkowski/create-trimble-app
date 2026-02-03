@@ -1,11 +1,12 @@
 #!/usr/bin/env node
 
 import { Command } from "commander";
-import chalk from "chalk";
+import boxen from "boxen";
 import { readFileSync } from "fs";
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";
 import { scaffold } from "./scaffold.js";
+import { colors } from "./utils/colors.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -50,55 +51,51 @@ program
   .option("--dry-run", "Preview what would be created without making changes")
   .option("--verbose", "Enable verbose output for debugging")
   .option("--info", "Show information about this CLI")
-  .addHelpText(
-    "after",
-    chalk.cyan(`
-╔════════════════════════════════════════════════════════════════════════════╗
-║                          CREATE TRIMBLE APP - HELP                         ║
-╠════════════════════════════════════════════════════════════════════════════╣
-║                                                                            ║
-║  Quick Start:                                                              ║
-║    npx @julianoczkowski/create-trimble-app@latest                          ║
-║                                                                            ║
-╠════════════════════════════════════════════════════════════════════════════╣
-║                                                                            ║
-║  Examples:                                                                 ║
-║    # Interactive mode - choose framework and name                          ║
-║    npx @julianoczkowski/create-trimble-app@latest                          ║
-║                                                                            ║
-║    # Create a React project                                                ║
-║    npx @julianoczkowski/create-trimble-app@latest my-app --framework react ║
-║                                                                            ║
-║    # Create an Angular project                                             ║
-║    npx @julianoczkowski/create-trimble-app@latest my-app -f angular        ║
-║                                                                            ║
-║    # Install in current folder                                             ║
-║    npx @julianoczkowski/create-trimble-app@latest --current-folder         ║
-║                                                                            ║
-║    # Preview without creating files                                        ║
-║    npx @julianoczkowski/create-trimble-app@latest my-app --dry-run         ║
-║                                                                            ║
-╠════════════════════════════════════════════════════════════════════════════╣
-║                                                                            ║
-║  Frameworks:                                                               ║
-║    react    - React with Vite and Modus 2.0 Components                     ║
-║    angular  - Angular with Modus 2.0 Web Components                        ║
-║                                                                            ║
-╠════════════════════════════════════════════════════════════════════════════╣
-║                                                                            ║
-║  Security:                                                                 ║
-║    Templates are bundled directly in this CLI package.                     ║
-║    No external downloads - works offline, always consistent.               ║
-║    Use --info for more details.                                            ║
-║                                                                            ║
-╠════════════════════════════════════════════════════════════════════════════╣
-║                                                                            ║
-║  More information:                                                         ║
-║    https://github.com/julianoczkowski/trimble-app                          ║
-║                                                                            ║
-╚════════════════════════════════════════════════════════════════════════════╝
-`),
-  )
+  .addHelpText("after", () => {
+    const helpContent = [
+      colors.brandBold("Quick Start"),
+      "  npx @julianoczkowski/create-trimble-app@latest",
+      "",
+      colors.brandBold("Examples"),
+      `  ${colors.dim("#")} Interactive mode - choose framework and name`,
+      "  npx @julianoczkowski/create-trimble-app@latest",
+      "",
+      `  ${colors.dim("#")} Create a React project`,
+      "  npx @julianoczkowski/create-trimble-app@latest my-app --framework react",
+      "",
+      `  ${colors.dim("#")} Create an Angular project`,
+      "  npx @julianoczkowski/create-trimble-app@latest my-app -f angular",
+      "",
+      `  ${colors.dim("#")} Install in current folder`,
+      "  npx @julianoczkowski/create-trimble-app@latest --current-folder",
+      "",
+      `  ${colors.dim("#")} Preview without creating files`,
+      "  npx @julianoczkowski/create-trimble-app@latest my-app --dry-run",
+      "",
+      colors.brandBold("Frameworks"),
+      `  ${colors.brand("react")}     React + Vite + Modus 2.0 Components`,
+      `  ${colors.brand("angular")}   Angular + Modus 2.0 Web Components`,
+      "",
+      colors.brandBold("Security"),
+      "  Templates are bundled directly in this CLI package.",
+      "  No external downloads - works offline, always consistent.",
+      `  Use ${colors.brand("--info")} for more details.`,
+      "",
+      colors.brandBold("More Information"),
+      "  https://github.com/julianoczkowski/trimble-app",
+    ].join("\n");
+
+    return (
+      "\n" +
+      boxen(helpContent, {
+        padding: 1,
+        borderColor: "blue",
+        borderStyle: "round",
+        title: "Help",
+        titleAlignment: "center",
+      })
+    );
+  })
   .action(async (projectName, options) => {
     // Check for updates in background
     checkForUpdates();
@@ -114,9 +111,9 @@ program
         showInfo: options.info,
       });
     } catch (error) {
-      console.error(chalk.red("Error:"), error.message);
+      console.error(colors.error("Error:"), error.message);
       if (options.verbose) {
-        console.error(chalk.gray(error.stack));
+        console.error(colors.gray(error.stack));
       }
       process.exit(1);
     }
