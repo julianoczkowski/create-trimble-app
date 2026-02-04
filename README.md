@@ -199,7 +199,7 @@ MIT © Julian Oczkowski
 
 Report bugs, request features, and discuss ideas:
 
-- [GitHub Issues & Discussions](https://github.com/julianoczkowski/trimble-app)
+- [Support & Onboarding](https://julianoczkowski.github.io/trimble-app/)
 
 ## Related
 

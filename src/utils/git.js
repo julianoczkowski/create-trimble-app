@@ -36,7 +36,7 @@ export async function copyTemplate(templateName, targetPath) {
     "..",
     "..",
     "templates",
-    templateName,
+    templateName
   );
 
   try {
@@ -46,7 +46,7 @@ export async function copyTemplate(templateName, targetPath) {
       `Template "${templateName}" not found.\n` +
         `Expected at: ${bundledPath}\n\n` +
         `This is a bug in create-trimble-app. Please report it at:\n` +
-        `https://github.com/julianoczkowski/create-trimble-app/issues`,
+        `https://github.com/julianoczkowski/trimble-app/issues`
     );
   }
 
@@ -107,7 +107,7 @@ export async function hasTemplate(templateName) {
     "..",
     "..",
     "templates",
-    templateName,
+    templateName
   );
 
   try {
@@ -166,6 +166,6 @@ export function getDetailedErrorMessage(error) {
   return (
     `Failed to create project: ${message}\n\n` +
     `If this problem persists, please report it at:\n` +
-    `https://github.com/julianoczkowski/create-trimble-app/issues`
+    `https://github.com/julianoczkowski/trimble-app/issues`
   );
 }

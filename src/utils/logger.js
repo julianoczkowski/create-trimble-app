@@ -56,8 +56,8 @@ export const logger = {
       "  \u2022 github.com/julianoczkowski/modus-react-app",
       "  \u2022 github.com/julianoczkowski/modus-angular-app",
       "",
-      colors.dim("Report issues & discuss:"),
-      "  https://github.com/julianoczkowski/trimble-app",
+      colors.dim("Support & onboarding:"),
+      "  https://julianoczkowski.github.io/trimble-app/",
     ].join("\n");
 
     console.log(
@@ -177,12 +177,6 @@ export const logger = {
       "",
       colors.dim("Next steps:"),
       ...steps.map((s) => "  " + s),
-      "",
-      colors.dim("\u2500".repeat(boxWidth - 4)),
-      createClickableLink(
-        "https://github.com/julianoczkowski/trimble-app",
-        "Documentation, issues, and discussions",
-      ),
     ].join("\n");
 
     console.log(
@@ -192,8 +186,31 @@ export const logger = {
           borderColor: "green",
           borderStyle: "round",
           width: boxWidth + 6, // Account for boxen padding and borders
-        }) +
-        "\n",
+        }),
+    );
+
+    // Support and onboarding block
+    const supportContent = [
+      colors.brandBold("Need Help Getting Started?"),
+      "",
+      "Visit the support and onboarding site for:",
+      `  ${colors.brand("\u2022")} Step-by-step tutorials`,
+      `  ${colors.brand("\u2022")} Component documentation`,
+      `  ${colors.brand("\u2022")} Best practices & examples`,
+      "",
+      createClickableLink(
+        "https://julianoczkowski.github.io/trimble-app/",
+        "\u2192 julianoczkowski.github.io/trimble-app",
+      ),
+    ].join("\n");
+
+    console.log(
+      boxen(supportContent, {
+        padding: { top: 1, bottom: 1, left: 2, right: 2 },
+        borderColor: "cyan",
+        borderStyle: "round",
+        width: boxWidth + 6, // Same width as other blocks
+      }) + "\n",
     );
   },
 };
