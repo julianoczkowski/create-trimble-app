@@ -79,8 +79,10 @@ async function copyDirectory(src, dest) {
     }
 
     const srcPath = path.join(src, entry.name);
-    // Rename dot-npmrc to .npmrc when copying (npm excludes .npmrc during publish)
-    const destName = entry.name === "dot-npmrc" ? ".npmrc" : entry.name;
+    // Rename files that npm excludes during publish
+    let destName = entry.name;
+    if (entry.name === "dot-npmrc") destName = ".npmrc";
+    if (entry.name === "gitignore") destName = ".gitignore";
     const destPath = path.join(dest, destName);
 
     if (entry.isDirectory()) {
