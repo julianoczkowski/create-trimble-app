@@ -6,17 +6,17 @@ This document describes the architecture and internal workings of the `create-tr
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                        create-trimble-app                          │
+│                        create-trimble-app                       │
 ├─────────────────────────────────────────────────────────────────┤
-│  bin/create-trimble-app.js  →  Entry point (shebang script)       │
-│         ↓                                                        │
-│  src/cli.js               →  Commander.js argument parsing       │
-│         ↓                                                        │
-│  src/scaffold.js          →  Main scaffolding orchestration      │
-│         ↓                                                        │
-│  src/utils/*              →  Utility modules                     │
-│         ↓                                                        │
-│  templates/*              →  Bundled project templates           │
+│  bin/create-trimble-app.js  →  Entry point (shebang script)     │
+│         ↓                                                       │
+│  src/cli.js               →  Commander.js argument parsing      │
+│         ↓                                                       │
+│  src/scaffold.js          →  Main scaffolding orchestration     │
+│         ↓                                                       │
+│  src/utils/*              →  Utility modules                    │
+│         ↓                                                       │
+│  templates/*              →  Bundled project templates          │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -286,14 +286,14 @@ Template copying is entirely local.
 
 ### Runtime Dependencies
 
-| Package           | Purpose                                    |
-| ----------------- | ------------------------------------------ |
-| `@clack/prompts`  | Threaded interactive prompts               |
-| `boxen`           | Unicode box borders for branded output     |
-| `commander`       | CLI argument parsing                       |
-| `execa`           | Process execution (silent npm install)     |
-| `picocolors`      | Lightweight terminal colors                |
-| `update-notifier` | Version update notifications               |
+| Package           | Purpose                                |
+| ----------------- | -------------------------------------- |
+| `@clack/prompts`  | Threaded interactive prompts           |
+| `boxen`           | Unicode box borders for branded output |
+| `commander`       | CLI argument parsing                   |
+| `execa`           | Process execution (silent npm install) |
+| `picocolors`      | Lightweight terminal colors            |
+| `update-notifier` | Version update notifications           |
 
 ### Dev Dependencies
 
