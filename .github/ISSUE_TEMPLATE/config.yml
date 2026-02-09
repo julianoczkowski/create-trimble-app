@@ -12,6 +12,3 @@ contact_links:
   - name: 🎨 Modus Design System
     url: https://modus.trimble.com/
     about: Official Trimble Modus Design System documentation
-  - name: 🚀 Template Repositories
-    url: https://github.com/julianoczkowski?tab=repositories&q=modus-&type=&language=&sort=
-    about: Browse the source template repositories for each framework
