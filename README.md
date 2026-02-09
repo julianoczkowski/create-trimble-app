@@ -25,8 +25,10 @@ Interactive CLI to scaffold Modus 2.0 web component applications for React and A
 
 ---
 
-<p align="left">
-  <img src="hero.png" alt="Create Trimble App CLI" width="600">
+<p align="center">
+  <a href="https://julianoczkowski.github.io/trimble-app/">
+    <img src="onboarding.png" alt="Create Trimble App - Onboarding Site" width="600">
+  </a>
 </p>
 
 ## Features
