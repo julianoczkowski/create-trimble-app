@@ -1,5 +1,16 @@
 # Create Modus App
 
+![React](https://img.shields.io/badge/React-61DAFB?style=flat&logo=react&logoColor=black)
+![Angular](https://img.shields.io/badge/Angular-DD0031?style=flat&logo=angular&logoColor=white)
+![Vite](https://img.shields.io/badge/Vite-646CFF?style=flat&logo=vite&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat&logo=typescript&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-06B6D4?style=flat&logo=tailwindcss&logoColor=white)
+![Modus](https://img.shields.io/badge/Modus_2.0-0063A3?style=flat)
+![MCP](https://img.shields.io/badge/MCP-0063A3?style=flat)
+![Cursor Rules](https://img.shields.io/badge/Cursor_Rules-0063A3?style=flat)
+![Node.js](https://img.shields.io/badge/Node.js_18+-339933?style=flat&logo=nodedotjs&logoColor=white)
+![npm](https://img.shields.io/badge/npm-CB3837?style=flat&logo=npm&logoColor=white)
+
 Interactive CLI to scaffold Modus 2.0 web component applications for React and Angular.
 
 **Templates are bundled directly** - no external downloads, works fully offline.
@@ -11,6 +22,10 @@ Interactive CLI to scaffold Modus 2.0 web component applications for React and A
 > ```
 
 ---
+
+<p align="center">
+  <img src="hero.png" alt="Create Trimble App CLI" width="600">
+</p>
 
 ## Features
 
