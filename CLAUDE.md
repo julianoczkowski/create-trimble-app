@@ -16,8 +16,9 @@ npm run dev
 npm test                  # Run all tests once
 npm run test:watch        # Watch mode
 npm run test:coverage     # Coverage report
+npx vitest run tests/utils/file.test.js  # Run a single test file
 
-# Linting
+# Linting (ESLint flat config, excludes templates/)
 npm run lint
 
 # Pre-publish (runs tests + audit)
@@ -53,9 +54,11 @@ bin/create-trimble-app.js (entry point)
 
 **src/utils/file.js**: `validateProjectName()`, `updatePackageJson()`, `getCurrentFolderName()`
 
-**src/utils/git.js**: `copyTemplate()` copies from bundled `templates/` directory to target (local file copy, no git operations). `getDetailedErrorMessage()` transforms errors (EACCES, ENOSPC, etc.) into user-friendly messages.
+**src/utils/git.js**: `copyTemplate()` copies from bundled `templates/` directory to target (local file copy, no git operations despite the filename). Skips `node_modules`, `dist`, `.angular`, `.git`, `coverage`, `.nyc_output` directories and lock files during copy. Renames `dot-npmrc` → `.npmrc` and `gitignore` → `.gitignore` (npm strips these during publish). `getDetailedErrorMessage()` transforms errors (EACCES, ENOSPC, etc.) into user-friendly messages.
 
 **src/utils/install.js**: Auto-detects package manager from lock files, runs install using execa.
+
+**src/utils/colors.js**: Trimble Brand Blue (#0063a3) with true color/256-color fallback via picocolors. All color functions used throughout the CLI.
 
 **src/utils/logger.js**: Colored console output, welcome banner, security notice, next steps.
 
