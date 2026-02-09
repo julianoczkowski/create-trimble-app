@@ -20,6 +20,8 @@ Interactive CLI to scaffold Modus 2.0 web component applications for React and A
 > ```bash
 > npx @julianoczkowski/create-trimble-app@latest
 > ```
+>
+> If you run into permission issues, try: `sudo npx @julianoczkowski/create-trimble-app@latest`
 
 ---
 
