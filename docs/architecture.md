@@ -39,7 +39,8 @@ create-trimble-app/
 ├── templates/
 │   ├── config.json            # Framework metadata
 │   ├── react/                 # Complete React template
-│   └── angular/               # Complete Angular template
+│   ├── angular/               # Complete Angular template
+│   └── solidjs/               # Complete SolidJS template
 ├── tests/                     # Vitest test suite
 └── docs/                      # Documentation
 ```
@@ -114,7 +115,7 @@ Handles command-line argument parsing using Commander.js.
 | Option | Type | Description |
 |--------|------|-------------|
 | `[project-name]` | argument | Target directory name |
-| `--framework` | option | react or angular |
+| `--framework` | option | react, angular, or solidjs |
 | `--current-folder` | flag | Install in current directory |
 | `--dry-run` | flag | Preview mode |
 | `--verbose` | flag | Debug output |
@@ -222,14 +223,22 @@ templates/
 │   ├── src/              # Source code
 │   ├── package.json      # Dependencies
 │   └── ...               # Config files
-└── angular/
-    ├── .cursor/          # Cursor IDE rules
+├── angular/
+│   ├── .cursor/          # Cursor IDE rules
+│   ├── .github/          # GitHub templates & workflows
+│   ├── .husky/           # Git hooks
+│   ├── .vscode/          # VS Code settings
+│   ├── docs/             # Documentation
+│   ├── scripts/          # Code quality scripts
+│   ├── src/              # Source code
+│   ├── package.json      # Dependencies
+│   └── ...               # Config files
+└── solidjs/
+    ├── .cursor/          # Cursor IDE rules (44 rules, 10 skills)
     ├── .github/          # GitHub templates & workflows
     ├── .husky/           # Git hooks
-    ├── .vscode/          # VS Code settings
-    ├── docs/             # Documentation
     ├── scripts/          # Code quality scripts
-    ├── src/              # Source code
+    ├── src/              # Source code with 51 component wrappers
     ├── package.json      # Dependencies
     └── ...               # Config files
 ```
@@ -250,6 +259,12 @@ templates/
       "description": "Build with Angular and Modus 2.0 Web Components",
       "badge": "■",
       "note": "Enterprise Grade • TypeScript First..."
+    },
+    "solidjs": {
+      "name": "SolidJS + Vite + Modus 2.0 Components",
+      "description": "Theming + Icons + MCP + Skills",
+      "badge": "▲",
+      "note": "Reactive & Lightweight"
     }
   },
   "meta": {

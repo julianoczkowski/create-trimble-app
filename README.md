@@ -2,6 +2,7 @@
 
 ![React](https://img.shields.io/badge/React-61DAFB?style=flat&logo=react&logoColor=black)
 ![Angular](https://img.shields.io/badge/Angular-DD0031?style=flat&logo=angular&logoColor=white)
+![SolidJS](https://img.shields.io/badge/SolidJS-2C4F7C?style=flat&logo=solid&logoColor=white)
 ![Vite](https://img.shields.io/badge/Vite-646CFF?style=flat&logo=vite&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat&logo=typescript&logoColor=white)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-06B6D4?style=flat&logo=tailwindcss&logoColor=white)
@@ -11,7 +12,7 @@
 ![Node.js](https://img.shields.io/badge/Node.js_18+-339933?style=flat&logo=nodedotjs&logoColor=white)
 ![npm](https://img.shields.io/badge/npm-CB3837?style=flat&logo=npm&logoColor=white)
 
-Interactive CLI to scaffold Modus 2.0 web component applications for React and Angular.
+Interactive CLI to scaffold Modus 2.0 web component applications for React, Angular, and SolidJS.
 
 **Templates are bundled directly** - no external downloads, works fully offline.
 
@@ -37,6 +38,7 @@ Interactive CLI to scaffold Modus 2.0 web component applications for React and A
 - 🔒 **Secure** - No runtime external dependencies
 - ⚛️ **React** - React + Vite + Modus 2.0 Components + Cursor Rules
 - 🅰️ **Angular** - Angular + Modus 2.0 Web Components + Cursor Rules
+- ▲ **SolidJS** - SolidJS + Vite + Modus 2.0 Components + Cursor Rules
 - 🎯 **Interactive** - Premium CLI experience with Trimble branding
 - ⚡ **Fast** - Local file copy, instant setup
 
@@ -50,7 +52,7 @@ npx @julianoczkowski/create-trimble-app@latest
 
 This will guide you through:
 
-1. Framework selection (React or Angular)
+1. Framework selection (React, Angular, or SolidJS)
 2. Installation location choice
 3. Project name input
 4. Optional dependency installation
@@ -88,7 +90,7 @@ npx @julianoczkowski/create-trimble-app@latest --help
 | Option                   | Description                            |
 | ------------------------ | -------------------------------------- |
 | `[project-name]`         | Name of the project to create          |
-| `-f, --framework <name>` | Framework to use (react, angular)      |
+| `-f, --framework <name>` | Framework to use (react, angular, solidjs) |
 | `--current-folder`       | Install in current folder              |
 | `--dry-run`              | Preview what would be created          |
 | `--verbose`              | Enable verbose output for debugging    |
@@ -99,14 +101,15 @@ npx @julianoczkowski/create-trimble-app@latest --help
 
 ## Supported Frameworks
 
-| Framework      | Description  | What's Included                                                                                          |
-| -------------- | ------------ | -------------------------------------------------------------------------------------------------------- |
-| ⚛️ **React**   | React + Vite | Modus 2.0 Components, TypeScript, Tailwind CSS, 40+ Cursor Rules, GitHub Templates, Code Quality Scripts |
-| 🅰️ **Angular** | Angular 20+  | Modus 2.0 Web Components, TypeScript, Tailwind CSS, 11 Cursor Rules, GitHub Workflows, Demo Components   |
+| Framework       | Description     | What's Included                                                                                          |
+| --------------- | --------------- | -------------------------------------------------------------------------------------------------------- |
+| ⚛️ **React**    | React + Vite    | Modus 2.0 Components, TypeScript, Tailwind CSS, 40+ Cursor Rules, GitHub Templates, Code Quality Scripts |
+| 🅰️ **Angular**  | Angular 20+     | Modus 2.0 Web Components, TypeScript, Tailwind CSS, 11 Cursor Rules, GitHub Workflows, Demo Components   |
+| ▲ **SolidJS**   | SolidJS + Vite  | Modus 2.0 Components, TypeScript, Tailwind CSS, 44 Cursor Rules, Vitest, 46 Demo Pages                  |
 
 ## What's Included in Each Template
 
-Both templates come fully configured with:
+All templates come fully configured with:
 
 ```
 your-project/
@@ -125,7 +128,7 @@ your-project/
 
 ### Cursor Commands
 
-Both templates include AI-powered Cursor commands for rapid scaffolding:
+All templates include AI-powered Cursor commands for rapid scaffolding:
 
 | Command              | Description                                                       |
 | -------------------- | ----------------------------------------------------------------- |
@@ -190,6 +193,7 @@ npm test
 # Test specific commands
 node bin/create-trimble-app.js --help
 node bin/create-trimble-app.js my-app --framework react --dry-run
+node bin/create-trimble-app.js my-app --framework solidjs --dry-run
 ```
 
 For detailed testing instructions, see [docs/local-testing.md](docs/local-testing.md).

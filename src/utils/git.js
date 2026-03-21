@@ -23,7 +23,7 @@ const SKIP_FILES = new Set([
 
 /**
  * Copy bundled template to target directory
- * @param {string} templateName - Name of the template (react, angular)
+ * @param {string} templateName - Name of the template (react, angular, solidjs)
  * @param {string} targetPath - Target directory path
  * @returns {Promise<boolean>}
  */

@@ -99,7 +99,7 @@ create-trimble-app my-app --framework react
 
 | Option | Description |
 |--------|-------------|
-| `--framework <name>` | Specify framework (react, angular) |
+| `--framework <name>` | Specify framework (react, angular, solidjs) |
 | `--current-folder` | Install in current directory |
 | `--dry-run` | Preview without making changes |
 | `--verbose` | Enable verbose output |

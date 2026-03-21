@@ -13,6 +13,13 @@
       "supportsTypeScript": true,
       "badge": "■",
       "note": "Enterprise Grade"
+    },
+    "solidjs": {
+      "name": "SolidJS + Vite + Modus 2.0 Components",
+      "description": "Theming + Icons + MCP + Skills",
+      "supportsTypeScript": true,
+      "badge": "▲",
+      "note": "Reactive & Lightweight"
     }
   },
   "meta": {

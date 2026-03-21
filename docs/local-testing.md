@@ -28,6 +28,7 @@ node bin/create-trimble-app.js --info
 # Dry-run (preview without creating files)
 node bin/create-trimble-app.js my-app --framework react --dry-run
 node bin/create-trimble-app.js my-app --framework angular --dry-run
+node bin/create-trimble-app.js my-app --framework solidjs --dry-run
 
 # Create a React project (skip install for faster testing)
 node bin/create-trimble-app.js /tmp/test-react --framework react --no-install
@@ -89,6 +90,7 @@ node bin/create-trimble-app.js --version
 node bin/create-trimble-app.js --info
 node bin/create-trimble-app.js test-app --framework react --dry-run
 node bin/create-trimble-app.js test-app --framework angular --dry-run
+node bin/create-trimble-app.js test-app --framework solidjs --dry-run
 ```
 
 ### Full Integration Test
@@ -112,6 +114,14 @@ node <path-to-repo>/create-trimble-app/bin/create-trimble-app.js test-angular --
 # Verify Angular project structure
 ls -la test-angular/
 ls -la test-angular/src/
+
+# Test SolidJS template
+node <path-to-repo>/create-trimble-app/bin/create-trimble-app.js test-solidjs --framework solidjs --no-install
+
+# Verify SolidJS project structure
+ls -la test-solidjs/
+ls -la test-solidjs/.cursor/
+ls -la test-solidjs/src/
 
 # Clean up
 cd ~ && rm -rf /tmp/cli-test
@@ -168,6 +178,12 @@ cat templates/react/package.json
 ls -la templates/angular/
 ls -la templates/angular/src/
 cat templates/angular/package.json
+
+# Check SolidJS template exists and has key files
+ls -la templates/solidjs/
+ls -la templates/solidjs/.cursor/
+ls -la templates/solidjs/src/
+cat templates/solidjs/package.json
 ```
 
 ## One-Liner Test Commands
@@ -178,6 +194,9 @@ node bin/create-trimble-app.js /tmp/quick-react --framework react --no-install &
 
 # Quick Angular test
 node bin/create-trimble-app.js /tmp/quick-angular --framework angular --no-install && ls -la /tmp/quick-angular/src && rm -rf /tmp/quick-angular
+
+# Quick SolidJS test
+node bin/create-trimble-app.js /tmp/quick-solidjs --framework solidjs --no-install && ls -la /tmp/quick-solidjs/src && rm -rf /tmp/quick-solidjs
 
 # Test all CLI options work
 node bin/create-trimble-app.js --help && node bin/create-trimble-app.js --version && node bin/create-trimble-app.js --info && echo "All CLI options work!"
@@ -205,6 +224,7 @@ Verify templates exist:
 ```bash
 ls templates/react/package.json
 ls templates/angular/package.json
+ls templates/solidjs/package.json
 ```
 
 ## Before Publishing
@@ -220,6 +240,7 @@ node bin/create-trimble-app.js --help
 node bin/create-trimble-app.js --info
 node bin/create-trimble-app.js test --framework react --dry-run
 node bin/create-trimble-app.js test --framework angular --dry-run
+node bin/create-trimble-app.js test --framework solidjs --dry-run
 
 # Full integration test
 node bin/create-trimble-app.js /tmp/final-test --framework react --no-install

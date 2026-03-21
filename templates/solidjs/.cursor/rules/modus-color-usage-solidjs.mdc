@@ -1,0 +1,420 @@
+---
+description: Essential color usage rules for Modus Design System integration
+globs: ["**/*.tsx", "**/*.ts"]
+alwaysApply: false
+---
+
+# Modus Color Usage in SolidJS + Vite
+
+## 🎨 **Design System Color Architecture**
+
+**CRITICAL**: This SolidJS + Vite application uses a **9-color design system** that maps Figma variables to Modus's color system, available as Tailwind classes.
+
+**Color System**: 9 Modus colors mapped to design system variables in `src/index.css`
+
+## ❌ **FORBIDDEN: Raw Modus CSS Variables**
+
+### ❌ **Never Use Raw Modus Variables**
+
+```tsx
+// ❌ WRONG: Raw Modus CSS variables
+style={{ backgroundColor: "var(--modus-wc-color-base-page)" }}
+style={{ color: "var(--modus-wc-color-base-content)" }}
+style={{ borderColor: "var(--modus-wc-color-base-200)" }}
+
+// ❌ WRONG: Direct Modus variable usage
+class="bg-[var(--modus-wc-color-base-page)]"
+class="text-[var(--modus-wc-color-base-content)]"
+```
+
+### ❌ **Never Use Hardcoded Colors**
+
+```tsx
+// ❌ WRONG: Hardcoded hex/RGB values
+style={{ backgroundColor: "#ffffff" }}
+style={{ color: "#000000" }}
+style={{ borderColor: "#e5e5e5" }}
+
+// ❌ WRONG: Hardcoded colors in Tailwind
+class="bg-[#ffffff]"
+class="text-[#000000]"
+```
+
+### ❌ **Never Use Generic Tailwind Colors**
+
+```tsx
+// ❌ WRONG: Generic Tailwind color classes
+class = "bg-blue-500";
+class = "text-red-400";
+class = "border-green-300";
+class = "bg-gray-100";
+```
+
+## ✅ **CORRECT: Design System Colors**
+
+### ✅ **Use Design System Tailwind Classes**
+
+```tsx
+// ✅ CORRECT: Design system colors
+class = "bg-background text-foreground";
+class = "bg-card text-card-foreground";
+class = "bg-primary text-primary-foreground";
+class = "bg-secondary text-secondary-foreground";
+class = "bg-muted text-muted-foreground";
+class = "bg-accent text-accent-foreground";
+class = "bg-destructive text-destructive-foreground";
+class = "bg-warning text-warning-foreground";
+class = "bg-success text-success-foreground";
+```
+
+### ✅ **Available Design System Colors**
+
+```tsx
+// ✅ CORRECT: All available design system colors
+const colorClasses = {
+  // Background colors
+  background: "bg-background",
+  card: "bg-card",
+  popover: "bg-popover",
+  sidebar: "bg-sidebar",
+
+  // Text colors
+  foreground: "text-foreground",
+  "card-foreground": "text-card-foreground",
+  "popover-foreground": "text-popover-foreground",
+  "sidebar-foreground": "text-sidebar-foreground",
+
+  // Primary colors
+  primary: "bg-primary",
+  "primary-foreground": "text-primary-foreground",
+
+  // Secondary colors
+  secondary: "bg-secondary",
+  "secondary-foreground": "text-secondary-foreground",
+
+  // Muted colors
+  muted: "bg-muted",
+  "muted-foreground": "text-muted-foreground",
+
+  // Accent colors
+  accent: "bg-accent",
+  "accent-foreground": "text-accent-foreground",
+
+  // Status colors
+  destructive: "bg-destructive",
+  "destructive-foreground": "text-destructive-foreground",
+  warning: "bg-warning",
+  "warning-foreground": "text-warning-foreground",
+  success: "bg-success",
+  "success-foreground": "text-success-foreground",
+
+  // Border colors
+  border: "border-border",
+  input: "border-input",
+  "sidebar-border": "border-sidebar-border",
+
+  // Ring colors
+  ring: "ring-ring",
+  "sidebar-ring": "ring-sidebar-ring",
+};
+```
+
+## 🎯 **Color Usage Patterns**
+
+### ✅ **Component Color Patterns**
+
+```tsx
+// ✅ CORRECT: Card component
+function Card({ children }: { children: JSX.Element }) {
+  return (
+    <div class="bg-card text-card-foreground border border-border rounded-lg p-4">
+      {children}
+    </div>
+  );
+}
+
+// ✅ CORRECT: Button component
+function Button({ variant = "primary", children }: ButtonProps) {
+  const baseClasses = "px-4 py-2 rounded font-medium transition-colors";
+
+  const variantClasses = {
+    primary: "bg-primary text-primary-foreground hover:bg-primary/90",
+    secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/90",
+    destructive:
+      "bg-destructive text-destructive-foreground hover:bg-destructive/90",
+    outline:
+      "border border-border bg-background text-foreground hover:bg-muted",
+  };
+
+  return (
+    <button class={`${baseClasses} ${variantClasses[variant]}`}>
+      {children}
+    </button>
+  );
+}
+
+// ✅ CORRECT: Input component
+function Input({ className, ...props }: InputProps) {
+  return (
+    <input
+      class={`bg-input text-foreground border border-input rounded px-3 py-2 ${className}`}
+      {...props}
+    />
+  );
+}
+```
+
+### ✅ **Status Color Patterns**
+
+```tsx
+// ✅ CORRECT: Status indicators
+function StatusIndicator({
+  status,
+}: {
+  status: "success" | "warning" | "error";
+}) {
+  const statusClasses = {
+    success: "bg-success text-success-foreground",
+    warning: "bg-warning text-warning-foreground",
+    error: "bg-destructive text-destructive-foreground",
+  };
+
+  return (
+    <div class={`px-3 py-1 rounded ${statusClasses[status]}`}>{status}</div>
+  );
+}
+
+// ✅ CORRECT: Alert component
+function Alert({ type, children }: AlertProps) {
+  const typeClasses = {
+    success: "bg-success text-success-foreground border-success",
+    warning: "bg-warning text-warning-foreground border-warning",
+    error: "bg-destructive text-destructive-foreground border-destructive",
+    info: "bg-primary text-primary-foreground border-primary",
+  };
+
+  return (
+    <div class={`p-4 rounded border ${typeClasses[type]}`}>{children}</div>
+  );
+}
+```
+
+### ✅ **Theme-Aware Color Patterns**
+
+```tsx
+// ✅ CORRECT: Theme-aware component
+function ThemedComponent() {
+  const { isDark } = useTheme();
+
+  return (
+    <div
+      class={`
+      bg-background text-foreground
+      ${isDark ? "border-border" : "border-border"}
+      transition-colors duration-200
+    `}
+    >
+      <h2 class="text-foreground">Title</h2>
+      <p class="text-muted-foreground">Description</p>
+    </div>
+  );
+}
+```
+
+## 🎨 **Advanced Color Patterns**
+
+### ✅ **Gradient Patterns**
+
+```tsx
+// ✅ CORRECT: Design system gradients
+function GradientCard() {
+  return (
+    <div class="bg-gradient-to-r from-primary to-accent text-primary-foreground p-6 rounded-lg">
+      <h3>Gradient Card</h3>
+      <p>Using design system colors for gradients</p>
+    </div>
+  );
+}
+
+// ✅ CORRECT: Subtle gradients
+function SubtleGradient() {
+  return (
+    <div class="bg-gradient-to-br from-background to-muted p-4 rounded">
+      <p class="text-foreground">Subtle gradient background</p>
+    </div>
+  );
+}
+```
+
+### ✅ **Hover and Focus States**
+
+```tsx
+// ✅ CORRECT: Interactive color states
+function InteractiveButton() {
+  return (
+    <button
+      class="
+      bg-primary text-primary-foreground
+      hover:bg-primary/90
+      focus:ring-2 focus:ring-ring focus:ring-offset-2
+      active:bg-primary/80
+      transition-colors duration-200
+    "
+    >
+      Interactive Button
+    </button>
+  );
+}
+
+// ✅ CORRECT: Card hover effects
+function HoverCard() {
+  return (
+    <div
+      class="
+      bg-card text-card-foreground
+      hover:bg-card/80
+      hover:shadow-lg
+      transition-all duration-200
+      border border-border
+      rounded-lg p-4
+    "
+    >
+      Hover Card
+    </div>
+  );
+}
+```
+
+## 🚫 **Common Anti-Patterns**
+
+### ❌ **Don't Mix Color Systems**
+
+```tsx
+// ❌ WRONG: Mixing design system and generic colors
+<div class="bg-background text-blue-500 border-red-300">
+  Mixed color systems
+</div>
+
+// ❌ WRONG: Using both design system and hardcoded colors
+<div class="bg-card" style={{ color: "#ff0000" }}>
+  Mixed approaches
+</div>
+```
+
+### ❌ **Don't Use Color for Non-Color Properties**
+
+```tsx
+// ❌ WRONG: Using colors for spacing, sizing, etc.
+<div class="bg-primary p-4">
+  {" "}
+  {/* ❌ bg-primary for spacing */}
+  <span class="text-foreground text-lg">
+    {" "}
+    {/* ❌ text-lg for sizing */}
+    Content
+  </span>
+</div>
+```
+
+### ❌ **Don't Override Design System Colors**
+
+```tsx
+// ❌ WRONG: Overriding design system colors
+<div class="bg-background" style={{ backgroundColor: "#custom-color" }}>
+  Overriding design system
+</div>
+```
+
+## 🔧 **Color Validation**
+
+### ✅ **Linting Commands**
+
+```bash
+# Check for color violations
+npm run lint:colors
+
+# Check for inline styles
+npm run lint:styles
+
+# Check for border violations
+npm run lint:borders
+```
+
+### ✅ **Color Testing Patterns**
+
+```tsx
+// ✅ CORRECT: Test color combinations
+function ColorTest() {
+  const colorCombinations = [
+    { bg: "bg-background", text: "text-foreground" },
+    { bg: "bg-card", text: "text-card-foreground" },
+    { bg: "bg-primary", text: "text-primary-foreground" },
+    { bg: "bg-secondary", text: "text-secondary-foreground" },
+    { bg: "bg-muted", text: "text-muted-foreground" },
+    { bg: "bg-accent", text: "text-accent-foreground" },
+    { bg: "bg-destructive", text: "text-destructive-foreground" },
+    { bg: "bg-warning", text: "text-warning-foreground" },
+    { bg: "bg-success", text: "text-success-foreground" },
+  ];
+
+  return (
+    <div class="space-y-4">
+      {colorCombinations.map((combo, index) => (
+        <div key={index} class={`${combo.bg} ${combo.text} p-4 rounded`}>
+          {combo.bg} + {combo.text}
+        </div>
+      ))}
+    </div>
+  );
+}
+```
+
+## 🎯 **Key Takeaways**
+
+1. **Use Design System Colors**: Always use `bg-background`, `text-foreground`, etc.
+2. **Never Use Raw Variables**: Don't use `var(--modus-wc-color-*)` directly
+3. **Never Use Hardcoded Colors**: No hex, RGB, or generic Tailwind colors
+4. **Test Color Combinations**: Ensure proper contrast and accessibility
+5. **Follow Color Patterns**: Use established patterns for consistency
+
+## 🔍 **Color System Reference**
+
+### Available Design System Colors:
+
+```tsx
+// Background colors
+bg - background, bg - card, bg - popover, bg - sidebar;
+
+// Text colors
+text - foreground,
+  text - card - foreground,
+  text - popover - foreground,
+  text - sidebar - foreground;
+
+// Primary colors
+bg - primary, text - primary - foreground;
+
+// Secondary colors
+bg - secondary, text - secondary - foreground;
+
+// Muted colors
+bg - muted, text - muted - foreground;
+
+// Accent colors
+bg - accent, text - accent - foreground;
+
+// Status colors
+bg - destructive, text - destructive - foreground;
+bg - warning, text - warning - foreground;
+bg - success, text - success - foreground;
+
+// Border colors
+border - border, border - input, border - sidebar - border;
+
+// Ring colors
+ring - ring, ring - sidebar - ring;
+```
+
+---
+
+**Remember: This SolidJS + Vite application uses a 9-color design system mapped to Modus colors. Always use design system Tailwind classes, never raw Modus variables or hardcoded colors. This ensures consistent theming and proper color management across the application.**

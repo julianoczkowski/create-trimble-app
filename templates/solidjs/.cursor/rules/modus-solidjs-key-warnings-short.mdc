@@ -1,0 +1,23 @@
+---
+description: Critical SolidJS key prop patterns for Modus Web Components
+globs: ["**/*.tsx"]
+alwaysApply: true
+---
+
+# Modus SolidJS Key Warnings - Short
+
+Critical SolidJS key prop patterns for Modus Web Components.
+
+## Key Rules
+
+- **Use composite keys for web components** - `${value}-${index}` pattern for uniqueness
+- **Props over slots for icons** - Use `start-icon={icon}` not `<i slot="start-icon">`
+- **Avoid div wrappers** - Let web components render directly
+- **Never use array index as key** - Use stable identifiers when items can reorder
+- **Handle dynamic content safely** - Use stable identifiers for keys
+- **Test in Chrome DevTools** - Verify no SolidJS warnings in console
+- **Follow Modus patterns** - Use established component patterns
+
+## Reference
+
+For detailed key patterns, common pitfalls, and advanced React techniques, fetch the full rule: `modus-solidjs-key-warnings`

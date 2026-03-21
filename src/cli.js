@@ -40,7 +40,7 @@ program
   .argument("[project-name]", "Name of the project to create")
   .option(
     "-f, --framework <name>",
-    "Framework to use (react, angular)",
+    "Framework to use (react, angular, solidjs)",
     validateFramework,
   )
   .option(
@@ -66,6 +66,9 @@ program
       `  ${colors.dim("#")} Create an Angular project`,
       "  npx @julianoczkowski/create-trimble-app@latest my-app -f angular",
       "",
+      `  ${colors.dim("#")} Create a SolidJS project`,
+      "  npx @julianoczkowski/create-trimble-app@latest my-app -f solidjs",
+      "",
       `  ${colors.dim("#")} Install in current folder`,
       "  npx @julianoczkowski/create-trimble-app@latest --current-folder",
       "",
@@ -75,6 +78,7 @@ program
       colors.brandBold("Frameworks"),
       `  ${colors.brand("react")}     React + Vite + Modus 2.0 Components`,
       `  ${colors.brand("angular")}   Angular + Modus 2.0 Web Components`,
+      `  ${colors.brand("solidjs")}   SolidJS + Vite + Modus 2.0 Components`,
       "",
       colors.brandBold("Security"),
       "  Templates are bundled directly in this CLI package.",
@@ -125,7 +129,7 @@ program
  * @returns {string} - Validated framework name
  */
 function validateFramework(value) {
-  const validFrameworks = ["react", "angular"];
+  const validFrameworks = ["react", "angular", "solidjs"];
   const lowercaseValue = value.toLowerCase();
 
   if (!validFrameworks.includes(lowercaseValue)) {

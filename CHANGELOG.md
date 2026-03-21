@@ -5,6 +5,32 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- **SolidJS Template** - New SolidJS + Vite + Modus 2.0 Components template
+  - SolidJS 1.9.5 with `@solidjs/router` for client-side routing
+  - Direct Modus web component integration (no wrapper library needed)
+  - SolidJS reactive primitives (`createSignal`, `createEffect`, `createContext`)
+  - 51 Modus component wrappers with `on:eventName` and `attr:propName` patterns
+  - 46 interactive demo pages showcasing every Modus component
+  - Dev Panel with theme switching, color palette, icons gallery, and component gallery
+  - 6 Modus theme variants (classic, modern, connect - light/dark)
+  - 44 Cursor Rules adapted for SolidJS development patterns
+  - 10 Cursor Skills for AI-assisted SolidJS development
+  - Vitest + `@solidjs/testing-library` test setup
+  - ESLint with `eslint-plugin-solid`
+  - TypeScript with `jsx: "preserve"` and `jsxImportSource: "solid-js"`
+  - GitHub Actions CI workflow
+  - Code quality scripts (type-check, icon lint, semantic HTML, etc.)
+
+### Changed
+
+- CLI now supports three frameworks: React, Angular, and SolidJS
+- Framework validation updated to accept `solidjs` as a valid option
+- Updated CLI security notice and help text to list all three templates
+
 ## [2.0.0] - 2026-01-28
 
 ### Added

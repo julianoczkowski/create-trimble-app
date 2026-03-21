@@ -1,0 +1,28 @@
+# Run all linting checks before commit
+echo "🔍 Running pre-commit checks..."
+
+# TypeScript type checking
+echo "📝 Checking TypeScript types..."
+npm run type-check
+
+# Modus Icons compliance
+echo "🎨 Checking Modus Icons usage..."
+npm run lint:icons
+
+# Semantic HTML compliance
+echo "🏗️  Checking semantic HTML usage..."
+npm run lint:semantic
+
+# Design system colors compliance
+echo "🎨 Checking design system colors..."
+npm run lint:colors
+
+# Inline styles compliance
+echo "💅 Checking inline styles..."
+npm run lint:styles
+
+# Border violations compliance
+echo "🔲 Checking border patterns..."
+npm run lint:borders
+
+echo "✅ All pre-commit checks passed!"

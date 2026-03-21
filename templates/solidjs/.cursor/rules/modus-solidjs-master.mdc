@@ -1,0 +1,160 @@
+---
+description: Master rule providing overview and references to all Modus SolidJS rules
+globs: ["**/*.tsx", "**/*.ts", "**/*.css"]
+alwaysApply: true
+---
+
+# Modus SolidJS Rules - Master Reference
+
+This master rule provides an overview of all available rules and serves as an entry point for understanding the Modus SolidJS development patterns.
+
+## Rule Structure
+
+This project uses a **short/full rule pattern**:
+
+- **Short Rules** (`*-short.mdc`): Always applied, concise summaries
+- **Full Rules** (`*.mdc`): Apply intelligently, detailed patterns
+
+See `README.md` in this directory for complete rule documentation.
+
+## Essential Rules (Always Applied)
+
+These short rules are always included in chat context:
+
+### Design System
+- `modus-color-usage-solidjs-short.mdc` - Color system usage
+- `modus-icons-solidjs-short.mdc` - Icon usage patterns
+- `modus-semantic-html-solidjs-short.mdc` - HTML element usage
+- `border-usage-guidelines-short.mdc` - Border utilities
+- `modus-opacity-utilities-solidjs-short.mdc` - Opacity utilities
+- `modus-tailwind-usage-solidjs-short.mdc` - Tailwind integration
+- `modus-themes-solidjs-short.mdc` - Theme implementation
+
+### Component Patterns
+- `modus-button-group-usage-solidjs-short.mdc` - Button group patterns
+- `modus-checkbox-value-inversion-solidjs-short.mdc` - Checkbox bug handling
+- `modus-modal-implementation-solidjs-short.mdc` - Modal patterns
+- `modus-accordion-state-management-solidjs-short.mdc` - Accordion state
+- `modus-select-vs-dropdown-menu-solidjs-short.mdc` - Dropdown patterns
+- `modus-navbar-side-navigation-solidjs-short.mdc` - Navigation integration
+
+### SolidJS Integration
+- `modus-solidjs-integration-short.mdc` - SolidJS + Modus integration
+- `modus-solidjs-best-practices-short.mdc` - SolidJS best practices
+- `modus-solidjs-key-warnings-short.mdc` - SolidJS key prop patterns
+
+### Workflow
+- `development-workflow-solidjs-short.mdc` - Linting and quality checks
+- `chrome-devtools-testing-solidjs-short.mdc` - Browser testing
+- `implementation-guides-solidjs-short.mdc` - Feature development guides
+- `modus-no-emojis-solidjs-short.mdc` - Emoji prohibition
+
+## Detailed Rules (Apply Intelligently)
+
+For detailed patterns, examples, and advanced techniques, reference these full rules:
+
+### Component-Specific Details
+- `modus-button-group-usage-solidjs.mdc` - Complete button group patterns
+- `modus-checkbox-value-inversion-solidjs.mdc` - Checkbox bug details
+- `modus-modal-implementation-solidjs.mdc` - Complete modal implementation
+- `modus-accordion-state-management-solidjs.mdc` - Accordion state management
+- `modus-select-vs-dropdown-menu-solidjs.mdc` - Dropdown comparison
+- `modus-navbar-side-navigation-solidjs.mdc` - Navigation integration details
+
+### Design System Details
+- `modus-color-usage-solidjs.mdc` - Complete color system guide
+- `modus-icons-solidjs.mdc` - Complete icon usage guide
+- `modus-semantic-html-solidjs.mdc` - HTML patterns guide
+- `border-usage-guidelines.mdc` - Complete border utilities guide
+- `modus-opacity-utilities-solidjs.mdc` - Complete opacity utilities guide
+- `modus-tailwind-usage-solidjs.mdc` - Complete Tailwind integration guide
+- `modus-themes-solidjs.mdc` - Complete theme implementation guide
+
+### Integration & Best Practices
+- `modus-solidjs-integration.mdc` - Complete SolidJS integration guide
+- `modus-solidjs-best-practices.mdc` - Complete best practices guide
+- `modus-solidjs-key-warnings.mdc` - Complete key prop patterns guide
+- `modus-solidjs-essentials.mdc` - Comprehensive essentials (consolidates multiple topics)
+
+### Workflow & Testing
+- `development-workflow-solidjs.mdc` - Complete workflow guide
+- `chrome-devtools-testing-solidjs.mdc` - Complete testing guide
+- `implementation-guides-solidjs.mdc` - Complete implementation guide structure
+
+### UX Foundations
+- `ux/ux-ui-foundations.mdc` - UI/UX foundations with Modus 2 + Tailwind
+- `ux/gestalt-laws-detailed.mdc` - Gestalt Laws implementation guide
+
+## Reference Files
+
+- `modus-icon-names.mdc` - Complete list of valid Modus icon names
+- `modus-components-reference.mdc` - Component reference guide
+
+## Quick Start Guide
+
+### Working with Components
+
+1. Check component-specific short rule (always applied)
+2. For details, reference full rule: `@modus-[component]-solidjs`
+3. See component reference: `@modus-components-reference`
+
+### Working with Design System
+
+1. Short rules provide essential patterns (always applied)
+2. For details, reference full rule: `@modus-[topic]-solidjs`
+3. For icon names: `@modus-icon-names`
+
+### Common Patterns
+
+**Colors**: Always use design system colors (`bg-background`, `text-foreground`, etc.)
+- Reference: `@modus-color-usage-solidjs`
+
+**Icons**: Use Modus icons exclusively (`<i class="modus-icons">icon-name</i>`)
+- Reference: `@modus-icons-solidjs`
+- Names: `@modus-icon-names`
+
+**Components**: Use wrapper components, not web components directly
+- Reference: `@modus-solidjs-integration`
+
+**State Management**: Let Modus components manage their own state
+- Reference: Component-specific rules
+
+## Rule Application
+
+Rules are applied automatically based on:
+
+1. **Always Apply**: Short rules with `alwaysApply: true`
+2. **File Patterns**: Rules activate when working with matching files (`globs`)
+3. **Context Matching**: Agent applies rules based on description relevance
+4. **Manual Reference**: Use `@rule-name` to explicitly reference a rule
+
+## Best Practices
+
+When working with Modus SolidJS:
+
+1. **Follow Short Rules**: Essential patterns are always available
+2. **Reference Full Rules**: Use `@rule-name` for detailed guidance
+3. **Check Component Reference**: See `@modus-components-reference` for component details
+4. **Verify Icon Names**: Check `@modus-icon-names` before using icons
+5. **Run Linting**: Use `npm run lint:all` before committing
+
+## Getting Help
+
+- **Rule Documentation**: See `README.md` in this directory
+- **Project Guide**: See `CLAUDE.md` in project root
+- **Component Reference**: `@modus-components-reference`
+- **Icon Names**: `@modus-icon-names`
+
+## Rule Maintenance
+
+When adding or updating rules:
+
+1. Create/update short rule with `alwaysApply: true`
+2. Create/update full rule with `alwaysApply: false`
+3. Ensure descriptions match between short and full
+4. Add appropriate `globs:` patterns
+5. Update `README.md` with new rule entry
+
+---
+
+**Note**: This master rule is always applied to provide rule overview. For specific guidance, reference the appropriate detailed rule using `@rule-name` syntax.

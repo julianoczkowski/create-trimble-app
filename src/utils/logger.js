@@ -46,6 +46,7 @@ export const logger = {
       colors.dim("Available Templates:"),
       `  ${colors.brand("\u25cf")} React - React + Vite + Modus 2.0 Components`,
       `  ${colors.brand("\u25a0")} Angular - Angular + Modus 2.0 Web Components`,
+      `  ${colors.brand("\u25b2")} SolidJS - SolidJS + Vite + Modus 2.0 Components`,
       "",
       colors.dim("Security:"),
       "  \u2022 No runtime network dependencies",

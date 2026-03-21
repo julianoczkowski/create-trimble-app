@@ -1,0 +1,427 @@
+---
+description: Use div elements exclusively to avoid Tailwind CSS conflicts
+globs: ["**/*.tsx"]
+alwaysApply: false
+---
+
+# Semantic HTML Usage in SolidJS + Vite
+
+## 🚨 **CRITICAL: Use Div Elements Only**
+
+**MANDATORY**: This SolidJS + Vite application uses **div elements exclusively** for all content (except `<i>` for icons) to avoid conflicts with Tailwind CSS default browser styles.
+
+**Rule**: Use `div` elements with Tailwind classes instead of semantic HTML elements.
+
+## ❌ **FORBIDDEN: Semantic HTML Elements**
+
+### ❌ **Never Use Semantic HTML Elements**
+
+```tsx
+// ❌ WRONG: Semantic HTML elements
+<h1 class="text-4xl font-bold">Title</h1>
+<h2 class="text-3xl font-semibold">Subtitle</h2>
+<h3 class="text-2xl font-medium">Heading</h3>
+<p class="text-base">Paragraph text</p>
+<section class="mb-8 p-4">Content section</section>
+<header class="bg-background">Header content</header>
+<footer class="bg-muted">Footer content</footer>
+<nav class="flex space-x-4">Navigation</nav>
+<main class="flex-1">Main content</main>
+<aside class="w-64">Sidebar</aside>
+<article class="prose">Article content</article>
+<span class="text-sm">Inline text</span>
+```
+
+### ❌ **Never Use Form Elements**
+
+```tsx
+// ❌ WRONG: Form elements
+<form class="space-y-4">
+  <label class="block">Label</label>
+  <input type="text" class="w-full" />
+  <button type="submit">Submit</button>
+</form>
+
+// ❌ WRONG: List elements
+<ul class="space-y-2">
+  <li>List item 1</li>
+  <li>List item 2</li>
+</ul>
+
+<ol class="space-y-2">
+  <li>Ordered item 1</li>
+  <li>Ordered item 2</li>
+</ol>
+```
+
+## ✅ **CORRECT: Div Elements with Tailwind**
+
+### ✅ **Use Div Elements for All Content**
+
+```tsx
+// ✅ CORRECT: Div elements with Tailwind classes
+<div class="text-4xl font-bold">Title</div>
+<div class="text-3xl font-semibold">Subtitle</div>
+<div class="text-2xl font-medium">Heading</div>
+<div class="text-base">Paragraph text</div>
+<div class="mb-8 p-4">Content section</div>
+<div class="bg-background">Header content</div>
+<div class="bg-muted">Footer content</div>
+<div class="flex space-x-4">Navigation</div>
+<div class="flex-1">Main content</div>
+<div class="w-64">Sidebar</div>
+<div class="prose">Article content</div>
+<div class="text-sm">Inline text</div>
+```
+
+### ✅ **Form Elements as Divs**
+
+```tsx
+// ✅ CORRECT: Form elements as divs
+<div class="space-y-4">
+  <div class="block">Label</div>
+  <input type="text" class="w-full" />
+  <button type="submit">Submit</button>
+</div>
+
+// ✅ CORRECT: List elements as divs
+<div class="space-y-2">
+  <div>List item 1</div>
+  <div>List item 2</div>
+</div>
+
+<div class="space-y-2">
+  <div>Ordered item 1</div>
+  <div>Ordered item 2</div>
+</div>
+```
+
+## 🎯 **Component Patterns**
+
+### ✅ **Page Layout with Divs**
+
+```tsx
+// ✅ CORRECT: Page layout using divs
+function PageLayout({ children }: { children: JSX.Element }) {
+  return (
+    <div class="min-h-screen flex flex-col">
+      <div class="bg-background border-b border-border">
+        <div class="container mx-auto px-4 py-4">
+          <div class="text-2xl font-bold text-foreground">App Title</div>
+        </div>
+      </div>
+
+      <div class="flex-1">{children}</div>
+
+      <div class="bg-muted border-t border-border">
+        <div class="container mx-auto px-4 py-4">
+          <div class="text-sm text-muted-foreground">Footer content</div>
+        </div>
+      </div>
+    </div>
+  );
+}
+```
+
+### ✅ **Card Component with Divs**
+
+```tsx
+// ✅ CORRECT: Card component using divs
+function Card({ title, content, children }: CardProps) {
+  return (
+    <div class="bg-card text-card-foreground border border-border rounded-lg p-6">
+      <div class="text-xl font-semibold mb-4">{title}</div>
+      <div class="text-base mb-4">{content}</div>
+      {children}
+    </div>
+  );
+}
+
+// Usage
+<Card title="Card Title" content="Card content">
+  <div class="text-sm text-muted-foreground">Additional content</div>
+</Card>;
+```
+
+### ✅ **Navigation with Divs**
+
+```tsx
+// ✅ CORRECT: Navigation using divs
+function Navigation() {
+  const navItems = [
+    { label: "Home", path: "/" },
+    { label: "About", path: "/about" },
+    { label: "Contact", path: "/contact" },
+  ];
+
+  return (
+    <div class="bg-background border-b border-border">
+      <div class="container mx-auto px-4 py-4">
+        <div class="flex space-x-6">
+          {navItems.map((item) => (
+            <a
+              key={item.path}
+              href={item.path}
+              class="text-foreground hover:text-primary transition-colors"
+            >
+              {item.label}
+            </a>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+```
+
+### ✅ **Form with Divs**
+
+```tsx
+// ✅ CORRECT: Form using divs
+function ContactForm() {
+  const [formData, setFormData] = createSignal({
+    name: "",
+    email: "",
+    message: "",
+  });
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    console.log("Form data:", formData);
+  };
+
+  return (
+    <div class="max-w-md mx-auto p-6 bg-card border border-border rounded-lg">
+      <div class="text-2xl font-bold mb-6 text-card-foreground">
+        Contact Us
+      </div>
+
+      <div onSubmit={handleSubmit}>
+        <div class="mb-4">
+          <div class="block text-sm font-medium text-card-foreground mb-2">
+            Name
+          </div>
+          <input
+            type="text"
+            value={formData.name}
+            onChange={(e) =>
+              setFormData((prev) => ({ ...prev, name: e.target.value }))
+            }
+            class="w-full px-3 py-2 border border-input rounded bg-input text-foreground"
+            required
+          />
+        </div>
+
+        <div class="mb-4">
+          <div class="block text-sm font-medium text-card-foreground mb-2">
+            Email
+          </div>
+          <input
+            type="email"
+            value={formData.email}
+            onChange={(e) =>
+              setFormData((prev) => ({ ...prev, email: e.target.value }))
+            }
+            class="w-full px-3 py-2 border border-input rounded bg-input text-foreground"
+            required
+          />
+        </div>
+
+        <div class="mb-6">
+          <div class="block text-sm font-medium text-card-foreground mb-2">
+            Message
+          </div>
+          <textarea
+            value={formData.message}
+            onChange={(e) =>
+              setFormData((prev) => ({ ...prev, message: e.target.value }))
+            }
+            class="w-full px-3 py-2 border border-input rounded bg-input text-foreground h-32"
+            required
+          />
+        </div>
+
+        <button
+          type="submit"
+          class="w-full bg-primary text-primary-foreground py-2 px-4 rounded hover:bg-primary/90"
+        >
+          Send Message
+        </button>
+      </div>
+    </div>
+  );
+}
+```
+
+## 🎨 **Advanced Patterns**
+
+### ✅ **Typography with Divs**
+
+```tsx
+// ✅ CORRECT: Typography using divs
+function Typography() {
+  return (
+    <div class="space-y-4">
+      <div class="text-4xl font-bold text-foreground">Heading 1</div>
+      <div class="text-3xl font-semibold text-foreground">Heading 2</div>
+      <div class="text-2xl font-medium text-foreground">Heading 3</div>
+      <div class="text-xl font-medium text-foreground">Heading 4</div>
+      <div class="text-lg font-medium text-foreground">Heading 5</div>
+      <div class="text-base font-medium text-foreground">Heading 6</div>
+
+      <div class="text-base text-foreground">Regular paragraph text</div>
+      <div class="text-sm text-muted-foreground">Small text</div>
+      <div class="text-xs text-muted-foreground">Extra small text</div>
+    </div>
+  );
+}
+```
+
+### ✅ **List with Divs**
+
+```tsx
+// ✅ CORRECT: List using divs
+function ListComponent() {
+  const items = ["First item", "Second item", "Third item"];
+
+  return (
+    <div class="space-y-2">
+      {items.map((item, index) => (
+        <div key={index} class="flex items-center space-x-2">
+          <div class="w-2 h-2 bg-primary rounded-full"></div>
+          <div class="text-foreground">{item}</div>
+        </div>
+      ))}
+    </div>
+  );
+}
+```
+
+### ✅ **Table with Divs**
+
+```tsx
+// ✅ CORRECT: Table using divs
+function TableComponent() {
+  const data = [
+    { name: "John", age: 30, city: "New York" },
+    { name: "Jane", age: 25, city: "Los Angeles" },
+    { name: "Bob", age: 35, city: "Chicago" },
+  ];
+
+  return (
+    <div class="bg-card border border-border rounded-lg overflow-hidden">
+      <div class="bg-muted px-4 py-2 border-b border-border">
+        <div class="grid grid-cols-3 gap-4 font-medium text-foreground">
+          <div>Name</div>
+          <div>Age</div>
+          <div>City</div>
+        </div>
+      </div>
+
+      <div class="divide-y divide-border">
+        {data.map((row, index) => (
+          <div key={index} class="px-4 py-2">
+            <div class="grid grid-cols-3 gap-4 text-foreground">
+              <div>{row.name}</div>
+              <div>{row.age}</div>
+              <div>{row.city}</div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+```
+
+## 🚫 **Common Anti-Patterns**
+
+### ❌ **Don't Mix Semantic and Div Elements**
+
+```tsx
+// ❌ WRONG: Mixing semantic and div elements
+<div class="container">
+  <h1 class="text-2xl">Title</h1> {/* ❌ Semantic element */}
+  <div class="text-base">Content</div> {/* ✅ Div element */}
+  <p class="text-sm">Description</p> {/* ❌ Semantic element */}
+</div>
+```
+
+### ❌ **Don't Use Semantic Elements for Styling**
+
+```tsx
+// ❌ WRONG: Using semantic elements for styling
+<h1 class="text-sm text-muted-foreground">Small text</h1>  {/* ❌ Wrong element */}
+<p class="text-4xl font-bold">Large title</p>              {/* ❌ Wrong element */}
+```
+
+### ❌ **Don't Use Form Elements**
+
+```tsx
+// ❌ WRONG: Using form elements
+<form class="space-y-4">
+  <label class="block">Label</label> {/* ❌ Form element */}
+  <input type="text" /> {/* ❌ Form element */}
+  <button type="submit">Submit</button> {/* ❌ Form element */}
+</form>
+```
+
+## 🔧 **Validation**
+
+### ✅ **Linting Commands**
+
+```bash
+# Check for semantic HTML violations
+npm run lint:semantic
+
+# Check for inline styles
+npm run lint:styles
+```
+
+### ✅ **Semantic HTML Test**
+
+```tsx
+// ✅ CORRECT: Test semantic HTML compliance
+function SemanticHTMLTest() {
+  return (
+    <div class="space-y-4">
+      <div class="text-2xl font-bold text-foreground">Test Page</div>
+
+      <div class="bg-card p-4 border border-border rounded">
+        <div class="text-lg font-medium text-card-foreground mb-2">
+          Card Title
+        </div>
+        <div class="text-base text-card-foreground">Card content</div>
+      </div>
+
+      <div class="space-y-2">
+        <div class="text-sm font-medium text-foreground">List Items:</div>
+        <div class="text-base text-foreground">• Item 1</div>
+        <div class="text-base text-foreground">• Item 2</div>
+        <div class="text-base text-foreground">• Item 3</div>
+      </div>
+    </div>
+  );
+}
+```
+
+## 🎯 **Key Takeaways**
+
+1. **Use Div Elements Only**: Never use semantic HTML elements
+2. **Tailwind for Styling**: Use Tailwind classes for all styling
+3. **Consistent Structure**: Maintain consistent div-based structure
+4. **Accessibility**: Ensure proper accessibility with div elements
+5. **Form Handling**: Use div elements for form structure
+
+## 🔍 **Semantic HTML Compliance Checklist**
+
+- [ ] ✅ **No Semantic Elements**: No `h1`, `h2`, `p`, `section`, `header`, `footer`, `nav`, `main`, `aside`, `article`, `span`
+- [ ] ✅ **Div Elements Only**: All content uses `div` elements
+- [ ] ✅ **Icon Exception**: Only `<i>` elements allowed for icons
+- [ ] ✅ **Tailwind Styling**: All styling through Tailwind classes
+- [ ] ✅ **Consistent Structure**: Consistent div-based component structure
+- [ ] ✅ **Accessibility**: Proper accessibility with div elements
+
+---
+
+**Remember: This SolidJS + Vite application uses div elements exclusively for all content (except `<i>` for icons) to avoid conflicts with Tailwind CSS default browser styles. Never use semantic HTML elements like `h1`, `p`, `section`, `header`, `footer`, `nav`, `main`, `aside`, `article`, or `span`.**

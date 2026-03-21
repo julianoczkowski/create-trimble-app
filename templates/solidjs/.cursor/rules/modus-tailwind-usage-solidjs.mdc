@@ -1,0 +1,642 @@
+---
+description: Tailwind CSS v3 with Modus Design System integration
+globs: ["**/*.tsx", "**/*.css"]
+alwaysApply: false
+---
+
+# Tailwind CSS Usage in SolidJS + Vite
+
+## 🎨 **Tailwind v3 Integration**
+
+**CRITICAL**: This SolidJS + Vite application uses **Tailwind CSS v3** (not v4) with Modus Design System integration.
+
+**Configuration**: Tailwind v3 with design system colors mapped in `tailwind.config.js` and custom utilities in `src/index.css`
+
+## ❌ **FORBIDDEN: Generic Tailwind Colors**
+
+### ❌ **Never Use Generic Tailwind Color Classes**
+
+```tsx
+// ❌ WRONG: Generic Tailwind color classes
+class = "bg-blue-500 text-white border-gray-300";
+class = "bg-red-400 text-yellow-200 border-green-500";
+class = "bg-gray-100 text-black border-purple-300";
+class = "bg-indigo-600 text-orange-100 border-pink-400";
+```
+
+### ❌ **Never Use Hardcoded Colors**
+
+```tsx
+// ❌ WRONG: Hardcoded colors
+class="bg-[#ffffff] text-[#000000] border-[#e5e5e5]"
+class="bg-[#3b82f6] text-[#ffffff] border-[#1d4ed8]"
+style={{ backgroundColor: "#ffffff", color: "#000000" }}
+```
+
+### ❌ **Never Use Raw Modus Variables**
+
+```tsx
+// ❌ WRONG: Raw Modus CSS variables
+class="bg-[var(--modus-wc-color-base-page)]"
+class="text-[var(--modus-wc-color-base-content)]"
+style={{ backgroundColor: "var(--modus-wc-color-base-page)" }}
+```
+
+## ✅ **CORRECT: Design System Colors**
+
+### ✅ **Use Design System Tailwind Classes**
+
+```tsx
+// ✅ CORRECT: Design system colors
+class = "bg-background text-foreground";
+class = "bg-card text-card-foreground border border-border";
+class = "bg-primary text-primary-foreground hover:bg-primary/90";
+class = "bg-secondary text-secondary-foreground hover:bg-secondary/90";
+class = "bg-muted text-muted-foreground";
+class = "bg-accent text-accent-foreground";
+class = "bg-destructive text-destructive-foreground";
+class = "bg-warning text-warning-foreground";
+class = "bg-success text-success-foreground";
+```
+
+### ✅ **Available Design System Colors**
+
+```tsx
+// ✅ CORRECT: All available design system colors
+const designSystemColors = {
+  // Background colors
+  background: "bg-background",
+  card: "bg-card",
+  popover: "bg-popover",
+  sidebar: "bg-sidebar",
+
+  // Text colors
+  foreground: "text-foreground",
+  "card-foreground": "text-card-foreground",
+  "popover-foreground": "text-popover-foreground",
+  "sidebar-foreground": "text-sidebar-foreground",
+
+  // Primary colors
+  primary: "bg-primary",
+  "primary-foreground": "text-primary-foreground",
+
+  // Secondary colors
+  secondary: "bg-secondary",
+  "secondary-foreground": "text-secondary-foreground",
+
+  // Muted colors
+  muted: "bg-muted",
+  "muted-foreground": "text-muted-foreground",
+
+  // Accent colors
+  accent: "bg-accent",
+  "accent-foreground": "text-accent-foreground",
+
+  // Status colors
+  destructive: "bg-destructive",
+  "destructive-foreground": "text-destructive-foreground",
+  warning: "bg-warning",
+  "warning-foreground": "text-warning-foreground",
+  success: "bg-success",
+  "success-foreground": "text-success-foreground",
+
+  // Border colors
+  border: "border-border",
+  input: "border-input",
+  "sidebar-border": "border-sidebar-border",
+
+  // Ring colors
+  ring: "ring-ring",
+  "sidebar-ring": "ring-sidebar-ring",
+
+  // Chart colors
+  "chart-1": "bg-chart-1",
+  "chart-2": "bg-chart-2",
+  "chart-3": "bg-chart-3",
+  "chart-4": "bg-chart-4",
+  "chart-5": "bg-chart-5",
+
+  // Sidebar colors
+  sidebar: "bg-sidebar",
+  "sidebar-foreground": "text-sidebar-foreground",
+  "sidebar-primary": "bg-sidebar-primary",
+  "sidebar-primary-foreground": "text-sidebar-primary-foreground",
+  "sidebar-accent": "bg-sidebar-accent",
+  "sidebar-accent-foreground": "text-sidebar-accent-foreground",
+  "sidebar-border": "border-sidebar-border",
+  "sidebar-ring": "ring-sidebar-ring",
+};
+```
+
+## 🎯 **Component Styling Patterns**
+
+### ✅ **Button Components**
+
+```tsx
+// ✅ CORRECT: Button with design system colors
+function Button({
+  variant = "primary",
+  size = "md",
+  children,
+  ...props
+}: ButtonProps) {
+  const baseClasses =
+    "inline-flex items-center justify-center font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50";
+
+  const variantClasses = {
+    primary: "bg-primary text-primary-foreground hover:bg-primary/90",
+    secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/90",
+    destructive:
+      "bg-destructive text-destructive-foreground hover:bg-destructive/90",
+    outline:
+      "border border-border bg-background hover:bg-muted hover:text-muted-foreground",
+    ghost: "hover:bg-muted hover:text-muted-foreground",
+    link: "text-primary underline-offset-4 hover:underline",
+  };
+
+  const sizeClasses = {
+    sm: "h-9 px-3 text-sm",
+    md: "h-10 px-4 py-2",
+    lg: "h-11 px-8",
+    icon: "h-10 w-10",
+  };
+
+  return (
+    <button
+      class={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]}`}
+      {...props}
+    >
+      {children}
+    </button>
+  );
+}
+```
+
+### ✅ **Card Components**
+
+```tsx
+// ✅ CORRECT: Card with design system colors
+function Card({ children, className, ...props }: CardProps) {
+  return (
+    <div
+      class={`bg-card text-card-foreground border border-border rounded-lg ${className}`}
+      {...props}
+    >
+      {children}
+    </div>
+  );
+}
+
+function CardHeader({ children, className, ...props }: CardHeaderProps) {
+  return (
+    <div class={`flex flex-col space-y-1.5 p-6 ${className}`} {...props}>
+      {children}
+    </div>
+  );
+}
+
+function CardTitle({ children, className, ...props }: CardTitleProps) {
+  return (
+    <div
+      class={`text-2xl font-semibold leading-none tracking-tight ${className}`}
+      {...props}
+    >
+      {children}
+    </div>
+  );
+}
+
+function CardContent({ children, className, ...props }: CardContentProps) {
+  return (
+    <div class={`p-6 pt-0 ${className}`} {...props}>
+      {children}
+    </div>
+  );
+}
+```
+
+### ✅ **Form Components**
+
+```tsx
+// ✅ CORRECT: Form with design system colors
+function Input({ className, ...props }: InputProps) {
+  return (
+    <input
+      class={`flex h-10 w-full rounded-md border border-input bg-input px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 ${className}`}
+      {...props}
+    />
+  );
+}
+
+function Label({ className, ...props }: LabelProps) {
+  return (
+    <div
+      class={`text-sm font-medium leading-none text-foreground peer-disabled:cursor-not-allowed peer-disabled:opacity-70 ${className}`}
+      {...props}
+    />
+  );
+}
+
+function Textarea({ className, ...props }: TextareaProps) {
+  return (
+    <textarea
+      class={`flex min-h-[80px] w-full rounded-md border border-input bg-input px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 ${className}`}
+      {...props}
+    />
+  );
+}
+```
+
+## 📝 **Typography Patterns**
+
+### ✅ **Typography with Design System Colors**
+
+```tsx
+// ✅ CORRECT: Typography using design system colors
+function TypographyExample() {
+  return (
+    <div class="space-y-4">
+      <div class="text-4xl font-bold text-foreground">Heading 1</div>
+      <div class="text-3xl font-semibold text-foreground">Heading 2</div>
+      <div class="text-2xl font-medium text-foreground">Heading 3</div>
+      <div class="text-xl font-medium text-foreground">Heading 4</div>
+      <div class="text-lg font-medium text-foreground">Heading 5</div>
+      <div class="text-base font-medium text-foreground">Heading 6</div>
+
+      <div class="text-base text-foreground">Regular paragraph text</div>
+      <div class="text-sm text-muted-foreground">Small text</div>
+      <div class="text-xs text-muted-foreground">Extra small text</div>
+    </div>
+  );
+}
+```
+
+### ✅ **Typography in Cards**
+
+```tsx
+// ✅ CORRECT: Typography within card components
+function CardWithTypography() {
+  return (
+    <div class="bg-card text-card-foreground border border-border rounded-lg p-6">
+      <div class="text-2xl font-semibold text-card-foreground mb-2">
+        Card Title
+      </div>
+      <div class="text-base text-card-foreground mb-4">
+        Card description with proper typography hierarchy
+      </div>
+      <div class="text-sm text-muted-foreground">
+        Additional information
+      </div>
+    </div>
+  );
+}
+```
+
+### ✅ **Typography with Status Colors**
+
+```tsx
+// ✅ CORRECT: Typography with status colors
+function StatusTypography() {
+  return (
+    <div class="space-y-2">
+      <div class="text-sm font-medium text-success">Success message</div>
+      <div class="text-sm font-medium text-warning">Warning message</div>
+      <div class="text-sm font-medium text-destructive">Error message</div>
+      <div class="text-sm font-medium text-primary">Info message</div>
+    </div>
+  );
+}
+```
+
+## 🎨 **Advanced Styling Patterns**
+
+### ✅ **Responsive Design**
+
+```tsx
+// ✅ CORRECT: Responsive design with design system colors
+function ResponsiveComponent() {
+  return (
+    <div
+      class="
+      grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4
+      p-4 md:p-6 lg:p-8
+      bg-background text-foreground
+    "
+    >
+      <div class="bg-card text-card-foreground border border-border rounded-lg p-4">
+        <div class="text-lg font-semibold mb-2">Card Title</div>
+        <div class="text-sm text-muted-foreground">Card description</div>
+      </div>
+    </div>
+  );
+}
+```
+
+### ✅ **Interactive States**
+
+```tsx
+// ✅ CORRECT: Interactive states with design system colors
+function InteractiveComponent() {
+  return (
+    <div
+      class="
+      bg-card text-card-foreground border border-border rounded-lg p-4
+      hover:bg-card/80 hover:shadow-lg
+      focus:ring-2 focus:ring-ring focus:ring-offset-2
+      active:bg-card/90
+      transition-all duration-200
+      cursor-pointer
+    "
+    >
+      Interactive content
+    </div>
+  );
+}
+```
+
+### ✅ **Status Indicators**
+
+```tsx
+// ✅ CORRECT: Status indicators with design system colors
+function StatusIndicator({
+  status,
+}: {
+  status: "success" | "warning" | "error" | "info";
+}) {
+  const statusClasses = {
+    success: "bg-success text-success-foreground border-success",
+    warning: "bg-warning text-warning-foreground border-warning",
+    error: "bg-destructive text-destructive-foreground border-destructive",
+    info: "bg-primary text-primary-foreground border-primary",
+  };
+
+  return (
+    <div class={`px-3 py-1 rounded border ${statusClasses[status]}`}>
+      {status}
+    </div>
+  );
+}
+```
+
+### ✅ **Sidebar Components**
+
+```tsx
+// ✅ CORRECT: Sidebar with design system colors
+function SidebarComponent() {
+  return (
+    <div class="bg-sidebar text-sidebar-foreground border-sidebar-border">
+      <div class="p-4 border-b border-sidebar-border">
+        <div class="text-lg font-semibold text-sidebar-foreground">
+          Sidebar Title
+        </div>
+      </div>
+      <div class="p-4">
+        <div class="text-sm text-sidebar-foreground mb-2">Navigation</div>
+        <div class="space-y-1">
+          <div class="text-sm text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground p-2 rounded cursor-pointer">
+            Menu Item 1
+          </div>
+          <div class="text-sm text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground p-2 rounded cursor-pointer">
+            Menu Item 2
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+```
+
+### ✅ **Chart Components**
+
+```tsx
+// ✅ CORRECT: Chart components with design system colors
+function ChartComponent() {
+  const chartData = [
+    { label: "Series 1", value: 100, color: "bg-chart-1" },
+    { label: "Series 2", value: 80, color: "bg-chart-2" },
+    { label: "Series 3", value: 60, color: "bg-chart-3" },
+    { label: "Series 4", value: 40, color: "bg-chart-4" },
+  ];
+
+  return (
+    <div class="bg-card text-card-foreground border border-border rounded-lg p-6">
+      <div class="text-lg font-semibold text-card-foreground mb-4">
+        Chart Title
+      </div>
+      <div class="space-y-2">
+        {chartData.map((item, index) => (
+          <div key={index} class="flex items-center space-x-3">
+            <div class={`w-4 h-4 rounded ${item.color}`}></div>
+            <div class="text-sm text-card-foreground">{item.label}</div>
+            <div class="text-sm text-muted-foreground">{item.value}%</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+```
+
+## 🔧 **Custom Utilities**
+
+### ✅ **Border Utilities (Already Defined)**
+
+```tsx
+// ✅ CORRECT: Use custom border utilities from src/index.css
+<div class="border-default">Default border</div>
+<div class="border-thick">Thick border</div>
+<div class="border-dashed">Dashed border</div>
+<div class="border-success">Success border</div>
+<div class="border-warning">Warning border</div>
+<div class="border-destructive">Destructive border</div>
+<div class="border-primary">Primary border</div>
+```
+
+### ✅ **Directional Borders**
+
+```tsx
+// ✅ CORRECT: Directional border utilities
+<div class="border-top-default">Top border</div>
+<div class="border-bottom-default">Bottom border</div>
+<div class="border-left-default">Left border</div>
+<div class="border-right-default">Right border</div>
+<div class="border-top-success">Top success border</div>
+<div class="border-bottom-warning">Bottom warning border</div>
+```
+
+### ✅ **Elevation Utilities**
+
+```tsx
+// ✅ CORRECT: Use elevation utilities from src/index.css
+<div class="shadow-sm">Small elevation</div>
+<div class="shadow-md">Medium elevation</div>
+<div class="shadow-lg">Large elevation</div>
+<div class="shadow-xl">Extra large elevation</div>
+
+// ✅ CORRECT: Custom elevation with design system
+<div class="bg-card text-card-foreground border border-border rounded-lg shadow-sm">
+  Card with small elevation
+</div>
+<div class="bg-card text-card-foreground border border-border rounded-lg shadow-md">
+  Card with medium elevation
+</div>
+<div class="bg-card text-card-foreground border border-border rounded-lg shadow-lg">
+  Card with large elevation
+</div>
+```
+
+## 🚫 **Common Anti-Patterns**
+
+### ❌ **Don't Mix Color Systems**
+
+```tsx
+// ❌ WRONG: Mixing design system and generic colors
+<div class="bg-background text-blue-500 border-red-300">
+  Mixed color systems
+</div>
+
+// ✅ CORRECT: Consistent design system
+<div class="bg-background text-foreground border-border">
+  Consistent design system
+</div>
+```
+
+### ❌ **Don't Use Generic Tailwind Colors**
+
+```tsx
+// ❌ WRONG: Generic Tailwind colors
+<div class="bg-blue-500 text-white border-gray-300">
+  Generic colors
+</div>
+
+// ✅ CORRECT: Design system colors
+<div class="bg-primary text-primary-foreground border-border">
+  Design system colors
+</div>
+```
+
+### ❌ **Don't Use Hardcoded Colors**
+
+```tsx
+// ❌ WRONG: Hardcoded colors
+<div class="bg-[#ffffff] text-[#000000] border-[#e5e5e5]">
+  Hardcoded colors
+</div>
+
+// ✅ CORRECT: Design system colors
+<div class="bg-background text-foreground border-border">
+  Design system colors
+</div>
+```
+
+## 🎯 **Tailwind v3 Specific Patterns**
+
+### ✅ **CSS Import Order**
+
+```css
+/* ✅ CORRECT: CSS import order in src/index.css */
+@import url("https://cdn.jsdelivr.net/npm/@trimble-oss/modus-icons@1.17.0/dist/field-systems/fonts/modus-icons.css");
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&display=swap");
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+```
+
+### ✅ **Tailwind Configuration**
+
+```js
+// ✅ CORRECT: tailwind.config.js
+export default {
+  content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
+  theme: {
+    extend: {
+      colors: {
+        background: "var(--background)",
+        foreground: "var(--foreground)",
+        card: "var(--card)",
+        "card-foreground": "var(--card-foreground)",
+        // ... other design system colors
+      },
+      fontFamily: {
+        sans: ["Open Sans", "sans-serif"],
+      },
+    },
+  },
+  plugins: [],
+};
+```
+
+## 🔧 **Validation**
+
+### ✅ **Linting Commands**
+
+```bash
+# Check for color violations
+npm run lint:colors
+
+# Check for inline styles
+npm run lint:styles
+
+# Check for border violations
+npm run lint:borders
+```
+
+### ✅ **Color Testing**
+
+```tsx
+// ✅ CORRECT: Test design system colors
+function ColorTest() {
+  const colorCombinations = [
+    { bg: "bg-background", text: "text-foreground" },
+    { bg: "bg-card", text: "text-card-foreground" },
+    { bg: "bg-primary", text: "text-primary-foreground" },
+    { bg: "bg-secondary", text: "text-secondary-foreground" },
+    { bg: "bg-muted", text: "text-muted-foreground" },
+    { bg: "bg-accent", text: "text-accent-foreground" },
+    { bg: "bg-destructive", text: "text-destructive-foreground" },
+    { bg: "bg-warning", text: "text-warning-foreground" },
+    { bg: "bg-success", text: "text-success-foreground" },
+    { bg: "bg-sidebar", text: "text-sidebar-foreground" },
+    { bg: "bg-chart-1", text: "text-foreground" },
+    { bg: "bg-chart-2", text: "text-foreground" },
+    { bg: "bg-chart-3", text: "text-foreground" },
+    { bg: "bg-chart-4", text: "text-foreground" },
+  ];
+
+  return (
+    <div class="space-y-4">
+      {colorCombinations.map((combo, index) => (
+        <div key={index} class={`${combo.bg} ${combo.text} p-4 rounded`}>
+          {combo.bg} + {combo.text}
+        </div>
+      ))}
+    </div>
+  );
+}
+```
+
+## 🎯 **Key Takeaways**
+
+1. **Use Design System Colors**: Always use design system Tailwind classes
+2. **Never Use Generic Colors**: No generic Tailwind color classes
+3. **Never Use Hardcoded Colors**: No hex, RGB, or hardcoded values
+4. **Use Custom Utilities**: Leverage custom border utilities from `src/index.css`
+5. **Tailwind v3**: This is Tailwind v3, not v4
+
+## 🔍 **Tailwind Usage Checklist**
+
+- [ ] ✅ **Design System Colors**: Using design system Tailwind classes exclusively
+- [ ] ✅ **No Generic Colors**: No generic Tailwind color classes
+- [ ] ✅ **No Hardcoded Colors**: No hex, RGB, or hardcoded values
+- [ ] ✅ **Custom Utilities**: Using custom border utilities from `src/index.css`
+- [ ] ✅ **Typography**: Using design system colors for typography
+- [ ] ✅ **Sidebar Colors**: Using sidebar-specific design system colors
+- [ ] ✅ **Chart Colors**: Using chart color utilities for data visualization
+- [ ] ✅ **Elevation**: Using shadow utilities for depth and hierarchy
+- [ ] ✅ **Tailwind v3**: Using Tailwind v3 patterns and configuration
+- [ ] ✅ **CSS Import Order**: Proper CSS import order in `src/index.css`
+- [ ] ✅ **Responsive Design**: Using responsive design patterns with design system colors
+
+---
+
+**Remember: This SolidJS + Vite application uses Tailwind CSS v3 with Modus Design System integration. Always use design system Tailwind classes, never generic Tailwind colors or hardcoded values. Use custom border utilities from `src/index.css` and maintain proper CSS import order.**

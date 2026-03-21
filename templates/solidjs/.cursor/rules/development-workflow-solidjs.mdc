@@ -1,0 +1,292 @@
+---
+description: Essential linting and quality checks for SolidJS + Vite development
+globs: ["**/*.tsx", "**/*.ts", "**/*.css"]
+alwaysApply: false
+---
+
+# Development Workflow & Quality Assurance for SolidJS + Vite
+
+## 🚀 **MANDATORY: Always Run Linting Commands During Development**
+
+**CRITICAL**: Before making any code changes, always run these linting commands to ensure design system compliance:
+
+```bash
+# 🎨 Check for inline styles that should use Tailwind classes
+npm run lint:styles
+
+# 🎨 Check for non-Modus colors (hex, RGB, Tailwind colors)
+npm run lint:colors
+
+# 🎨 Check for non-Modus icons (Font Awesome, Material Icons, etc.)
+npm run lint:icons
+
+# 🎨 Check for semantic HTML elements (h1, section, header, etc.)
+npm run lint:semantic
+
+# 🎨 Check for border violations (Tailwind color classes in borders)
+npm run lint:borders
+
+# 🔍 Run all linting checks at once
+npm run lint:all
+```
+
+## 📋 **Pre-Development Checklist**
+
+Before starting any new feature or component:
+
+1. **✅ Run Design System Lints**:
+
+   ```bash
+   npm run lint:styles    # Check inline styles
+   npm run lint:colors    # Check color usage
+   npm run lint:icons     # Check icon usage
+   npm run lint:semantic  # Check semantic HTML elements
+   npm run lint:borders   # Check border violations
+   ```
+
+2. **✅ Verify Theme Compatibility**:
+
+   - Test with all 6 Modus themes (classic/modern, light/dark, connect themes)
+   - Ensure components work in both light and dark modes
+
+3. **✅ Check Component Architecture**:
+   - Use single configurable components (not multiple specific ones)
+   - Follow Modus Web Components patterns
+   - Use proper event handling with refs
+
+## 🔄 **Development Workflow**
+
+**Every time you make changes:**
+
+1. **Make your changes** to components/pages
+2. **Run linting commands** to catch violations early:
+   ```bash
+   npm run lint:all
+   ```
+3. **Fix any violations** before continuing
+4. **Test with Chrome DevTools** to validate visual changes
+5. **Commit only when all lints pass**
+
+## 🚨 **Common Violations to Watch For**
+
+### Inline Styles (lint:styles):
+
+```tsx
+// ❌ VIOLATION: Inline styles
+style={{ backgroundColor: "var(--modus-wc-color-base-page)" }}
+style={{ marginRight: "8px" }}
+style={{ color: "var(--modus-wc-color-base-content)" }}
+
+// ✅ CORRECT: Tailwind classes
+class="bg-background mr-2 text-foreground"
+```
+
+### Color Usage (lint:colors):
+
+```tsx
+// ❌ VIOLATION: Non-Modus colors
+style={{ backgroundColor: "#ffffff" }}
+class="bg-blue-500 text-red-400"
+
+// ✅ CORRECT: Modus design system colors
+class="bg-background text-foreground"
+```
+
+### Icon Usage (lint:icons):
+
+```tsx
+// ❌ VIOLATION: Non-Modus icons
+import { FaHome } from 'react-icons/fa';
+<i class="fa fa-home"></i>
+
+// ✅ CORRECT: Modus icons
+<i class="modus-icons">home</i>
+```
+
+### Semantic HTML (lint:semantic):
+
+```tsx
+// ❌ VIOLATION: Semantic HTML elements
+<h1 class="text-4xl font-bold">Title</h1>
+<section class="mb-8 p-4">Content</section>
+<header class="bg-background">Header</header>
+
+// ✅ CORRECT: Div elements with Tailwind classes
+<div class="text-4xl font-bold">Title</div>
+<div class="mb-8 p-4">Content</div>
+<div class="bg-background">Header</div>
+```
+
+### Border Violations (lint:borders):
+
+```tsx
+// ❌ VIOLATION: Tailwind color classes in borders
+<div class="border border-red-500">Error message</div>
+<div class="border-2 border-green-500">Success message</div>
+
+// ✅ CORRECT: Design system border utilities
+<div class="border-destructive">Error message</div>
+<div class="border-thick-success">Success message</div>
+```
+
+## 🎯 **Quality Gates**
+
+**Pre-commit Requirements:**
+
+- [ ] ✅ `npm run lint:styles` passes (0 violations)
+- [ ] ✅ `npm run lint:colors` passes (0 violations)
+- [ ] ✅ `npm run lint:icons` passes (0 violations)
+- [ ] ✅ `npm run lint:semantic` passes (0 violations)
+- [ ] ✅ `npm run lint:borders` passes (0 violations)
+- [ ] ✅ All 6 themes tested (classic/modern, light/dark, connect themes)
+- [ ] ✅ Chrome DevTools validation completed
+- [ ] ✅ No console errors or warnings
+
+## 🛠️ **Quick Fix Commands**
+
+**If you get violations, use these patterns:**
+
+```bash
+# Fix inline styles
+# Replace: style={{ backgroundColor: "var(--modus-wc-color-base-page)" }}
+# With: class="bg-background"
+
+# Fix colors
+# Replace: style={{ color: "#000000" }}
+# With: class="text-foreground"
+
+# Fix icons
+# Replace: <i class="fa fa-home"></i>
+# With: <i class="modus-icons">home</i>
+
+# Fix borders
+# Replace: class="border border-red-500"
+# With: class="border-destructive"
+```
+
+## 📊 **Linting Results Interpretation**
+
+### ✅ Success:
+
+```
+✅ All files are using Tailwind classes correctly!
+✅ All files are using Modus colors correctly!
+✅ All files are using Modus icons correctly!
+✅ All files are using div elements with Tailwind classes correctly!
+✅ All files are using design system border utilities correctly!
+```
+
+### ❌ Violations Found:
+
+```
+❌ Found 5 inline style violations:
+📄 src/components/MyComponent.tsx:
+  18:15 - Inline style detected: "style={{ backgroundColor: "var(--modus-wc-color-base-page)" }}"
+   💡 Suggestion: bg-background
+```
+
+**Fix each violation by following the suggestions provided.**
+
+## 🎯 **AI Assistant Instructions**
+
+**When working on this project, ALWAYS:**
+
+1. **Run linting commands before suggesting any code changes**
+2. **Include linting commands in your development workflow**
+3. **Validate changes with Chrome DevTools MCP**
+4. **Ensure all 6 Modus themes work correctly**
+5. **Follow the single configurable component pattern**
+6. **Use proper Modus Web Components event handling**
+7. **Maintain design system compliance at all times**
+
+## 🚀 **Vite + React Specific Workflow**
+
+### Development Server:
+
+```bash
+# Start development server
+npm run dev
+
+# Build for production
+npm run build
+
+# Preview production build
+npm run preview
+```
+
+### Hot Module Replacement (HMR):
+
+- Vite provides instant HMR for SolidJS components
+- Changes to components update immediately
+- State is preserved during HMR
+- CSS changes are applied instantly
+
+### TypeScript Integration:
+
+```bash
+# Type checking
+npm run type-check
+
+# All linting including TypeScript
+npm run lint:all
+```
+
+## 🔧 **SolidJS + Vite Best Practices**
+
+### Component Development:
+
+1. **Use functional components** with hooks
+2. **No "use client" directive needed** (everything is client-side)
+3. **Use React Router** for navigation
+4. **Leverage Vite's fast HMR** for rapid development
+
+### File Organization:
+
+```
+src/
+├── components/          # Reusable components
+├── pages/              # Page components
+├── contexts/           # React contexts
+├── hooks/              # Custom hooks
+├── config/             # Configuration files
+└── main.tsx            # Entry point
+```
+
+### Import Patterns:
+
+```tsx
+// ✅ CORRECT: Use import.meta.env for environment variables
+const apiUrl = import.meta.env.VITE_API_URL;
+
+// ✅ CORRECT: Import SolidJS components
+import { createSignal, createEffect } from "solid-js";
+import { useNavigate } from "@solidjs/router";
+
+// ✅ CORRECT: Import Modus components
+import { ModusWcButton } from "@trimble-oss/moduswebcomponents-solidjs";
+```
+
+## 📋 **Development Checklist**
+
+**Before Starting Development:**
+
+- [ ] ✅ **Run linting commands** to check current state
+- [ ] ✅ **Start dev server** (`npm run dev`)
+- [ ] ✅ **Open Chrome DevTools** for testing
+- [ ] ✅ **Verify theme switching** works
+
+**During Development:**
+
+- [ ] ✅ **Run linting after each change**
+- [ ] ✅ **Test in Chrome DevTools**
+- [ ] ✅ **Verify all themes work**
+- [ ] ✅ **Check responsive design**
+
+**Before Committing:**
+
+- [ ] ✅ **All linting passes** (`npm run lint:all`)
+- [ ] ✅ **No console errors**
+- [ ] ✅ **All themes tested**
+- [ ] ✅ **Performance validated**
+
+**Remember**: Quality gates are non-negotiable. All linting commands must pass before any code is considered complete.

@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "context7": {
+      "url": "https://mcp.context7.com/mcp",
+      "headers": {}
+    },
+
+    "modus-docs": {
+      "command": "npx",
+      "args": ["-y", "@julianoczkowski/mcp-modus"]
+    }
+  }
+}

@@ -1,0 +1,139 @@
+name: ❓ Question
+description: Ask a question about using the Modus React App
+title: "[QUESTION] "
+labels: ["question", "needs-triage"]
+assignees: ["julianoczkowski"]
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Have a question about using the Modus React App? We're here to help! Please provide as much context as possible.
+
+  - type: checkboxes
+    id: prerequisites
+    attributes:
+      label: Prerequisites
+      description: Please confirm you have completed the following steps
+      options:
+        - label: I have searched existing issues and discussions
+          required: true
+        - label: I have read the README.md documentation
+          required: true
+        - label: I have checked the development rules in .cursor/rules/
+          required: false
+
+  - type: dropdown
+    id: category
+    attributes:
+      label: Question Category
+      description: What category does your question fall into?
+      options:
+        - Setup/Installation
+        - Component Usage
+        - Development Workflow
+        - Color System
+        - Icon System
+        - Theme System
+        - Vite Configuration
+        - Build/Deployment
+        - TypeScript Integration
+        - Tailwind CSS Integration
+        - MCP Servers
+        - Development Rules
+        - Performance
+        - Accessibility
+        - Best Practices
+        - Troubleshooting
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: question
+    attributes:
+      label: Your Question
+      description: What would you like to know?
+      placeholder: Ask your question here...
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: Provide any relevant context about your project or use case
+      placeholder: |
+        - What are you trying to achieve?
+        - What have you tried so far?
+        - Any specific requirements or constraints?
+
+  - type: textarea
+    id: code-example
+    attributes:
+      label: Code Example (if applicable)
+      description: Share any relevant code that relates to your question
+      placeholder: |
+        ```tsx
+        // Your code here
+        import { ModusButton } from './components/ModusButton';
+
+        function MyComponent() {
+          return <ModusButton variant="primary">Click me</ModusButton>;
+        }
+        ```
+      render: tsx
+
+  - type: dropdown
+    id: experience
+    attributes:
+      label: Experience Level
+      description: What's your experience level with the technologies involved?
+      options:
+        - Beginner with React
+        - Intermediate with React
+        - Advanced with React
+        - New to Vite
+        - Familiar with Vite
+        - Expert with Vite
+        - New to Modus Design System
+        - Familiar with Modus Design System
+        - Expert with Modus Design System
+        - New to TypeScript
+        - Familiar with TypeScript
+        - Expert with TypeScript
+        - New to Tailwind CSS
+        - Familiar with Tailwind CSS
+        - Expert with Tailwind CSS
+    validations:
+      required: false
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment Details
+      description: Share relevant environment information
+      placeholder: |
+        - Node.js version:
+        - npm/yarn version:
+        - Browser:
+        - Operating System:
+      render: text
+
+  - type: checkboxes
+    id: urgency
+    attributes:
+      label: Urgency
+      description: How urgent is this question for you?
+      options:
+        - label: This is blocking my project
+        - label: This would help me move forward faster
+        - label: This is for learning/understanding
+        - label: No rush, just curious
+
+  - type: textarea
+    id: additional-info
+    attributes:
+      label: Additional Information
+      description: Any other information that might be helpful
+      placeholder: Any additional context or information...

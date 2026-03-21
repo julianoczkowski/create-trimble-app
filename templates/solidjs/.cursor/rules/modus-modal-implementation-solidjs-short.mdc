@@ -1,0 +1,23 @@
+---
+description: Critical implementation patterns for ModusWcModal in SolidJS
+globs: ["**/components/ModusModal*.tsx", "**/demos/**/page.tsx"]
+alwaysApply: true
+---
+
+# Modus Modal Implementation - Short
+
+Critical implementation patterns for ModusWcModal in SolidJS.
+
+## Key Rules
+
+- **Use callback ref pattern for modals** - Create SolidJS wrapper with callback ref to expose openModal/closeModal
+- **Access inner dialog element** - Use `querySelector("dialog")` to access native dialog methods
+- **Expose openModal/closeModal methods** - Provide clean API for modal control
+- **Never control from SolidJS state** - Don't use `createSignal` for modal visibility
+- **Don't use createEffect for modal control** - Let the wrapper handle method calls
+- **Handle dialog methods properly** - `dialog.showModal()` and `dialog.close()`
+- **Test modal behavior** - Verify opening, closing, and event handling
+
+## Reference
+
+For detailed wrapper component patterns, event handling, and advanced modal usage, fetch the full rule: `modus-modal-implementation-solidjs`

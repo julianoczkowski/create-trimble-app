@@ -1,0 +1,446 @@
+---
+description: Create comprehensive implementation guides for major feature development
+globs: ["**/.cursor/rules/implementation-guides/**/*.md"]
+alwaysApply: false
+---
+
+# Implementation Guide Documentation Rules for SolidJS + Vite
+
+## 📋 Pre-Development Documentation Requirements
+
+### 🚨 MANDATORY: Implementation Guide Creation
+
+**BEFORE starting ANY major feature development, you MUST:**
+
+1. **Create a comprehensive implementation guide** in `/implementation_guides/`
+2. **Document the complete approach** before writing any code
+3. **Get stakeholder review** of the implementation plan
+4. **Update guides with lessons learned** during and after implementation
+
+### 🎯 What Constitutes a "Major Feature"
+
+**Always create implementation guides for:**
+
+- ✅ New page/view components with complex functionality
+- ✅ New reusable component libraries or design system additions
+- ✅ Integration with external APIs or services
+- ✅ Authentication, authorization, or security features
+- ✅ Data management patterns (stores, state management)
+- ✅ Routing or navigation changes
+- ✅ Performance optimization initiatives
+- ✅ Accessibility improvements or compliance work
+- ✅ Build process, tooling, or infrastructure changes
+- ✅ Any feature requiring more than 2 hours of development time
+
+**Skip implementation guides for:**
+
+- ❌ Simple bug fixes (< 30 minutes)
+- ❌ Minor text or styling tweaks
+- ❌ Documentation updates
+- ❌ Dependency version updates (unless breaking changes)
+
+## 📁 Implementation Guide Structure
+
+### 📍 File Location & Naming
+
+```text
+implementation_guides/
+├── feature-name-YYYY-MM-DD.md          # New feature guides
+├── integration-api-name-YYYY-MM-DD.md  # API integration guides
+├── component-library-YYYY-MM-DD.md     # Component development guides
+└── performance-optimization-YYYY-MM-DD.md # Performance guides
+```
+
+**Naming Convention:**
+
+- Use kebab-case for file names
+- Include date for chronological tracking
+- Be descriptive but concise
+- Examples:
+  - `user-dashboard-2025-01-15.md`
+  - `modus-table-component-2025-01-15.md`
+  - `auth0-integration-2025-01-15.md`
+
+### 📋 Required Implementation Guide Template
+
+Every implementation guide MUST include these sections:
+
+````markdown
+# [Feature Name] Implementation Guide
+
+**Date:** YYYY-MM-DD  
+**Author:** [Your Name]  
+**Status:** [Planning | In Progress | Complete | Archived]
+
+## 🎯 Overview & Objectives
+
+### Problem Statement
+
+- What problem are we solving?
+- Why is this feature needed?
+- What are the success criteria?
+
+### Goals & Requirements
+
+- [ ] Functional requirement 1
+- [ ] Functional requirement 2
+- [ ] Non-functional requirement 1 (performance, accessibility, etc.)
+
+## 🏗️ Technical Architecture
+
+### Component Architecture
+
+- High-level component structure
+- Data flow diagrams
+- State management approach
+
+### Dependencies & Integrations
+
+- New dependencies required
+- External API integrations
+- Modus Web Components usage
+
+### File Structure Changes
+
+```text
+src/
+├── components/
+│ └── NewComponent.tsx
+├── pages/
+│ └── NewPage.tsx
+├── hooks/
+│ └── useNewFeature.ts
+└── contexts/
+└── NewFeatureContext.tsx
+```
+````
+
+## 🎨 Design System Integration
+
+### Modus Components Used
+
+- List specific Modus Web Components
+- Color variables and theming approach
+- Accessibility considerations
+
+## 🔧 Implementation Plan
+
+### Phase 1: Foundation
+
+- [ ] Task 1
+- [ ] Task 2
+- [ ] Task 3
+
+### Phase 2: Core Features
+
+- [ ] Task 1
+- [ ] Task 2
+
+### Phase 3: Polish & Testing
+
+- [ ] Task 1
+- [ ] Task 2
+
+## 🧪 Testing Strategy
+
+### Unit Testing
+
+- Components to test
+- Test scenarios
+- Mock requirements
+
+### Integration Testing
+
+- API integration tests
+- Component interaction tests
+
+### Accessibility Testing
+
+- WCAG compliance checklist
+- Screen reader testing
+- Keyboard navigation testing
+
+## 🚀 Deployment Considerations
+
+### Build Process
+
+- Any build changes required
+- Environment variables needed
+- Asset optimization
+
+### Performance Impact
+
+- Bundle size impact
+- Runtime performance considerations
+- Caching strategies
+
+## 📚 Documentation Updates
+
+### User Documentation
+
+- [ ] Update README.md
+- [ ] Add component documentation
+- [ ] Update API documentation
+
+### Developer Documentation
+
+- [ ] Update contributing guidelines
+- [ ] Add code examples
+- [ ] Update architecture docs
+
+## 🔄 Post-Implementation Review
+
+### Lessons Learned
+
+_[Update this section during/after implementation]_
+
+#### What Went Well
+
+-
+
+#### Challenges Encountered
+
+-
+
+#### Solutions & Workarounds
+
+-
+
+#### Future Improvements
+
+-
+
+### Performance Metrics
+
+_[Update with actual metrics after implementation]_
+
+- Bundle size impact:
+- Load time impact:
+- Runtime performance:
+
+### Accessibility Audit Results
+
+_[Update after accessibility testing]_
+
+- WCAG compliance level achieved:
+- Screen reader compatibility:
+- Keyboard navigation:
+
+## 📖 References & Resources
+
+### Documentation Links
+
+- [Modus Web Components Storybook](https://trimble-oss.github.io/modus-wc-2.0/main/)
+- [React Documentation](https://react.dev/)
+- [Vite Documentation](https://vitejs.dev/)
+- [Project-specific documentation links]
+
+### Related Implementation Guides
+
+- [Link to related guides in this folder]
+
+---
+
+**Last Updated:** YYYY-MM-DD
+
+````
+
+## 🔄 Implementation Guide Lifecycle
+
+### 📝 Pre-Development Phase
+
+1. **Create Implementation Guide**
+
+   ```bash
+   # Create new guide with proper naming
+   touch implementation_guides/feature-name-$(date +%Y-%m-%d).md
+   ```
+
+2. **Fill Out Complete Template**
+
+   - All sections must be completed before coding begins
+   - Get team/stakeholder review of the plan
+
+3. **During Development**
+
+   - Document any deviations from original plan
+
+### 🛠️ During Implementation Phase
+
+#### Critical: Update guides in real-time as you encounter issues
+
+#### When You Encounter Problems
+
+1. **Document the Issue**
+
+   ```markdown
+   #### Challenge: [Brief Description]
+
+   **Date:** YYYY-MM-DD
+   **Problem:** Detailed description of what went wrong
+   **Impact:** How this affected the implementation
+   ```
+
+2. **Document the Solution**
+
+   ```markdown
+   **Solution:** Step-by-step solution implemented
+   **Code Changes:** Link to commits or describe changes
+   **Time Impact:** Additional time required
+   **Prevention:** How to avoid this in future implementations
+   ```
+
+3. **Update Architecture if Needed**
+   - Revise technical architecture section
+   - Update component diagrams
+   - Adjust implementation timeline
+
+#### Regular Progress Updates
+
+- ✅ Update task completion status daily
+- ✅ Note any scope changes or requirement updates
+- ✅ Document performance observations
+- ✅ Record accessibility testing results
+
+### 🏆 Quality Standards
+
+**Every implementation guide must:**
+
+- [ ] ✅ **Complete Template**: All required sections filled out
+- [ ] ✅ **Technical Accuracy**: Architecture matches actual implementation
+- [ ] ✅ **Lessons Learned**: Post-implementation section completed
+- [ ] ✅ **Performance Data**: Actual metrics recorded
+- [ ] ✅ **Accessibility Results**: WCAG compliance documented
+- [ ] ✅ **Future References**: Clear enough for future developers to understand
+
+## 🚫 Common Anti-Patterns to Avoid
+
+### ❌ Don't Skip Implementation Guides
+
+- **Never start major development without a guide**
+- **Don't create guides after the fact** - they lose their planning value
+- **Don't leave guides incomplete** - they become technical debt
+
+### ❌ Don't Create Shallow Guides
+
+- **Avoid vague descriptions** - be specific about technical approaches
+- **Don't skip the architecture section** - future developers need this context
+- **Don't ignore lessons learned** - this is the most valuable section
+
+### ❌ Don't Forget Updates
+
+- **Don't let guides become stale** - update them as you learn
+- **Don't ignore problems** - document every challenge encountered
+- **Don't skip the post-implementation review** - this prevents future issues
+
+## 📋 Implementation Guide Checklist
+
+**Before Starting Development:**
+
+- [ ] ✅ Implementation guide created with proper naming convention
+- [ ] ✅ All template sections completed thoroughly
+- [ ] ✅ Technical architecture reviewed and approved
+- [ ] ✅ Dependencies and integrations identified
+- [ ] ✅ Testing strategy defined
+- [ ] ✅ Performance impact estimated
+- [ ] ✅ Accessibility requirements documented
+
+**During Development:**
+
+- [ ] ✅ Guide updated with real-time progress
+- [ ] ✅ Challenges documented as they occur
+- [ ] ✅ Solutions recorded with implementation details
+- [ ] ✅ Architecture updated if deviations occur
+- [ ] ✅ Performance observations noted
+
+**After Implementation:**
+
+- [ ] ✅ Post-implementation review completed
+- [ ] ✅ Lessons learned documented thoroughly
+- [ ] ✅ Performance metrics recorded
+- [ ] ✅ Accessibility audit results documented
+- [ ] ✅ Future improvements identified
+- [ ] ✅ Status updated to "Complete"
+
+## 🎯 Success Metrics
+
+**Implementation guides are successful when:**
+
+- 🎯 **Reduce Development Time**: Future similar features take less time
+- 🎯 **Improve Code Quality**: Consistent patterns and fewer bugs
+- 🎯 **Knowledge Retention**: Team members can understand and maintain features
+- 🎯 **Risk Mitigation**: Common pitfalls are documented and avoided
+- 🎯 **Stakeholder Alignment**: Clear expectations and deliverables
+
+## 🚀 SolidJS + Vite Specific Considerations
+
+### Component Architecture Patterns
+
+```tsx
+// ✅ CORRECT: Functional component with hooks
+export default function NewComponent({ prop1, prop2 }: ComponentProps) {
+  const [state, setState] = createSignal(initialValue);
+
+  createEffect(() => {
+    // Side effects
+  }, [dependencies]);
+
+  return (
+    <div class="component-styles">
+      {/* Component JSX */}
+    </div>
+  );
+}
+```
+
+### State Management Patterns
+
+```tsx
+// ✅ CORRECT: Context for global state
+export const FeatureContext = createContext<FeatureContextType | undefined>(undefined);
+
+export function FeatureProvider({ children }: { children: JSX.Element }) {
+  const [featureState, setFeatureState] = createSignal(initialState);
+
+  return (
+    <FeatureContext.Provider value={{ featureState, setFeatureState }}>
+      {children}
+    </FeatureContext.Provider>
+  );
+}
+```
+
+### Routing Patterns
+
+```tsx
+// ✅ CORRECT: React Router setup
+import { BrowserRouter, Routes, Route } from '@solidjs/router';
+
+function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/feature" element={<FeaturePage />} />
+      </Routes>
+    </BrowserRouter>
+  );
+}
+```
+
+### Vite-Specific Patterns
+
+```tsx
+// ✅ CORRECT: Environment variables
+const apiUrl = import.meta.env.VITE_API_URL;
+
+// ✅ CORRECT: Dynamic imports for code splitting
+const LazyComponent = lazy(() => import('./LazyComponent'));
+
+// ✅ CORRECT: Asset imports
+import logoUrl from './assets/logo.svg';
+```
+
+---
+
+**Remember: Implementation guides are living documents that serve as both planning tools and historical records. They are essential for maintaining code quality, team knowledge, and project success. Never skip this critical step in the development process.**
+````

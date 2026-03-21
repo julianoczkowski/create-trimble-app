@@ -40,6 +40,14 @@ describe("config.json", () => {
     expect(angular).toHaveProperty("name");
     expect(angular).toHaveProperty("description");
   });
+
+  it("should have solidjs framework configured", () => {
+    expect(config.frameworks).toHaveProperty("solidjs");
+    const solidjs = config.frameworks.solidjs;
+
+    expect(solidjs).toHaveProperty("name");
+    expect(solidjs).toHaveProperty("description");
+  });
 });
 
 describe("bundled templates", () => {
@@ -70,6 +78,22 @@ describe("bundled templates", () => {
       "..",
       "templates",
       "angular",
+      "package.json",
+    );
+    expect(existsSync(packagePath)).toBe(true);
+  });
+
+  it("should have solidjs template directory", () => {
+    const solidjsPath = join(__dirname, "..", "templates", "solidjs");
+    expect(existsSync(solidjsPath)).toBe(true);
+  });
+
+  it("should have solidjs package.json", () => {
+    const packagePath = join(
+      __dirname,
+      "..",
+      "templates",
+      "solidjs",
       "package.json",
     );
     expect(existsSync(packagePath)).toBe(true);

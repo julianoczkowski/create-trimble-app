@@ -28,12 +28,13 @@ describe("frameworks", () => {
       }
     });
 
-    it("should include react and angular frameworks", () => {
+    it("should include react, angular, and solidjs frameworks", () => {
       const frameworks = loadFrameworks();
       const frameworkIds = frameworks.map((f) => f.id);
 
       expect(frameworkIds).toContain("react");
       expect(frameworkIds).toContain("angular");
+      expect(frameworkIds).toContain("solidjs");
     });
   });
 
@@ -48,6 +49,10 @@ describe("frameworks", () => {
       const angular = getFrameworkById(frameworks, "angular");
       expect(angular).toBeDefined();
       expect(angular.id).toBe("angular");
+
+      const solidjs = getFrameworkById(frameworks, "solidjs");
+      expect(solidjs).toBeDefined();
+      expect(solidjs.id).toBe("solidjs");
     });
 
     it("should return undefined for unknown framework", () => {

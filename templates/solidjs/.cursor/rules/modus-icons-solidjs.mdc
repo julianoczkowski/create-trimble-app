@@ -1,0 +1,402 @@
+---
+description: Essential icon usage rules for Modus Design System
+globs: ["**/*.tsx", "**/*.ts"]
+alwaysApply: false
+---
+
+# Modus Icons Usage in SolidJS + Vite
+
+## 🎨 **Icon System Overview**
+
+**CRITICAL**: This SolidJS + Vite application uses **Modus Icons** exclusively. All icons must use the Modus icon system with proper CDN imports and valid icon names.
+**REFERENCE**: For allowed list of Modus icon names see `.cursor/rules/modus-icon-names.mdc`
+
+**Icon System**: Modus Icons v1.18.0 with CDN import in `src/index.css`
+
+## ❌ **FORBIDDEN: Non-Modus Icons**
+
+### ❌ **Never Use Other Icon Libraries**
+
+```tsx
+// ❌ WRONG: Font Awesome icons
+import { FaHome, FaUser, FaSettings } from "react-icons/fa";
+<FaHome class="text-2xl" />;
+
+// ❌ WRONG: Material Icons
+import { Home, Person, Settings } from "@mui/icons-material";
+<Home class="text-2xl" />;
+
+// ❌ WRONG: Heroicons
+import { HomeIcon, UserIcon } from "@heroicons/react/24/outline";
+<HomeIcon class="h-6 w-6" />;
+
+// ❌ WRONG: Lucide icons
+import { Home, User, Settings } from "lucide-solidjs";
+<Home class="h-6 w-6" />;
+```
+
+### ❌ **Never Use Generic Icon Classes**
+
+```tsx
+// ❌ WRONG: Generic icon classes
+<i class="fa fa-home"></i>
+<i class="material-icons">home</i>
+<i class="icon-home"></i>
+```
+
+## ✅ **CORRECT: Modus Icons Only**
+
+### ✅ **Use Valid Modus Icon Names**
+
+```tsx
+// ✅ CORRECT: Valid Modus icon names
+<i class="modus-icons">home</i>
+<i class="modus-icons">user</i>
+<i class="modus-icons">settings</i>
+<i class="modus-icons">search</i>
+<i class="modus-icons">menu</i>
+<i class="modus-icons">close</i>
+<i class="modus-icons">add</i>
+<i class="modus-icons">edit</i>
+<i class="modus-icons">delete</i>
+<i class="modus-icons">save</i>
+```
+
+### ✅ **Icon Sizing with Tailwind**
+
+```tsx
+// ✅ CORRECT: Icon sizing with Tailwind classes
+<i class="modus-icons text-sm">home</i>      // 14px
+<i class="modus-icons text-base">home</i>     // 16px
+<i class="modus-icons text-lg">home</i>       // 18px
+<i class="modus-icons text-xl">home</i>       // 20px
+<i class="modus-icons text-2xl">home</i>      // 24px
+<i class="modus-icons text-3xl">home</i>     // 30px
+<i class="modus-icons text-4xl">home</i>     // 36px
+```
+
+### ✅ **Icon Coloring with Design System**
+
+```tsx
+// ✅ CORRECT: Design system colors for icons
+<i class="modus-icons text-foreground">home</i>
+<i class="modus-icons text-primary">home</i>
+<i class="modus-icons text-secondary">home</i>
+<i class="modus-icons text-muted-foreground">home</i>
+<i class="modus-icons text-destructive">home</i>
+<i class="modus-icons text-warning">home</i>
+<i class="modus-icons text-success">home</i>
+```
+
+## 🎯 **Icon Usage Patterns**
+
+### ✅ **Button with Icons**
+
+```tsx
+// ✅ CORRECT: Button with Modus icon
+function IconButton({ icon, children, ...props }: IconButtonProps) {
+  return (
+    <button
+      class="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded hover:bg-primary/90"
+      {...props}
+    >
+      <i class={`modus-icons ${icon}`}>{icon}</i>
+      {children}
+    </button>
+  );
+}
+
+// Usage
+<IconButton icon="home">Home</IconButton>
+<IconButton icon="settings">Settings</IconButton>
+```
+
+### ✅ **Navigation with Icons**
+
+```tsx
+// ✅ CORRECT: Navigation with Modus icons
+function Navigation() {
+  const navItems = [
+    { label: "Home", icon: "home", path: "/" },
+    { label: "Profile", icon: "user", path: "/profile" },
+    { label: "Settings", icon: "settings", path: "/settings" },
+  ];
+
+  return (
+    <nav class="flex space-x-4">
+      {navItems.map((item) => (
+        <a
+          key={item.path}
+          href={item.path}
+          class="flex items-center gap-2 text-foreground hover:text-primary"
+        >
+          <i class={`modus-icons ${item.icon}`}>{item.icon}</i>
+          {item.label}
+        </a>
+      ))}
+    </nav>
+  );
+}
+```
+
+### ✅ **Form Icons**
+
+```tsx
+// ✅ CORRECT: Form with Modus icons
+function FormWithIcons() {
+  return (
+    <form class="space-y-4">
+      <div class="relative">
+        <i class="modus-icons absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground">
+          search
+        </i>
+        <input
+          type="text"
+          placeholder="Search..."
+          class="pl-10 pr-4 py-2 w-full border border-input rounded bg-input text-foreground"
+        />
+      </div>
+
+      <div class="relative">
+        <i class="modus-icons absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground">
+          user
+        </i>
+        <input
+          type="email"
+          placeholder="Email"
+          class="pl-10 pr-4 py-2 w-full border border-input rounded bg-input text-foreground"
+        />
+      </div>
+    </form>
+  );
+}
+```
+
+### ✅ **Status Icons**
+
+```tsx
+// ✅ CORRECT: Status indicators with Modus icons
+function StatusIndicator({
+  status,
+}: {
+  status: "success" | "warning" | "error" | "info";
+}) {
+  const statusConfig = {
+    success: { icon: "check-circle", color: "text-success" },
+    warning: { icon: "warning", color: "text-warning" },
+    error: { icon: "error", color: "text-destructive" },
+    info: { icon: "info", color: "text-primary" },
+  };
+
+  const config = statusConfig[status];
+
+  return (
+    <div class={`flex items-center gap-2 ${config.color}`}>
+      <i class={`modus-icons ${config.icon}`}>{config.icon}</i>
+      <span class="capitalize">{status}</span>
+    </div>
+  );
+}
+```
+
+## 🎨 **Advanced Icon Patterns**
+
+### ✅ **Icon with Tooltip**
+
+```tsx
+// ✅ CORRECT: Icon with tooltip
+function IconWithTooltip({ icon, tooltip, children }: IconWithTooltipProps) {
+  return (
+    <div class="relative group">
+      <i class={`modus-icons ${icon}`}>{icon}</i>
+      {children}
+      <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-background text-foreground text-sm rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity">
+        {tooltip}
+      </div>
+    </div>
+  );
+}
+
+// Usage
+<IconWithTooltip icon="info" tooltip="More information">
+  <span>Info</span>
+</IconWithTooltip>;
+```
+
+### ✅ **Animated Icons**
+
+```tsx
+// ✅ CORRECT: Animated Modus icons
+function AnimatedIcon({ icon, isActive }: AnimatedIconProps) {
+  return (
+    <i
+      class={`
+      modus-icons 
+      ${icon}
+      transition-transform duration-200
+      ${isActive ? "rotate-180" : "rotate-0"}
+    `}
+    >
+      {icon}
+    </i>
+  );
+}
+
+// Usage
+<AnimatedIcon icon="chevron-down" isActive={isOpen} />;
+```
+
+### ✅ **Icon Sizing with Custom Classes**
+
+```tsx
+// ✅ CORRECT: Custom icon sizing
+function CustomSizedIcon({ icon, size = "md" }: CustomSizedIconProps) {
+  const sizeClasses = {
+    xs: "text-xs",
+    sm: "text-sm",
+    md: "text-base",
+    lg: "text-lg",
+    xl: "text-xl",
+    "2xl": "text-2xl",
+  };
+
+  return <i class={`modus-icons ${sizeClasses[size]}`}>{icon}</i>;
+}
+```
+
+## 🚫 **Common Anti-Patterns**
+
+### ❌ **Don't Use Invalid Icon Names**
+
+```tsx
+// ❌ WRONG: Invalid icon names
+<i class="modus-icons">home-icon</i>        // ❌ Use 'home'
+<i class="modus-icons">user-profile</i>      // ❌ Use 'user'
+<i class="modus-icons">settings-gear</i>    // ❌ Use 'settings'
+```
+
+### ❌ **Don't Mix Icon Systems**
+
+```tsx
+// ❌ WRONG: Mixing Modus and other icons
+<div>
+  <i class="modus-icons">home</i> {/* Modus */}
+  <FaUser class="text-xl" /> {/* Font Awesome */}
+  <i class="material-icons">settings</i> {/* Material */}
+</div>
+```
+
+### ❌ **Don't Use Icons for Decoration Only**
+
+```tsx
+// ❌ WRONG: Icons without semantic meaning
+<div class="flex">
+  <i class="modus-icons">star</i> {/* No context */}
+  <i class="modus-icons">heart</i> {/* No context */}
+  <i class="modus-icons">diamond</i> {/* No context */}
+</div>
+```
+
+## 🔧 **Icon Validation**
+
+### ✅ **Linting Commands**
+
+```bash
+# Check for icon violations
+npm run lint:icons
+
+# Check for inline styles
+npm run lint:styles
+```
+
+### ✅ **Icon Testing Patterns**
+
+```tsx
+// ✅ CORRECT: Test icon rendering
+function IconTest() {
+  const testIcons = [
+    "home",
+    "user",
+    "settings",
+    "search",
+    "menu",
+    "close",
+    "add",
+    "edit",
+    "delete",
+    "save",
+    "cancel",
+    "check",
+    "warning",
+    "error",
+    "info",
+    "success",
+  ];
+
+  return (
+    <div class="grid grid-cols-4 gap-4">
+      {testIcons.map((icon) => (
+        <div
+          key={icon}
+          class="flex flex-col items-center p-2 border border-border rounded"
+        >
+          <i class={`modus-icons text-2xl ${icon}`}>{icon}</i>
+          <span class="text-sm text-muted-foreground">{icon}</span>
+        </div>
+      ))}
+    </div>
+  );
+}
+```
+
+## 📋 **Valid Modus Icon Names**
+
+### ✅ **Common Icons**
+
+```tsx
+// Navigation icons
+"home", "menu", "close", "back", "forward", "up", "down", "left", "right";
+
+// User icons
+"user", "profile", "account", "login", "logout";
+
+// Action icons
+"add", "edit", "delete", "save", "cancel", "check", "close";
+
+// System icons
+"settings", "gear", "preferences", "config";
+
+// Communication icons
+"mail", "message", "notification", "bell";
+
+// File icons
+"file", "folder", "download", "upload", "attachment";
+
+// Status icons
+"success", "warning", "error", "info", "help";
+
+// Search icons
+"search", "filter", "sort", "refresh";
+```
+
+## 🎯 **Key Takeaways**
+
+1. **Use Modus Icons Only**: Never use other icon libraries
+2. **Valid Icon Names**: Use correct Modus icon names
+3. **Design System Colors**: Use design system colors for icon styling
+4. **Proper Sizing**: Use Tailwind classes for icon sizing
+5. **Semantic Meaning**: Icons should have clear semantic purpose
+
+## 🔍 **Icon Implementation Checklist**
+
+- [ ] ✅ **CDN Import**: Modus Icons CSS imported in `src/index.css`
+- [ ] ✅ **Valid Names**: Using correct Modus icon names
+- [ ] ✅ **Design System Colors**: Using design system colors for styling
+- [ ] ✅ **Proper Sizing**: Using Tailwind classes for sizing
+- [ ] ✅ **Semantic Purpose**: Icons have clear meaning and context
+- [ ] ✅ **Accessibility**: Icons are accessible and properly labeled
+- [ ] ✅ **Consistency**: Consistent icon usage across components
+
+---
+
+**Remember: This SolidJS + Vite application uses Modus Icons exclusively. Always use valid Modus icon names with the `modus-icons` class, and style them with design system colors and Tailwind sizing classes. Never use other icon libraries or invalid icon names.**
