@@ -108,8 +108,8 @@ src/
 │ └── NewComponent.tsx
 ├── pages/
 │ └── NewPage.tsx
-├── hooks/
-│ └── useNewFeature.ts
+├── primitives/
+│ └── createNewFeature.ts
 └── contexts/
 └── NewFeatureContext.tsx
 ```
@@ -231,7 +231,7 @@ _[Update after accessibility testing]_
 ### Documentation Links
 
 - [Modus Web Components Storybook](https://trimble-oss.github.io/modus-wc-2.0/main/)
-- [React Documentation](https://react.dev/)
+- [SolidJS Documentation](https://www.solidjs.com/)
 - [Vite Documentation](https://vitejs.dev/)
 - [Project-specific documentation links]
 
@@ -377,13 +377,13 @@ _[Update after accessibility testing]_
 ### Component Architecture Patterns
 
 ```tsx
-// ✅ CORRECT: Functional component with hooks
-export default function NewComponent({ prop1, prop2 }: ComponentProps) {
+// ✅ CORRECT: Functional component with SolidJS primitives
+export default function NewComponent(props: ComponentProps) {
   const [state, setState] = createSignal(initialValue);
 
   createEffect(() => {
-    // Side effects
-  }, [dependencies]);
+    // Side effects - automatically tracks dependencies
+  });
 
   return (
     <div class="component-styles">
@@ -399,12 +399,12 @@ export default function NewComponent({ prop1, prop2 }: ComponentProps) {
 // ✅ CORRECT: Context for global state
 export const FeatureContext = createContext<FeatureContextType | undefined>(undefined);
 
-export function FeatureProvider({ children }: { children: JSX.Element }) {
+export function FeatureProvider(props: { children: JSX.Element }) {
   const [featureState, setFeatureState] = createSignal(initialState);
 
   return (
     <FeatureContext.Provider value={{ featureState, setFeatureState }}>
-      {children}
+      {props.children}
     </FeatureContext.Provider>
   );
 }
@@ -413,16 +413,14 @@ export function FeatureProvider({ children }: { children: JSX.Element }) {
 ### Routing Patterns
 
 ```tsx
-// ✅ CORRECT: React Router setup
-import { BrowserRouter, Routes, Route } from '@solidjs/router';
+// ✅ CORRECT: SolidJS Router setup
+import { Router, Route } from '@solidjs/router';
 
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/feature" element={<FeaturePage />} />
-      </Routes>
-    </BrowserRouter>
+    <Router>
+      <Route path="/feature" component={FeaturePage} />
+    </Router>
   );
 }
 ```

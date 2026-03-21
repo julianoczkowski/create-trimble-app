@@ -1,159 +1,117 @@
 ---
-description: Critical integration patterns for Modus Navbar with Side Navigation in React
+description: Critical integration patterns for Modus Navbar with Side Navigation in SolidJS
 globs: ["**/components/ModusNavbar*.tsx", "**/components/ModusSideNavigation*.tsx", "**/demos/**/page.tsx"]
 alwaysApply: false
 ---
 
 # Modus Navbar + Side Navigation Integration
 
-Critical patterns for integrating `ModusWcNavbar` with `ModusWcSideNavigation` in SolidJS applications.
+Critical patterns for integrating `ModusNavbar` with `ModusSideNavigation` in SolidJS applications.
 
 ## Key Rules
 
-- **Use the ModusNavbar wrapper component** - Never use `ModusWcNavbar` directly
-- **Pass props as native React objects** - Wrapper handles serialization
-- **Sync navbar hamburger menu with side navigation** - Use `onMainMenuOpenChange` callback
-- **Position side navigation absolutely** - Required for proper layering
-- **Set explicit z-index** - Ensure side navigation renders above content
+- **Use the ModusNavbar/ModusSideNavigation wrapper components** - Never use raw web components directly
+- **Complex props (userCard, visibility) are set as JS properties** - Wrapper handles this via onMount/createEffect
+- **Sync navbar hamburger with side navigation** - Use separate signal state per demo section
+- **Menu item icons use the `start-icon` slot** - Pass `<i class="modus-icons" slot="start-icon">name</i>` as a child, NOT as a prop
 
 ---
 
-## DO: Use ModusNavbar Wrapper Component
+## DO: Sync Navbar Hamburger with Side Navigation
 
-The `ModusNavbar` wrapper component handles prop serialization and event binding correctly.
+Use signals to keep the hamburger menu and side navigation in sync.
 
 ```tsx
-// DO: Use the wrapper component
-import ModusNavbar from "../../components/ModusNavbar";
+const [expanded, setExpanded] = createSignal(false);
+const [menuOpen, setMenuOpen] = createSignal(false);
+
+const handleMainMenuOpenChange = (open: boolean) => {
+  setMenuOpen(open);
+  setExpanded(open);
+};
+
+const handleExpandedChange = (exp: boolean) => {
+  setExpanded(exp);
+  setMenuOpen(exp);
+};
 
 <ModusNavbar
   userCard={userCard}
   visibility={{ mainMenu: true, user: true }}
-  onMainMenuOpenChange={handleNavbarMenuOpenChange}
-/>;
-```
-
-## DON'T: Use ModusWcNavbar Directly
-
-Direct usage causes prop serialization issues.
-
-```tsx
-// DON'T: Direct usage won't work properly
-import { ModusWcNavbar } from "@trimble-oss/moduswebcomponents-solidjs";
-
-<ModusWcNavbar
-  user-card={JSON.stringify(userCard)} // Won't work!
-  visibility={JSON.stringify({ mainMenu: true })} // Won't work!
-/>;
-```
-
----
-
-## DO: Sync Navbar with Side Navigation via Ref
-
-Use a ref to directly set the `expanded` property on the side navigation.
-
-```tsx
-const [navbarMenuExpanded, setNavbarMenuExpanded] = createSignal(false);
-const sideNavRef = useRef<any>(null);
-
-const handleNavbarMenuOpenChange = useCallback((isOpen: boolean) => {
-  setNavbarMenuExpanded(isOpen);
-
-  // Directly set expanded property on the web component
-  const sideNav = sideNavRef.current;
-  if (sideNav) {
-    sideNav.expanded = isOpen;
+  mainMenuOpen={menuOpen()}
+  onMainMenuOpenChange={handleMainMenuOpenChange}
+  mainMenuContent={
+    <ModusSideNavigation
+      items={navItems}
+      expanded={expanded()}
+      targetContent="#content-id"
+      onExpandedChange={handleExpandedChange}
+      onItemSelect={(item) => setSelectedItem(item.value)}
+    />
   }
-}, []);
-
-<ModusNavbar
-  onMainMenuOpenChange={handleNavbarMenuOpenChange}
-/>
-
-<ModusWcSideNavigation
-  ref={sideNavRef}
-  expanded={navbarMenuExpanded}
 />
 ```
 
-## DON'T: Rely Only on React State
+## DON'T: Share state between multiple demo sections
 
-SolidJS state alone won't trigger the web component to expand.
+Each navbar+sidenav pair needs its own independent signals.
 
 ```tsx
-// DON'T: This alone won't work
+// DON'T: Two sections sharing the same signal
 const [expanded, setExpanded] = createSignal(false);
 
-const handleMenuOpen = (isOpen: boolean) => {
-  setExpanded(isOpen); // Web component won't update!
-};
+<Section1> // Uses expanded()
+<Section2> // Also uses expanded() - they interfere!
 
-<ModusWcSideNavigation expanded={expanded} />; // May not respond
-```
-
----
-
-## DO: Position Side Navigation Absolutely with Z-Index
-
-Side navigation uses `position: absolute` internally. Set proper CSS.
-
-```css
-.main-content-row {
-  display: flex;
-  flex: 1;
-  position: relative; /* Creates positioning context */
-  min-height: 500px;
+// DO: Separate components with their own state
+function Section1() {
+  const [expanded, setExpanded] = createSignal(false);
+  // ...
 }
-
-.side-navigation {
-  position: absolute;
-  left: 0;
-  top: 0;
-  height: 100%;
-  z-index: 999; /* Ensure above content */
-}
-
-.panel-content {
-  flex: 1;
-  padding: 1.5rem;
-  margin-left: 4rem; /* Account for collapsed nav width */
-}
-```
-
-## DON'T: Use Relative Positioning
-
-Relative positioning causes the side navigation to be hidden by other content.
-
-```css
-/* DON'T: Side nav will be hidden */
-.side-navigation {
-  position: relative; /* Wrong! */
+function Section2() {
+  const [expanded, setExpanded] = createSignal(false);
+  // ...
 }
 ```
 
 ---
 
-## DO: Listen for expandedChange Events
+## DO: Use Slot-Based Icons in Menu Items
 
-Keep SolidJS state in sync with web component state changes.
+The `modus-wc-menu-item` web component renders icons via a named `<slot>`, not via the `startIcon` property. Setting the property has no visible effect.
 
 ```tsx
-createEffect(() => {
-  const sideNav = sideNavRef.current;
-  if (!sideNav) return;
+// DO: Use the start-icon slot with a child element
+const navItems: MenuItem[] = [
+  { label: "Dashboard", value: "dashboard", startIcon: "dashboard" },
+];
 
-  const handleExpandedChange = (e: Event) => {
-    const customEvent = e as CustomEvent<boolean>;
-    setNavbarMenuExpanded(customEvent.detail);
-  };
+// In ModusMenuItem component:
+<modus-wc-menu-item attr:label={props.label} attr:value={props.value}>
+  <i class="modus-icons" slot="start-icon">{props.startIcon}</i>
+</modus-wc-menu-item>
+```
 
-  sideNav.addEventListener("expandedChange", handleExpandedChange);
+```tsx
+// DON'T: This will NOT render any icon
+<modus-wc-menu-item start-icon="dashboard" label="Dashboard" />
+```
 
-  return () => {
-    sideNav.removeEventListener("expandedChange", handleExpandedChange);
-  };
-}, []);
+---
+
+## DO: Contain Demo Layout
+
+Wrap navbar+sidenav demos in fixed-height containers to prevent page-level layout shifts.
+
+```tsx
+<div class="overflow-hidden rounded-lg border-default" style="height: 320px">
+  <ModusNavbar ... />
+  <div class="flex" style="height: calc(100% - 56px)">
+    <div id="content-target" class="flex-1 p-4 bg-card">
+      Content area
+    </div>
+  </div>
+</div>
 ```
 
 ---
@@ -164,81 +122,43 @@ createEffect(() => {
 const userCard = {
   name: "John Doe",
   email: "john.doe@example.com",
-  avatarSrc: "", // Optional
-  avatarAlt: "User Avatar", // Optional
+  avatarSrc: "",
+  avatarAlt: "User Avatar",
 };
 ```
 
 ---
 
-## DO: Handle Sub-Menu State When Side Nav Collapses
+## Trimble Logo Assets
 
-Collapse all sub-menus when the side navigation closes.
+The Trimble logo in the navbar loads via Stencil's `getAssetPath()`. Two things are required:
 
+1. **`defineCustomElements` with resourcesUrl** in `src/index.tsx`:
 ```tsx
-const [subMenuStates, setSubMenuStates] = createSignal<Record<string, boolean>>({
-  charts: false,
-  maps: false,
-});
-
-const collapseAllSubMenus = () => {
-  setSubMenuStates({
-    charts: false,
-    maps: false,
-  });
-};
-
-const handleNavbarMenuOpenChange = useCallback((isOpen: boolean) => {
-  setNavbarMenuExpanded(isOpen);
-
-  if (!isOpen) {
-    collapseAllSubMenus(); // Reset sub-menus when collapsing
-  }
-}, []);
+defineCustomElements(window, { resourcesUrl: window.location.origin + "/" });
 ```
 
----
-
-## Required Layout Structure
-
+2. **Static asset copy** in `vite.config.ts` to both paths:
 ```tsx
-<div class="layout-with-navbar">
-  <ModusNavbar
-    userCard={userCard}
-    visibility={{ mainMenu: true, user: true }}
-    onMainMenuOpenChange={handleNavbarMenuOpenChange}
-  />
-
-  <div class="main-content-row">
-    <ModusWcSideNavigation
-      ref={sideNavRef}
-      expanded={navbarMenuExpanded}
-      collapse-on-click-outside={true}
-      max-width="256px"
-      mode="push"
-      class="side-navigation"
-    >
-      <ModusWcMenu>
-        <ModusWcMenuItem label="Home" value="home">
-          <ModusWcIcon slot="start-icon" name="home" decorative={true} />
-        </ModusWcMenuItem>
-      </ModusWcMenu>
-    </ModusWcSideNavigation>
-
-    <div class="panel-content">{/* Main content here */}</div>
-  </div>
-</div>
+viteStaticCopy({
+  targets: [
+    { src: "node_modules/@trimble-oss/moduswebcomponents/modus-wc/assets/*", dest: "modus-wc/assets" },
+    { src: "node_modules/@trimble-oss/moduswebcomponents/modus-wc/assets/*", dest: "assets" },
+  ],
+})
 ```
+
+Without both, logos render as broken images on deep routes like `/dev/demos/side-navigation-demo`.
 
 ---
 
 ## Common Pitfalls
 
-1. **Hamburger menu not visible** - Use `ModusNavbar` wrapper, not `ModusWcNavbar` directly
-2. **Side nav expands then immediately collapses** - Bind `expanded` prop to SolidJS state and set via ref
-3. **Side nav hidden by content** - Use `position: absolute` and `z-index: 999`
-4. **Events not firing** - Use `addEventListener` for web component custom events
-5. **Props not updating** - Set properties directly on the ref for web components
+1. **Menu item icons not showing** - Use `<i class="modus-icons" slot="start-icon">name</i>` child element, not the `startIcon` property
+2. **Trimble logo broken on deep routes** - Ensure asset copy targets both `modus-wc/assets` and `assets` directories
+3. **Two demo sections interfere** - Use separate components with independent signal state
+4. **Side nav expands the page width** - Wrap in `overflow-hidden` container with fixed height
+5. **Events not firing** - Use `addEventListener` in `onMount` for web component custom events
 
 ---
 

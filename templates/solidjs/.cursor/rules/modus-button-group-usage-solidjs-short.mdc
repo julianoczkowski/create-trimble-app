@@ -15,7 +15,7 @@ Critical pattern to avoid styling conflicts in button groups.
 - **Group controls styling** - ModusButtonGroup applies variant/color to all child buttons
 - **Don't set variant/color on buttons inside groups** - Let the group control them
 - **Explicitly set props for standalone buttons** - When not in a group, set variant and color
-- **Group uses setAttribute after load** - DOM manipulation requires no conflicting React props
+- **Group uses setAttribute after load** - DOM manipulation requires no conflicting SolidJS props
 - **Test all three variants** - Outlined, filled, and borderless should look distinct
 
 ## Reference

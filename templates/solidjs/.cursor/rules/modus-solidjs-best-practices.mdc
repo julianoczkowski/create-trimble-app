@@ -1,5 +1,5 @@
 ---
-description: Core React best practices for Modus Design System integration
+description: Core SolidJS best practices for Modus Design System integration
 globs: ["**/*.tsx", "**/*.ts"]
 alwaysApply: false
 ---
@@ -69,10 +69,10 @@ function DestructiveButton({ children, ...props }) {
 
 ```tsx
 // ✅ CORRECT: Component composition
-function Card({ children, className, ...props }: CardProps) {
+function Card({ children, class, ...props }: CardProps) {
   return (
     <div
-      class={`bg-card text-card-foreground border border-border rounded-lg ${className}`}
+      class={`bg-card text-card-foreground border border-border rounded-lg ${class}`}
       {...props}
     >
       {children}
@@ -80,18 +80,18 @@ function Card({ children, className, ...props }: CardProps) {
   );
 }
 
-function CardHeader({ children, className, ...props }: CardHeaderProps) {
+function CardHeader({ children, class, ...props }: CardHeaderProps) {
   return (
-    <div class={`flex flex-col space-y-1.5 p-6 ${className}`} {...props}>
+    <div class={`flex flex-col space-y-1.5 p-6 ${class}`} {...props}>
       {children}
     </div>
   );
 }
 
-function CardTitle({ children, className, ...props }: CardTitleProps) {
+function CardTitle({ children, class, ...props }: CardTitleProps) {
   return (
     <div
-      class={`text-2xl font-semibold leading-none tracking-tight ${className}`}
+      class={`text-2xl font-semibold leading-none tracking-tight ${class}`}
       {...props}
     >
       {children}
@@ -99,9 +99,9 @@ function CardTitle({ children, className, ...props }: CardTitleProps) {
   );
 }
 
-function CardContent({ children, className, ...props }: CardContentProps) {
+function CardContent({ children, class, ...props }: CardContentProps) {
   return (
-    <div class={`p-6 pt-0 ${className}`} {...props}>
+    <div class={`p-6 pt-0 ${class}`} {...props}>
       {children}
     </div>
   );
@@ -191,22 +191,21 @@ function InteractiveComponent() {
 ```tsx
 // ✅ CORRECT: Event handling with refs
 function ModusComponent() {
-  const componentRef = useRef<ModusWcButton>(null);
+  let componentRef: ModusWcButton | undefined;
 
-  createEffect(() => {
-    const component = componentRef.current;
-    if (!component) return;
+  onMount(() => {
+    if (!componentRef) return;
 
     const handleClick = (event: CustomEvent) => {
       console.log("Button clicked:", event.detail);
     };
 
-    component.addEventListener("click", handleClick);
+    componentRef.addEventListener("click", handleClick);
 
-    return () => {
-      component.removeEventListener("click", handleClick);
-    };
-  }, []);
+    onCleanup(() => {
+      componentRef?.removeEventListener("click", handleClick);
+    });
+  });
 
   return <ModusWcButton ref={componentRef}>Click me</ModusWcButton>;
 }
@@ -218,11 +217,11 @@ function ModusComponent() {
 // ✅ CORRECT: State management with Modus components
 function StatefulComponent() {
   const [isOpen, setIsOpen] = createSignal(false);
-  const modalRef = useRef<ModusWcModal>(null);
+  let modalRef: ModusWcModal | undefined;
 
   const openModal = () => {
-    if (modalRef.current) {
-      const dialog = modalRef.current.querySelector(
+    if (modalRef) {
+      const dialog = modalRef.querySelector(
         "dialog"
       ) as HTMLDialogElement;
       if (dialog) {
@@ -233,8 +232,8 @@ function StatefulComponent() {
   };
 
   const closeModal = () => {
-    if (modalRef.current) {
-      const dialog = modalRef.current.querySelector(
+    if (modalRef) {
+      const dialog = modalRef.querySelector(
         "dialog"
       ) as HTMLDialogElement;
       if (dialog) {
@@ -259,7 +258,7 @@ function StatefulComponent() {
 }
 ```
 
-## 🚀 **Vite + React Specific Patterns**
+## 🚀 **Vite + SolidJS Specific Patterns**
 
 ### ✅ **Environment Variables**
 
@@ -378,29 +377,28 @@ function ConditionalThemedComponent() {
 ### ✅ **Memoization Patterns**
 
 ```tsx
-// ✅ CORRECT: Memoization for expensive components
-const ExpensiveComponent = memo(function ExpensiveComponent({
-  data,
-}: {
-  data: any[];
-}) {
-  const processedData = useMemo(() => {
-    return data.map((item) => ({
+// ✅ CORRECT: Computed values for expensive components
+// SolidJS components are already non-re-rendering, no memo() wrapper needed
+function ExpensiveComponent(props: { data: any[] }) {
+  const processedData = createMemo(() => {
+    return props.data.map((item) => ({
       ...item,
       processed: item.value * 2,
     }));
-  }, [data]);
+  });
 
   return (
     <div class="space-y-2">
-      {processedData.map((item, index) => (
-        <div key={index} class="bg-card text-card-foreground p-2 rounded">
-          {item.processed}
-        </div>
-      ))}
+      <For each={processedData()}>
+        {(item, index) => (
+          <div class="bg-card text-card-foreground p-2 rounded">
+            {item.processed}
+          </div>
+        )}
+      </For>
     </div>
   );
-});
+}
 ```
 
 ### ✅ **Lazy Loading Patterns**
@@ -489,7 +487,7 @@ function Button({ variant, ...props }) {
 2. **Design System Colors**: Always use design system colors, never generic Tailwind colors
 3. **Event Handling**: Use refs and event listeners for Modus Web Components
 4. **Theme Integration**: Use theme context for conditional styling and content
-5. **Performance**: Use memoization and lazy loading for optimization
+5. **Performance**: Use `createMemo` and lazy loading for optimization
 6. **Vite Patterns**: Use Vite-specific patterns for environment variables and assets
 
 ## 🔍 **Best Practices Checklist**
@@ -498,7 +496,7 @@ function Button({ variant, ...props }) {
 - [ ] ✅ **Design System Colors**: Using design system colors exclusively
 - [ ] ✅ **Event Handling**: Proper event handling with refs and listeners
 - [ ] ✅ **Theme Integration**: Theme-aware components with conditional styling
-- [ ] ✅ **Performance**: Memoization and lazy loading where appropriate
+- [ ] ✅ **Performance**: `createMemo` and lazy loading where appropriate
 - [ ] ✅ **Vite Patterns**: Using Vite-specific patterns for environment and assets
 - [ ] ✅ **Accessibility**: Proper accessibility with div elements and ARIA attributes
 - [ ] ✅ **Consistency**: Consistent patterns across all components

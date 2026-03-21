@@ -96,7 +96,7 @@ class="bg-background text-foreground"
 
 ```tsx
 // ❌ VIOLATION: Non-Modus icons
-import { FaHome } from 'react-icons/fa';
+import { FaHome } from 'solid-icons/fa';
 <i class="fa fa-home"></i>
 
 // ✅ CORRECT: Modus icons
@@ -199,7 +199,7 @@ import { FaHome } from 'react-icons/fa';
 6. **Use proper Modus Web Components event handling**
 7. **Maintain design system compliance at all times**
 
-## 🚀 **Vite + React Specific Workflow**
+## 🚀 **Vite + SolidJS Specific Workflow**
 
 ### Development Server:
 
@@ -235,9 +235,9 @@ npm run lint:all
 
 ### Component Development:
 
-1. **Use functional components** with hooks
+1. **Use functional components** with SolidJS primitives
 2. **No "use client" directive needed** (everything is client-side)
-3. **Use React Router** for navigation
+3. **Use @solidjs/router** for navigation
 4. **Leverage Vite's fast HMR** for rapid development
 
 ### File Organization:
@@ -246,8 +246,8 @@ npm run lint:all
 src/
 ├── components/          # Reusable components
 ├── pages/              # Page components
-├── contexts/           # React contexts
-├── hooks/              # Custom hooks
+├── contexts/           # SolidJS contexts
+├── hooks/              # Custom primitives
 ├── config/             # Configuration files
 └── main.tsx            # Entry point
 ```

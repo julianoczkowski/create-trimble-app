@@ -6,9 +6,9 @@ alwaysApply: false
 
 # Modus SolidJS Key Warnings - Essential Rules
 
-## 🚨 CRITICAL: React Key Props with Modus Web Components
+## CRITICAL: Key Props with Modus Web Components
 
-When using Modus Web Components in React, proper key handling is essential to prevent SolidJS warnings and ensure optimal performance.
+When using Modus Web Components in SolidJS, proper key handling is essential to prevent warnings and ensure optimal performance.
 
 ## ❌ NEVER Do These
 
@@ -159,7 +159,7 @@ const generateKey = (item: MenuItem, index: number) => {
 
 ## 🚨 Common Warning Messages
 
-### React Key Warning
+### Key Warning
 
 ```text
 Each child in a list should have a unique "key" prop.
@@ -171,7 +171,7 @@ Check the render method of `ModusWcMenu2`. It was passed a child from ModusMenu.
 ### Web Component Slot Issues
 
 ```text
-Warning: React does not recognize the `slot` prop on a DOM element.
+Warning: Unrecognized `slot` prop on a DOM element.
 ```
 
 **Solution**: Use component props instead of slot attributes.
@@ -200,27 +200,25 @@ Warning: React does not recognize the `slot` prop on a DOM element.
 
 ```tsx
 // ❌ PROBLEMATIC - Memory leaks
-createEffect(() => {
-  const element = ref.current;
-  element?.addEventListener("itemSelect", handler);
+onMount(() => {
+  ref?.addEventListener("itemSelect", handler);
   // Missing cleanup!
-}, []);
+});
 ```
 
 #### ✅ Solution: Proper Cleanup
 
 ```tsx
 // ✅ CORRECT - Clean up event listeners
-createEffect(() => {
-  const element = ref.current;
-  if (!element) return;
+onMount(() => {
+  if (!ref) return;
 
-  element.addEventListener("itemSelect", handler);
+  ref.addEventListener("itemSelect", handler);
 
-  return () => {
-    element.removeEventListener("itemSelect", handler);
-  };
-}, [handler]);
+  onCleanup(() => {
+    ref?.removeEventListener("itemSelect", handler);
+  });
+});
 ```
 
 #### ❌ Pitfall: Inconsistent Key Generation
@@ -264,11 +262,11 @@ createEffect(() => {
 - Missing or duplicate keys
 - Wrapping web components unnecessarily
 
-## 🔗 Modus Web Components React Integration
+## 🔗 Modus Web Components SolidJS Integration
 
 ### Official Documentation Patterns
 
-Based on the [Modus Web Components React Documentation](https://trimble-oss.github.io/modus-wc-2.0/main/?path=/docs/documentation-frameworks-react--docs), follow these patterns:
+Based on the [Modus Web Components Documentation](https://trimble-oss.github.io/modus-wc-2.0/main/?path=/docs/documentation-frameworks--docs), follow these patterns:
 
 #### ✅ Proper List Rendering
 
@@ -317,9 +315,9 @@ Based on the [Modus Web Components React Documentation](https://trimble-oss.gith
 
 1. **Stable Keys**: Use data-based identifiers, not array indices
 2. **Complete Props**: Provide all required web component props
-3. **Event Handling**: Use proper React event handlers for web component events
+3. **Event Handling**: Use proper SolidJS event handlers for web component events
 4. **Type Safety**: Leverage TypeScript interfaces for web component props
-5. **Performance**: Avoid unnecessary re-renders with proper key usage
+5. **Performance**: Avoid unnecessary updates with proper key usage
 
 ### TypeScript Integration Patterns
 
@@ -360,20 +358,19 @@ const handleItemSelect = (event: CustomEvent<{ value: string }>) => {
 
 ```tsx
 // ✅ CORRECT - Proper event listener setup
-createEffect(() => {
-  const menuElement = menuRef.current;
-  if (!menuElement) return;
+onMount(() => {
+  if (!menuRef) return;
 
   const handleItemSelect = (event: CustomEvent<{ value: string }>) => {
     onItemSelect?.(event.detail);
   };
 
-  menuElement.addEventListener("itemSelect", handleItemSelect);
+  menuRef.addEventListener("itemSelect", handleItemSelect);
 
-  return () => {
-    menuElement.removeEventListener("itemSelect", handleItemSelect);
-  };
-}, [onItemSelect]);
+  onCleanup(() => {
+    menuRef?.removeEventListener("itemSelect", handleItemSelect);
+  });
+});
 ```
 
 ## 🎯 Key Rules Summary
@@ -389,10 +386,10 @@ createEffect(() => {
 
 ## 🚀 Performance Benefits
 
-- **Faster re-renders**: React can efficiently track component changes
+- **Faster updates**: SolidJS can efficiently track component changes
 - **No console warnings**: Clean development experience
 - **Better debugging**: Clear component hierarchy
-- **Optimal performance**: Proper React reconciliation
+- **Optimal performance**: Proper SolidJS reconciliation
 
 ## 📝 Quick Checklist
 
@@ -406,9 +403,9 @@ createEffect(() => {
 
 # Modus SolidJS Key Warnings - Essential Rules
 
-## 🚨 CRITICAL: React Key Props with Modus Web Components
+## CRITICAL: Key Props with Modus Web Components
 
-When using Modus Web Components in React, proper key handling is essential to prevent SolidJS warnings and ensure optimal performance.
+When using Modus Web Components in SolidJS, proper key handling is essential to prevent warnings and ensure optimal performance.
 
 ## ❌ NEVER Do These
 
@@ -559,7 +556,7 @@ const generateKey = (item: MenuItem, index: number) => {
 
 ## 🚨 Common Warning Messages
 
-### React Key Warning
+### Key Warning
 
 ```text
 Each child in a list should have a unique "key" prop.
@@ -571,7 +568,7 @@ Check the render method of `ModusWcMenu2`. It was passed a child from ModusMenu.
 ### Web Component Slot Issues
 
 ```text
-Warning: React does not recognize the `slot` prop on a DOM element.
+Warning: Unrecognized `slot` prop on a DOM element.
 ```
 
 **Solution**: Use component props instead of slot attributes.
@@ -600,27 +597,25 @@ Warning: React does not recognize the `slot` prop on a DOM element.
 
 ```tsx
 // ❌ PROBLEMATIC - Memory leaks
-createEffect(() => {
-  const element = ref.current;
-  element?.addEventListener("itemSelect", handler);
+onMount(() => {
+  ref?.addEventListener("itemSelect", handler);
   // Missing cleanup!
-}, []);
+});
 ```
 
 #### ✅ Solution: Proper Cleanup
 
 ```tsx
 // ✅ CORRECT - Clean up event listeners
-createEffect(() => {
-  const element = ref.current;
-  if (!element) return;
+onMount(() => {
+  if (!ref) return;
 
-  element.addEventListener("itemSelect", handler);
+  ref.addEventListener("itemSelect", handler);
 
-  return () => {
-    element.removeEventListener("itemSelect", handler);
-  };
-}, [handler]);
+  onCleanup(() => {
+    ref?.removeEventListener("itemSelect", handler);
+  });
+});
 ```
 
 #### ❌ Pitfall: Inconsistent Key Generation
@@ -664,11 +659,11 @@ createEffect(() => {
 - Missing or duplicate keys
 - Wrapping web components unnecessarily
 
-## 🔗 Modus Web Components React Integration
+## 🔗 Modus Web Components SolidJS Integration
 
 ### Official Documentation Patterns
 
-Based on the [Modus Web Components React Documentation](https://trimble-oss.github.io/modus-wc-2.0/main/?path=/docs/documentation-frameworks-react--docs), follow these patterns:
+Based on the [Modus Web Components Documentation](https://trimble-oss.github.io/modus-wc-2.0/main/?path=/docs/documentation-frameworks--docs), follow these patterns:
 
 #### ✅ Proper List Rendering
 
@@ -717,9 +712,9 @@ Based on the [Modus Web Components React Documentation](https://trimble-oss.gith
 
 1. **Stable Keys**: Use data-based identifiers, not array indices
 2. **Complete Props**: Provide all required web component props
-3. **Event Handling**: Use proper React event handlers for web component events
+3. **Event Handling**: Use proper SolidJS event handlers for web component events
 4. **Type Safety**: Leverage TypeScript interfaces for web component props
-5. **Performance**: Avoid unnecessary re-renders with proper key usage
+5. **Performance**: Avoid unnecessary updates with proper key usage
 
 ### TypeScript Integration Patterns
 
@@ -760,20 +755,19 @@ const handleItemSelect = (event: CustomEvent<{ value: string }>) => {
 
 ```tsx
 // ✅ CORRECT - Proper event listener setup
-createEffect(() => {
-  const menuElement = menuRef.current;
-  if (!menuElement) return;
+onMount(() => {
+  if (!menuRef) return;
 
   const handleItemSelect = (event: CustomEvent<{ value: string }>) => {
     onItemSelect?.(event.detail);
   };
 
-  menuElement.addEventListener("itemSelect", handleItemSelect);
+  menuRef.addEventListener("itemSelect", handleItemSelect);
 
-  return () => {
-    menuElement.removeEventListener("itemSelect", handleItemSelect);
-  };
-}, [onItemSelect]);
+  onCleanup(() => {
+    menuRef?.removeEventListener("itemSelect", handleItemSelect);
+  });
+});
 ```
 
 ## 🎯 Key Rules Summary
@@ -789,10 +783,10 @@ createEffect(() => {
 
 ## 🚀 Performance Benefits
 
-- **Faster re-renders**: React can efficiently track component changes
+- **Faster updates**: SolidJS can efficiently track component changes
 - **No console warnings**: Clean development experience
 - **Better debugging**: Clear component hierarchy
-- **Optimal performance**: Proper React reconciliation
+- **Optimal performance**: Proper SolidJS reconciliation
 
 ## 📝 Quick Checklist
 

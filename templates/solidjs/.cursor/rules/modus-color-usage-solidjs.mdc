@@ -154,10 +154,10 @@ function Button({ variant = "primary", children }: ButtonProps) {
 }
 
 // ✅ CORRECT: Input component
-function Input({ className, ...props }: InputProps) {
+function Input({ class, ...props }: InputProps) {
   return (
     <input
-      class={`bg-input text-foreground border border-input rounded px-3 py-2 ${className}`}
+      class={`bg-input text-foreground border border-input rounded px-3 py-2 ${class}`}
       {...props}
     />
   );

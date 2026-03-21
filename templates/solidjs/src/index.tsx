@@ -1,8 +1,5 @@
-import { setAssetPath } from "@trimble-oss/moduswebcomponents/components";
-setAssetPath(window.location.origin + "/modus-wc/");
-
 import { defineCustomElements } from "@trimble-oss/moduswebcomponents/loader";
-defineCustomElements();
+defineCustomElements(window, { resourcesUrl: window.location.origin + "/" });
 
 import { render } from "solid-js/web";
 import App from "./App";

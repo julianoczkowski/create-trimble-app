@@ -4,13 +4,13 @@ globs: ["**/components/ModusSelect*.tsx", "**/components/ModusDropdownMenu*.tsx"
 alwaysApply: false
 ---
 
-# ModusSelect vs ModusDropdownMenu in React
+# ModusSelect vs ModusDropdownMenu in SolidJS
 
 ## 🚨 **CRITICAL: ModusSelect Reliability Issues**
 
 **Problem**: `ModusSelect` component has unreliable event handling in SolidJS applications, especially with Chrome DevTools automation and testing.
 
-**Root Cause**: `ModusSelect` events are inconsistent and may not fire reliably in React environments.
+**Root Cause**: `ModusSelect` events are inconsistent and may not fire reliably in SolidJS environments.
 
 **Solution**: Use `ModusDropdownMenu` with `itemSelect` events, which are more reliable and consistent.
 
@@ -30,7 +30,7 @@ function UnreliableSelect() {
   ];
 
   const handleInputChange = (event: CustomEvent<InputEvent>) => {
-    // ❌ This event may not fire reliably in React
+    // ❌ This event may not fire reliably in SolidJS
     console.log("Select changed:", event.target.value);
     setSelectedValue(event.target.value);
   };
@@ -57,7 +57,7 @@ function DirectEventHandling() {
   ];
 
   const handleInputChange = (event: CustomEvent<InputEvent>) => {
-    // ❌ This may not work consistently in React
+    // ❌ This may not work consistently in SolidJS
     const value = event.target.value;
     console.log("Selected:", value);
   };
@@ -75,7 +75,7 @@ function DirectEventHandling() {
 function ReliableDropdown() {
   const [selectedValue, setSelectedValue] = createSignal("");
   const [isOpen, setIsOpen] = createSignal(false);
-  const dropdownRef = useRef<HTMLModusWcDropdownMenuElement>(null);
+  let dropdownRef: HTMLModusWcDropdownMenuElement | undefined;
 
   const handleItemSelect = (event: CustomEvent<{ value: string }>) => {
     // ✅ CORRECT: Reliable itemSelect event
@@ -86,9 +86,9 @@ function ReliableDropdown() {
   };
 
   const toggleDropdown = () => {
-    if (dropdownRef.current) {
-      dropdownRef.current.menuVisible = !isOpen;
-      setIsOpen(!isOpen);
+    if (dropdownRef) {
+      dropdownRef.menuVisible = !isOpen();
+      setIsOpen(!isOpen());
     }
   };
 
@@ -100,12 +100,12 @@ function ReliableDropdown() {
 
   return (
     <ModusDropdownMenu
-      ref={dropdownRef}
-      menuVisible={isOpen}
+      ref={(el: HTMLModusWcDropdownMenuElement) => (dropdownRef = el)}
+      menuVisible={isOpen()}
       onItemSelect={handleItemSelect}
       buttonContent={
         <ModusWcButton onClick={toggleDropdown}>
-          {selectedValue || "Select an option"}
+          {selectedValue() || "Select an option"}
         </ModusWcButton>
       }
       menuItems={menuItems}
@@ -114,14 +114,18 @@ function ReliableDropdown() {
 }
 ```
 
-### ✅ **Reusable Dropdown Hook**
+### ✅ **Reusable Dropdown Helper**
 
 ```tsx
-// ✅ CORRECT: Reusable dropdown hook
-function useDropdown() {
+// ✅ CORRECT: Reusable dropdown helper
+function createDropdown() {
   const [selectedValue, setSelectedValue] = createSignal("");
   const [isOpen, setIsOpen] = createSignal(false);
-  const dropdownRef = useRef<HTMLModusWcDropdownMenuElement>(null);
+  let dropdownRef: HTMLModusWcDropdownMenuElement | undefined;
+
+  const setRef = (el: HTMLModusWcDropdownMenuElement) => {
+    dropdownRef = el;
+  };
 
   const handleItemSelect = (event: CustomEvent<{ value: string }>) => {
     const value = event.detail.value;
@@ -130,15 +134,15 @@ function useDropdown() {
   };
 
   const toggleDropdown = () => {
-    if (dropdownRef.current) {
-      dropdownRef.current.menuVisible = !isOpen;
-      setIsOpen(!isOpen);
+    if (dropdownRef) {
+      dropdownRef.menuVisible = !isOpen();
+      setIsOpen(!isOpen());
     }
   };
 
   const closeDropdown = () => {
-    if (dropdownRef.current) {
-      dropdownRef.current.menuVisible = false;
+    if (dropdownRef) {
+      dropdownRef.menuVisible = false;
       setIsOpen(false);
     }
   };
@@ -146,22 +150,22 @@ function useDropdown() {
   return {
     selectedValue,
     isOpen,
-    dropdownRef,
+    setRef,
     handleItemSelect,
     toggleDropdown,
     closeDropdown,
   };
 }
 
-// ✅ CORRECT: Use the hook
+// ✅ CORRECT: Use the helper
 function DropdownComponent() {
   const {
     selectedValue,
     isOpen,
-    dropdownRef,
+    setRef,
     handleItemSelect,
     toggleDropdown,
-  } = useDropdown();
+  } = createDropdown();
 
   const menuItems = [
     { label: "Option 1", value: "option1" },
@@ -171,12 +175,12 @@ function DropdownComponent() {
 
   return (
     <ModusDropdownMenu
-      ref={dropdownRef}
-      menuVisible={isOpen}
+      ref={setRef}
+      menuVisible={isOpen()}
       onItemSelect={handleItemSelect}
       buttonContent={
         <ModusWcButton onClick={toggleDropdown}>
-          {selectedValue || "Select an option"}
+          {selectedValue() || "Select an option"}
         </ModusWcButton>
       }
       menuItems={menuItems}
@@ -195,7 +199,7 @@ function SearchableDropdown() {
   const [selectedValue, setSelectedValue] = createSignal("");
   const [searchTerm, setSearchTerm] = createSignal("");
   const [isOpen, setIsOpen] = createSignal(false);
-  const dropdownRef = useRef<ModusWcDropdownMenu>(null);
+  let dropdownRef: ModusWcDropdownMenu | undefined;
 
   const options = [
     { value: "apple", label: "Apple" },
@@ -205,9 +209,10 @@ function SearchableDropdown() {
     { value: "elderberry", label: "Elderberry" },
   ];
 
-  const filteredOptions = options.filter((option) =>
-    option.label.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredOptions = () =>
+    options.filter((option) =>
+      option.label.toLowerCase().includes(searchTerm().toLowerCase())
+    );
 
   const handleItemSelect = (event: CustomEvent) => {
     const value = event.detail;
@@ -217,17 +222,17 @@ function SearchableDropdown() {
   };
 
   const toggleDropdown = () => {
-    if (dropdownRef.current) {
-      const dropdown = dropdownRef.current.querySelector(
+    if (dropdownRef) {
+      const dropdown = dropdownRef.querySelector(
         "modus-dropdown-menu"
       ) as any;
       if (dropdown) {
-        if (isOpen) {
+        if (isOpen()) {
           dropdown.close();
         } else {
           dropdown.open();
         }
-        setIsOpen(!isOpen);
+        setIsOpen(!isOpen());
       }
     }
   };
@@ -235,25 +240,27 @@ function SearchableDropdown() {
   return (
     <div class="space-y-2">
       <ModusWcButton onClick={toggleDropdown}>
-        {selectedValue || "Select an option"}
+        {selectedValue() || "Select an option"}
       </ModusWcButton>
 
-      <ModusWcDropdownMenu ref={dropdownRef} onItemSelect={handleItemSelect}>
+      <ModusWcDropdownMenu ref={(el: ModusWcDropdownMenu) => (dropdownRef = el)} onItemSelect={handleItemSelect}>
         <div class="p-2">
           <input
             type="text"
             placeholder="Search options..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            value={searchTerm()}
+            onInput={(e) => setSearchTerm(e.target.value)}
             class="w-full px-3 py-2 border border-input rounded bg-input text-foreground"
           />
         </div>
 
-        {filteredOptions.map((option) => (
-          <ModusWcDropdownMenuItem key={option.value} value={option.value}>
-            {option.label}
-          </ModusWcDropdownMenuItem>
-        ))}
+        <For each={filteredOptions()}>
+          {(option) => (
+            <ModusWcDropdownMenuItem value={option.value}>
+              {option.label}
+            </ModusWcDropdownMenuItem>
+          )}
+        </For>
       </ModusWcDropdownMenu>
     </div>
   );
@@ -267,7 +274,7 @@ function SearchableDropdown() {
 function MultiSelectDropdown() {
   const [selectedValues, setSelectedValues] = createSignal<string[]>([]);
   const [isOpen, setIsOpen] = createSignal(false);
-  const dropdownRef = useRef<ModusWcDropdownMenu>(null);
+  let dropdownRef: ModusWcDropdownMenu | undefined;
 
   const options = [
     { value: "option1", label: "Option 1" },
@@ -288,17 +295,17 @@ function MultiSelectDropdown() {
   };
 
   const toggleDropdown = () => {
-    if (dropdownRef.current) {
-      const dropdown = dropdownRef.current.querySelector(
+    if (dropdownRef) {
+      const dropdown = dropdownRef.querySelector(
         "modus-dropdown-menu"
       ) as any;
       if (dropdown) {
-        if (isOpen) {
+        if (isOpen()) {
           dropdown.close();
         } else {
           dropdown.open();
         }
-        setIsOpen(!isOpen);
+        setIsOpen(!isOpen());
       }
     }
   };
@@ -306,25 +313,26 @@ function MultiSelectDropdown() {
   return (
     <div class="space-y-2">
       <ModusWcButton onClick={toggleDropdown}>
-        {selectedValues.length > 0
-          ? `${selectedValues.length} selected`
+        {selectedValues().length > 0
+          ? `${selectedValues().length} selected`
           : "Select options"}
       </ModusWcButton>
 
-      <ModusWcDropdownMenu ref={dropdownRef} onItemSelect={handleItemSelect}>
-        {options.map((option) => (
-          <ModusWcDropdownMenuItem
-            key={option.value}
-            value={option.value}
-            class={
-              selectedValues.includes(option.value)
-                ? "bg-primary text-primary-foreground"
-                : ""
-            }
-          >
-            {option.label}
-          </ModusWcDropdownMenuItem>
-        ))}
+      <ModusWcDropdownMenu ref={(el: ModusWcDropdownMenu) => (dropdownRef = el)} onItemSelect={handleItemSelect}>
+        <For each={options}>
+          {(option) => (
+            <ModusWcDropdownMenuItem
+              value={option.value}
+              class={
+                selectedValues().includes(option.value)
+                  ? "bg-primary text-primary-foreground"
+                  : ""
+              }
+            >
+              {option.label}
+            </ModusWcDropdownMenuItem>
+          )}
+        </For>
       </ModusWcDropdownMenu>
     </div>
   );
@@ -339,11 +347,11 @@ function MultiSelectDropdown() {
 // ✅ CORRECT: Test dropdown reliability
 function DropdownTest() {
   const [testResults, setTestResults] = createSignal<string[]>([]);
-  const dropdownRef = useRef<ModusWcDropdownMenu>(null);
+  let dropdownRef: ModusWcDropdownMenu | undefined;
 
   const testDropdown = () => {
-    if (dropdownRef.current) {
-      const dropdown = dropdownRef.current.querySelector(
+    if (dropdownRef) {
+      const dropdown = dropdownRef.querySelector(
         "modus-dropdown-menu"
       ) as any;
       if (dropdown) {
@@ -367,7 +375,7 @@ function DropdownTest() {
     <div class="space-y-4">
       <ModusWcButton onClick={testDropdown}>Test Dropdown</ModusWcButton>
 
-      <ModusWcDropdownMenu ref={dropdownRef} onItemSelect={handleItemSelect}>
+      <ModusWcDropdownMenu ref={(el: ModusWcDropdownMenu) => (dropdownRef = el)} onItemSelect={handleItemSelect}>
         <ModusWcDropdownMenuItem value="test1">
           Test Option 1
         </ModusWcDropdownMenuItem>
@@ -377,10 +385,12 @@ function DropdownTest() {
       </ModusWcDropdownMenu>
 
       <div>
-        <h3>Test Results:</h3>
-        {testResults.map((result, index) => (
-          <div key={index}>{result}</div>
-        ))}
+        <div class="text-lg font-semibold">Test Results:</div>
+        <For each={testResults()}>
+          {(result) => (
+            <div>{result}</div>
+          )}
+        </For>
       </div>
     </div>
   );
@@ -402,7 +412,7 @@ const options = [{ label: "Option 1", value: "1" }];
 ```tsx
 // ❌ WRONG: Don't rely on ModusSelect events
 const handleInputChange = (event: CustomEvent<InputEvent>) => {
-  // This may not fire reliably in React
+  // This may not fire reliably in SolidJS
   setValue(event.target.value);
 };
 ```
@@ -433,7 +443,7 @@ const handleInputChange = (event: CustomEvent<InputEvent>) => {
 - [ ] ✅ **Use ModusDropdownMenu**: Never use ModusSelect
 - [ ] ✅ **Event Handling**: Use itemSelect events for reliability
 - [ ] ✅ **Programmatic Control**: Use menuVisible property for control
-- [ ] ✅ **State Management**: Proper state management with React
+- [ ] ✅ **State Management**: Proper state management with SolidJS
 - [ ] ✅ **Testing**: Test dropdown functionality and events
 - [ ] ✅ **Accessibility**: Ensure proper accessibility with dropdown
 

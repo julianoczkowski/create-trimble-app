@@ -1,10 +1,10 @@
 ---
-description: Essential state management patterns for Modus Accordion components in React
+description: Essential state management patterns for Modus Accordion components in SolidJS
 globs: ["**/components/ModusAccordion*.tsx", "**/demos/**/page.tsx"]
 alwaysApply: false
 ---
 
-# Modus Accordion State Management in React
+# Modus Accordion State Management in SolidJS
 
 ## 🚨 **IMPORTANT: Accordion State Management Guidelines**
 
@@ -25,7 +25,7 @@ function AccordionComponent() {
     <ModusWcAccordion
       onExpandedChange={(e) => setIsExpanded(e.detail.expanded)} // ❌ Creates state loop
     >
-      <ModusWcCollapse expanded={isExpanded}>
+      <ModusWcCollapse expanded={isExpanded()}>
         {" "}
         {/* ❌ This causes conflicts */}
         <div slot="content">Content</div>
@@ -55,18 +55,19 @@ function MyComponent() {
 
   return (
     <div>
-      {Object.entries(accordionStates).map(([id, isExpanded]) => (
-        <ModusWcAccordion
-          key={id}
-          onExpandedChange={() => toggleAccordion(id)} // ❌ Creates state loops
-        >
-          <ModusWcCollapse expanded={isExpanded}>
-            {" "}
-            {/* ❌ This can cause conflicts */}
-            <div slot="content">Content for {id}</div>
-          </ModusWcCollapse>
-        </ModusWcAccordion>
-      ))}
+      <For each={Object.entries(accordionStates())}>
+        {([id, isExpanded]) => (
+          <ModusWcAccordion
+            onExpandedChange={() => toggleAccordion(id)} // ❌ Creates state loops
+          >
+            <ModusWcCollapse expanded={isExpanded}>
+              {" "}
+              {/* ❌ This can cause conflicts */}
+              <div slot="content">Content for {id}</div>
+            </ModusWcCollapse>
+          </ModusWcAccordion>
+        )}
+      </For>
     </div>
   );
 }
@@ -166,19 +167,19 @@ function AccordionComponent() {
 ```tsx
 // ✅ CORRECT: Use refs for programmatic control
 function AccordionComponent() {
-  const collapseRef = useRef<ModusWcCollapse>(null);
+  let collapseRef: HTMLElement | undefined;
 
   const openAccordion = () => {
     // ✅ CORRECT: Use ref to control collapse programmatically
-    if (collapseRef.current) {
-      collapseRef.current.expanded = true;
+    if (collapseRef) {
+      (collapseRef as any).expanded = true;
     }
   };
 
   const closeAccordion = () => {
     // ✅ CORRECT: Use ref to control collapse programmatically
-    if (collapseRef.current) {
-      collapseRef.current.expanded = false;
+    if (collapseRef) {
+      (collapseRef as any).expanded = false;
     }
   };
 
@@ -210,7 +211,7 @@ function AccordionComponent() {
 
 1. **Let Modus Components Own Their State**
 
-   - Don't try to control `expanded` from React
+   - Don't try to control `expanded` from SolidJS
    - Use events to track state changes
    - Use refs for programmatic control when needed
 
@@ -238,11 +239,11 @@ function AccordionComponent() {
 
    ```tsx
    // ✅ CORRECT: Ref-based control
-   const accordionRef = useRef<ModusWcAccordion>(null);
+   let accordionRef: HTMLElement | undefined;
 
    const toggleAccordion = () => {
-     if (accordionRef.current) {
-       accordionRef.current.expanded = !accordionRef.current.expanded;
+     if (accordionRef) {
+       (accordionRef as any).expanded = !(accordionRef as any).expanded;
      }
    };
    ```
@@ -252,17 +253,17 @@ function AccordionComponent() {
 ```tsx
 // ✅ CORRECT: Multiple accordions with independent state
 function MultipleAccordions() {
-  const accordionRefs = useRef<(ModusWcAccordion | null)[]>([]);
+  const accordionRefs: HTMLElement[] = [];
 
   const openAllAccordions = () => {
-    accordionRefs.current.forEach((ref) => {
-      if (ref) ref.expanded = true;
+    accordionRefs.forEach((ref) => {
+      if (ref) (ref as any).expanded = true;
     });
   };
 
   const closeAllAccordions = () => {
-    accordionRefs.current.forEach((ref) => {
-      if (ref) ref.expanded = false;
+    accordionRefs.forEach((ref) => {
+      if (ref) (ref as any).expanded = false;
     });
   };
 
@@ -271,15 +272,16 @@ function MultipleAccordions() {
       <button onClick={openAllAccordions}>Open All</button>
       <button onClick={closeAllAccordions}>Close All</button>
 
-      {accordionData.map((item, index) => (
-        <ModusWcAccordion
-          key={item.id}
-          ref={(el) => (accordionRefs.current[index] = el)}
-        >
-          <div slot="header">{item.title}</div>
-          <div slot="body">{item.content}</div>
-        </ModusWcAccordion>
-      ))}
+      <For each={accordionData}>
+        {(item, index) => (
+          <ModusWcAccordion
+            ref={(el: HTMLElement) => (accordionRefs[index()] = el)}
+          >
+            <div slot="header">{item.title}</div>
+            <div slot="body">{item.content}</div>
+          </ModusWcAccordion>
+        )}
+      </For>
     </div>
   );
 }
@@ -313,18 +315,19 @@ function AccordionWithTracking() {
 
   return (
     <div>
-      {accordionData.map((item) => (
-        <ModusWcAccordion
-          key={item.id}
-          onExpandedChange={handleAccordionChange(item.id)}
-        >
-          <div slot="header">
-            {item.title}
-            {accordionStates[item.id] && <span> (Open)</span>}
-          </div>
-          <div slot="body">{item.content}</div>
-        </ModusWcAccordion>
-      ))}
+      <For each={accordionData}>
+        {(item) => (
+          <ModusWcAccordion
+            onExpandedChange={handleAccordionChange(item.id)}
+          >
+            <div slot="header">
+              {item.title}
+              {accordionStates()[item.id] && <span> (Open)</span>}
+            </div>
+            <div slot="body">{item.content}</div>
+          </ModusWcAccordion>
+        )}
+      </For>
     </div>
   );
 }
@@ -344,21 +347,23 @@ function AccordionWithConditionalContent() {
 
   return (
     <div>
-      {accordionData.map((item) => (
-        <div key={item.id}>
-          <ModusWcAccordion onExpandedChange={handleAccordionChange(item.id)}>
-            <div slot="header">{item.title}</div>
-            <div slot="body">{item.content}</div>
-          </ModusWcAccordion>
+      <For each={accordionData}>
+        {(item) => (
+          <div>
+            <ModusWcAccordion onExpandedChange={handleAccordionChange(item.id)}>
+              <div slot="header">{item.title}</div>
+              <div slot="body">{item.content}</div>
+            </ModusWcAccordion>
 
-          {/* ✅ CORRECT: Show additional content based on accordion state */}
-          {activeAccordion === item.id && (
-            <div class="mt-4 p-4 bg-muted rounded">
-              Additional content for {item.title}
-            </div>
-          )}
-        </div>
-      ))}
+            {/* ✅ CORRECT: Show additional content based on accordion state */}
+            {activeAccordion() === item.id && (
+              <div class="mt-4 p-4 bg-muted rounded">
+                Additional content for {item.title}
+              </div>
+            )}
+          </div>
+        )}
+      </For>
     </div>
   );
 }
@@ -366,38 +371,38 @@ function AccordionWithConditionalContent() {
 
 ## 🚫 **What NOT to Do**
 
-### ❌ **Don't Control State from React**
+### ❌ **Don't Control State from SolidJS**
 
 ```tsx
 // ❌ WRONG: Don't do this
 const [isExpanded, setIsExpanded] = createSignal(false);
 
 <ModusWcAccordion
-  expanded={isExpanded}  // ❌ This causes conflicts
+  expanded={isExpanded()}  // ❌ This causes conflicts
   onExpandedChange={(e) => setIsExpanded(e.detail)}  // ❌ Creates loops
 >
 ```
 
-### ❌ **Don't Use React State for Accordion Logic**
+### ❌ **Don't Use SolidJS State for Accordion Logic**
 
 ```tsx
-// ❌ WRONG: Don't manage accordion state in React
+// ❌ WRONG: Don't manage accordion state in SolidJS
 const [accordionState, setAccordionState] = createSignal({
   accordion1: false,
   accordion2: true,
 });
 ```
 
-### ❌ **Don't Try to Sync React and Modus State**
+### ❌ **Don't Try to Sync SolidJS and Modus State**
 
 ```tsx
 // ❌ WRONG: Don't try to sync states
 createEffect(() => {
   // This will cause infinite loops
-  if (reactState !== modusState) {
-    setReactState(modusState);
+  if (solidState() !== modusState) {
+    setSolidState(modusState);
   }
-}, [reactState, modusState]);
+});
 ```
 
 ## 🎯 **Key Takeaways**
@@ -414,16 +419,16 @@ createEffect(() => {
 ```tsx
 // ✅ CORRECT: Test accordion behavior
 function TestAccordion() {
-  const accordionRef = useRef<ModusWcAccordion>(null);
+  let accordionRef: HTMLElement | undefined;
 
   const testAccordion = () => {
-    if (accordionRef.current) {
+    if (accordionRef) {
       // Test opening
-      accordionRef.current.expanded = true;
+      (accordionRef as any).expanded = true;
 
       setTimeout(() => {
         // Test closing
-        accordionRef.current!.expanded = false;
+        (accordionRef as any).expanded = false;
       }, 1000);
     }
   };

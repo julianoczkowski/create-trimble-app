@@ -1,0 +1,119 @@
+---
+description: Critical rules for binding properties, attributes, and slots on Stencil-based Modus Web Components from SolidJS. Prevents silent rendering failures.
+globs: ["src/components/Modus*.tsx", "src/demos/**/*.tsx"]
+alwaysApply: false
+---
+
+# Stencil Web Component Property Binding in SolidJS
+
+SolidJS and Stencil web components have interop pitfalls that cause silent failures. These rules prevent the three most common bugs.
+
+## Rule 1: Complex props must be set as JS properties, never JSX attributes
+
+Stencil `@Prop()` values that are objects, arrays, or functions CANNOT be passed as JSX attributes. SolidJS will serialize them to `[object Object]` or drop them entirely.
+
+**Broken** (silent failure - table shows "No data available"):
+```tsx
+<modus-wc-table columns={columns} data={data} editable={true} />
+```
+
+**Correct** (set via ref + onMount/createEffect):
+```tsx
+let tableEl;
+
+onMount(() => {
+  const table = tableEl;
+  table.columns = columns;   // JS property assignment
+  table.data = data;          // JS property assignment
+  table.editable = true;
+});
+
+// Re-sync when props change
+createEffect(() => {
+  if (!tableEl) return;
+  tableEl.columns = props.columns;
+  tableEl.data = props.data;
+});
+
+return <modus-wc-table ref={(el) => (tableEl = el)} />;
+```
+
+**Affected components**: `modus-wc-table` (columns, data), `modus-wc-navbar` (userCard, visibility, textOverrides), `modus-wc-autocomplete` (items), `modus-wc-select` (options), any component with object/array/function props.
+
+## Rule 2: Named slots require child elements, not prop values
+
+Some Stencil components expose a `@Prop()` AND a `<slot>` with the same semantic name. The prop may exist on the prototype but the component only renders content from the **slot**. Always check the component's `render()` method for `<slot name="...">`.
+
+**Broken** (icon never appears despite property being set):
+```tsx
+<modus-wc-menu-item start-icon="dashboard" label="Dashboard" />
+```
+
+**Correct** (render into the named slot):
+```tsx
+<modus-wc-menu-item attr:label="Dashboard" attr:value="dashboard">
+  <i class="modus-icons" slot="start-icon">dashboard</i>
+</modus-wc-menu-item>
+```
+
+**How to detect**: If a prop is set (verified via DevTools `element.propName`) but nothing renders, check the component source for `<slot name="...">`. If the slot exists, you must provide a child element with `slot="slot-name"`.
+
+## Rule 3: Simple string/boolean props use `attr:` prefix
+
+SolidJS on custom elements converts kebab-case attributes to camelCase properties. This usually works, but for consistent behavior with Stencil's attribute watchers, prefer `attr:` for simple string and boolean values.
+
+```tsx
+<modus-wc-menu-item
+  attr:label={props.label}           // string -> attribute
+  attr:value={props.value}           // string -> attribute
+  attr:size={props.size ?? "md"}     // string -> attribute
+  attr:selected={props.selected ? "" : undefined}  // boolean -> presence attribute
+  attr:disabled={props.disabled ? "" : undefined}
+>
+  <i class="modus-icons" slot="start-icon">{props.startIcon}</i>
+</modus-wc-menu-item>
+```
+
+Boolean attributes: pass `""` for true, `undefined` for false (HTML boolean attribute pattern).
+
+## Rule 4: Custom editor renderers must create vanilla DOM elements
+
+The `modus-wc-table` `customEditorRenderer` callback must return a plain `HTMLElement`, not JSX. It runs outside SolidJS's reactive system.
+
+```tsx
+const columns = [
+  {
+    id: "task",
+    header: "Task",
+    accessor: "task",
+    editor: "custom",  // NOT "text" - use "custom" with customEditorRenderer
+    customEditorRenderer: (value, onCommit) => {
+      const input = document.createElement("input");
+      input.type = "text";
+      input.value = String(value || "");
+      input.style.cssText = "width:100%;border:1px solid var(--border);padding:4px 8px;border-radius:4px;font-size:14px";
+
+      setTimeout(() => { input.focus(); input.select(); }, 0);
+
+      input.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") { e.preventDefault(); onCommit(input.value); }
+        if (e.key === "Escape") { e.preventDefault(); onCommit(value); }
+      });
+      input.addEventListener("blur", () => onCommit(input.value));
+
+      return input;
+    },
+  },
+];
+```
+
+## Quick Reference: When to use what
+
+| Data type | Binding method | Example |
+|-----------|---------------|---------|
+| String | `attr:prop-name={value}` | `attr:label="Dashboard"` |
+| Boolean | `attr:prop-name={val ? "" : undefined}` | `attr:disabled={true ? "" : undefined}` |
+| Object/Array | `ref` + `onMount`/`createEffect` | `table.columns = [...]` |
+| Function | `ref` + `onMount`/`createEffect` | `table.editable = (row) => ...` |
+| Slot content | Child element with `slot` attr | `<i slot="start-icon">icon</i>` |
+| Events | `ref` + `addEventListener` in `onMount` | `el.addEventListener("cellEditCommit", handler)` |

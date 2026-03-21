@@ -82,12 +82,73 @@ const employeeData = [
   },
 ];
 
+function createTextEditor(
+  value: unknown,
+  onCommit: (value: unknown) => void,
+): HTMLElement {
+  const input = document.createElement("input");
+  input.type = "text";
+  input.value = String(value || "");
+  input.style.width = "100%";
+  input.style.border = "1px solid var(--border)";
+  input.style.padding = "4px 8px";
+  input.style.borderRadius = "4px";
+  input.style.fontSize = "14px";
+
+  setTimeout(() => {
+    input.focus();
+    input.select();
+  }, 0);
+
+  const commitValue = () => onCommit(input.value);
+
+  input.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      commitValue();
+    }
+    if (e.key === "Escape") {
+      e.preventDefault();
+      onCommit(value);
+    }
+  });
+
+  input.addEventListener("blur", commitValue);
+
+  return input;
+}
+
 const taskColumns: TableColumn[] = [
   { id: "id", header: "ID", accessor: "id", width: "60px" },
-  { id: "task", header: "Task", accessor: "task", width: "40%", editor: "text" },
-  { id: "assignee", header: "Assignee", accessor: "assignee", editor: "text" },
-  { id: "priority", header: "Priority", accessor: "priority", editor: "text" },
-  { id: "status", header: "Status", accessor: "status", editor: "text" },
+  {
+    id: "task",
+    header: "Task",
+    accessor: "task",
+    width: "40%",
+    editor: "custom",
+    customEditorRenderer: createTextEditor,
+  },
+  {
+    id: "assignee",
+    header: "Assignee",
+    accessor: "assignee",
+    editor: "custom",
+    customEditorRenderer: createTextEditor,
+  },
+  {
+    id: "priority",
+    header: "Priority",
+    accessor: "priority",
+    editor: "custom",
+    customEditorRenderer: createTextEditor,
+  },
+  {
+    id: "status",
+    header: "Status",
+    accessor: "status",
+    editor: "custom",
+    customEditorRenderer: createTextEditor,
+  },
 ];
 
 const initialTaskData = [

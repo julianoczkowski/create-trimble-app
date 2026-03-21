@@ -1,4 +1,4 @@
-import { createEffect } from "solid-js";
+import { createEffect, Show } from "solid-js";
 import type { Component } from "solid-js";
 
 /**
@@ -11,7 +11,7 @@ export interface ModusMenuItemProps {
   value: string;
   /** The text to display as a sub-label. */
   subLabel?: string;
-  /** An icon to display at the start of the menu item. */
+  /** An icon name to display at the start of the menu item (uses start-icon slot). */
   startIcon?: string;
   /** Whether the menu item is selected. */
   selected?: boolean;
@@ -31,8 +31,7 @@ export interface ModusMenuItemProps {
 
 /**
  * Renders a Modus menu item component.
- * @param props - The component props.
- * @returns The rendered menu item component.
+ * Icons are rendered into the `start-icon` slot (the web component uses a named slot, not a prop).
  */
 const ModusMenuItem: Component<ModusMenuItemProps> = (props) => {
   let menuItemEl: HTMLModusWcMenuItemElement | undefined;
@@ -59,17 +58,20 @@ const ModusMenuItem: Component<ModusMenuItemProps> = (props) => {
   return (
     <modus-wc-menu-item
       ref={(el) => (menuItemEl = el)}
-      label={props.label}
-      value={props.value}
-      sub-label={props.subLabel}
-      start-icon={props.startIcon}
-      selected={props.selected ?? false}
-      disabled={props.disabled ?? false}
-      bordered={props.bordered ?? false}
-      focused={props.focused ?? false}
-      size={props.size ?? "md"}
-      custom-class={props.customClass}
-    />
+      attr:label={props.label}
+      attr:value={props.value}
+      attr:sub-label={props.subLabel}
+      attr:selected={props.selected ? "" : undefined}
+      attr:disabled={props.disabled ? "" : undefined}
+      attr:bordered={props.bordered ? "" : undefined}
+      attr:focused={props.focused ? "" : undefined}
+      attr:size={props.size ?? "md"}
+      attr:custom-class={props.customClass}
+    >
+      <Show when={props.startIcon}>
+        <i class="modus-icons" slot="start-icon">{props.startIcon}</i>
+      </Show>
+    </modus-wc-menu-item>
   );
 };
 

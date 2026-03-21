@@ -14,7 +14,7 @@ When `ModusButton` has default values for `variant` and `color`, these explicit 
 
 ## Root Cause
 
-The `modus-wc-button-group` web component uses `setAttribute()` to apply its `variant` and `color` to child buttons **after** they load. If React buttons have explicit defaults, they override the group's settings.
+The `modus-wc-button-group` web component uses `setAttribute()` to apply its `variant` and `color` to child buttons **after** they load. If SolidJS buttons have explicit defaults, they override the group's settings.
 
 ## Correct Pattern
 

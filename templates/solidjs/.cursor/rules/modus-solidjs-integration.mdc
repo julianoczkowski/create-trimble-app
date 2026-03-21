@@ -133,21 +133,18 @@ function BasicComponents() {
 
 ```tsx
 // ✅ CORRECT: Event handling with refs
-import { useRef, createEffect } from "solid-js";
+import { onMount, onCleanup } from "solid-js";
 import {
   ModusWcButton,
   ModusWcTextInput,
 } from "@trimble-oss/moduswebcomponents-solidjs";
 
 function EventHandlingComponent() {
-  const buttonRef = useRef<ModusWcButton>(null);
-  const inputRef = useRef<ModusWcTextInput>(null);
+  let buttonRef: ModusWcButton | undefined;
+  let inputRef: ModusWcTextInput | undefined;
 
-  createEffect(() => {
-    const button = buttonRef.current;
-    const input = inputRef.current;
-
-    if (!button || !input) return;
+  onMount(() => {
+    if (!buttonRef || !inputRef) return;
 
     const handleButtonClick = (event: CustomEvent) => {
       console.log("Button clicked:", event.detail);
@@ -157,14 +154,14 @@ function EventHandlingComponent() {
       console.log("Input changed:", event.detail);
     };
 
-    button.addEventListener("buttonClick", handleButtonClick);
-    input.addEventListener("inputChange", handleInputChange);
+    buttonRef.addEventListener("buttonClick", handleButtonClick);
+    inputRef.addEventListener("inputChange", handleInputChange);
 
-    return () => {
-      button.removeEventListener("buttonClick", handleButtonClick);
-      input.removeEventListener("inputChange", handleInputChange);
-    };
-  }, []);
+    onCleanup(() => {
+      buttonRef?.removeEventListener("buttonClick", handleButtonClick);
+      inputRef?.removeEventListener("inputChange", handleInputChange);
+    });
+  });
 
   return (
     <div class="space-y-4">
@@ -184,7 +181,7 @@ function EventHandlingComponent() {
 
 ```tsx
 // ✅ CORRECT: State management with Modus components
-import { createSignal, useRef, createEffect } from "solid-js";
+import { createSignal } from "solid-js";
 import {
   ModusWcModal,
   ModusWcButton,
@@ -192,11 +189,11 @@ import {
 
 function StatefulComponent() {
   const [isModalOpen, setIsModalOpen] = createSignal(false);
-  const modalRef = useRef<ModusWcModal>(null);
+  let modalRef: ModusWcModal | undefined;
 
   const openModal = () => {
-    if (modalRef.current) {
-      const dialog = modalRef.current.querySelector(
+    if (modalRef) {
+      const dialog = modalRef.querySelector(
         "dialog"
       ) as HTMLDialogElement;
       if (dialog) {
@@ -207,8 +204,8 @@ function StatefulComponent() {
   };
 
   const closeModal = () => {
-    if (modalRef.current) {
-      const dialog = modalRef.current.querySelector(
+    if (modalRef) {
+      const dialog = modalRef.querySelector(
         "dialog"
       ) as HTMLDialogElement;
       if (dialog) {
@@ -385,7 +382,7 @@ function DynamicImportComponent() {
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react-jsx",
+    "jsx": "preserve",
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
@@ -440,10 +437,10 @@ function TypedComponent({ title, description, onAction }: ComponentProps) {
 
 ```tsx
 // ❌ WRONG: Direct method access
-const buttonRef = useRef<ModusWcButton>(null);
+let buttonRef: ModusWcButton | undefined;
 
 const handleClick = () => {
-  buttonRef.current?.click(); // ❌ This won't work
+  buttonRef?.click(); // ❌ This won't work
 };
 
 // ✅ CORRECT: Event handling
@@ -457,7 +454,7 @@ const handleClick = (event: CustomEvent) => {
 ```tsx
 // ❌ WRONG: Mixing event handling patterns
 <ModusWcButton
-  onClick={handleClick}           // ❌ React event
+  onClick={handleClick}           // ❌ Standard event
   onInputChange={handleChange}   // ❌ Custom event
 >
   Button

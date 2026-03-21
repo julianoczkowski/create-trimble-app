@@ -1,0 +1,17 @@
+---
+description: Quick reference for Stencil web component property binding in SolidJS - prevents silent rendering failures
+globs: ["src/components/Modus*.tsx"]
+alwaysApply: true
+---
+
+# Stencil + SolidJS Binding Rules
+
+1. **Objects/arrays/functions** (columns, data, userCard, items, options): Set via `ref` + `onMount`/`createEffect` as JS properties. NEVER pass as JSX attributes - they serialize to `[object Object]`.
+
+2. **Named slots** (start-icon, main-menu, notifications): Render child elements with `slot="name"`, not prop values. Check component source for `<slot name="...">` if a prop exists but nothing renders.
+
+3. **Simple strings/booleans**: Use `attr:prop-name={value}`. Booleans: `attr:disabled={val ? "" : undefined}`.
+
+4. **Events**: Use `ref` + `addEventListener("eventName", handler)` in `onMount`, cleanup in `onCleanup`.
+
+5. **Table editors**: Use `editor: "custom"` + `customEditorRenderer` returning vanilla `HTMLElement` (not JSX). The `"text"` editor type does not work reliably.

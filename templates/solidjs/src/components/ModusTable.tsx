@@ -1,5 +1,4 @@
-import { createSignal, createEffect, onMount, type Component } from "solid-js";
-import { Show } from "solid-js";
+import { createEffect, onMount, onCleanup, type Component } from "solid-js";
 
 /**
  * Represents a column in a table.
@@ -61,95 +60,80 @@ export interface ModusTableProps {
 }
 
 /**
- * Renders a Modus table component with advanced features.
- *
- * @param {ModusTableProps} props - The component props.
- * @returns {JSX.Element} The rendered table component.
+ * Renders a Modus table component.
+ * Complex props (columns, data, editable) are set as JS properties via ref callback
+ * and createEffect, since they are objects/arrays that cannot be HTML attributes.
  */
 const ModusTable: Component<ModusTableProps> = (props) => {
-  const [mounted, setMounted] = createSignal(false);
   let tableEl: HTMLElement | undefined;
 
+  const setTableProps = (table: Record<string, unknown>) => {
+    table.columns = props.columns;
+    table.data = props.data;
+    if (props.editable !== undefined) table.editable = props.editable;
+    if (props.selectedRowIds !== undefined) table.selectedRowIds = props.selectedRowIds;
+    if (props.pageSizeOptions !== undefined) table.pageSizeOptions = props.pageSizeOptions;
+    table.currentPage = props.currentPage ?? 1;
+    table.paginated = props.paginated ?? false;
+    table.showPageSizeSelector = props.showPageSizeSelector ?? true;
+    table.selectable = props.selectable ?? "none";
+    table.sortable = props.sortable ?? true;
+    table.density = props.density ?? "comfortable";
+    table.hover = props.hover ?? true;
+    table.zebra = props.zebra ?? false;
+    if (props.customClass) table.customClass = props.customClass;
+  };
+
   onMount(() => {
-    setMounted(true);
-  });
+    const table = tableEl as Record<string, unknown> | undefined;
+    if (!table) return;
 
-  createEffect(() => {
-    const table = tableEl;
-    if (!table || !mounted()) return;
+    // Set properties immediately on mount
+    setTableProps(table);
 
+    // Event listeners
     const handleCellEditStart = (e: Event) =>
-      props.onCellEditStart?.(e as CustomEvent<{ rowIndex: number; colId: string }>);
+      props.onCellEditStart?.(e as CustomEvent);
     const handleCellEditCommit = (e: Event) =>
-      props.onCellEditCommit?.(e as CustomEvent<{
-        rowIndex: number;
-        colId: string;
-        newValue: unknown;
-        updatedRow: unknown;
-      }>);
+      props.onCellEditCommit?.(e as CustomEvent);
     const handleSortChange = (e: Event) =>
-      props.onSortChange?.(e as CustomEvent<Array<{ columnId: string; direction: "asc" | "desc" }>>);
+      props.onSortChange?.(e as CustomEvent);
     const handlePaginationChange = (e: Event) =>
-      props.onPaginationChange?.(e as CustomEvent<{ currentPage: number; pageSize: number }>);
+      props.onPaginationChange?.(e as CustomEvent);
     const handleRowClick = (e: Event) =>
-      props.onRowClick?.(e as CustomEvent<{ row: unknown; index: number }>);
+      props.onRowClick?.(e as CustomEvent);
     const handleRowSelectionChange = (e: Event) =>
-      props.onRowSelectionChange?.(e as CustomEvent<{
-        selectedRows: unknown[];
-        selectedRowIds: string[];
-      }>);
+      props.onRowSelectionChange?.(e as CustomEvent);
 
-    if (props.onCellEditStart) table.addEventListener("cellEditStart", handleCellEditStart);
-    if (props.onCellEditCommit) table.addEventListener("cellEditCommit", handleCellEditCommit);
-    if (props.onSortChange) table.addEventListener("sortChange", handleSortChange);
-    if (props.onPaginationChange) table.addEventListener("paginationChange", handlePaginationChange);
-    if (props.onRowClick) table.addEventListener("rowClick", handleRowClick);
-    if (props.onRowSelectionChange) table.addEventListener("rowSelectionChange", handleRowSelectionChange);
+    tableEl!.addEventListener("cellEditStart", handleCellEditStart);
+    tableEl!.addEventListener("cellEditCommit", handleCellEditCommit);
+    tableEl!.addEventListener("sortChange", handleSortChange);
+    tableEl!.addEventListener("paginationChange", handlePaginationChange);
+    tableEl!.addEventListener("rowClick", handleRowClick);
+    tableEl!.addEventListener("rowSelectionChange", handleRowSelectionChange);
 
-    return () => {
-      if (props.onCellEditStart) table.removeEventListener("cellEditStart", handleCellEditStart);
-      if (props.onCellEditCommit) table.removeEventListener("cellEditCommit", handleCellEditCommit);
-      if (props.onSortChange) table.removeEventListener("sortChange", handleSortChange);
-      if (props.onPaginationChange) table.removeEventListener("paginationChange", handlePaginationChange);
-      if (props.onRowClick) table.removeEventListener("rowClick", handleRowClick);
-      if (props.onRowSelectionChange)
-        table.removeEventListener("rowSelectionChange", handleRowSelectionChange);
-    };
+    onCleanup(() => {
+      tableEl?.removeEventListener("cellEditStart", handleCellEditStart);
+      tableEl?.removeEventListener("cellEditCommit", handleCellEditCommit);
+      tableEl?.removeEventListener("sortChange", handleSortChange);
+      tableEl?.removeEventListener("paginationChange", handlePaginationChange);
+      tableEl?.removeEventListener("rowClick", handleRowClick);
+      tableEl?.removeEventListener("rowSelectionChange", handleRowSelectionChange);
+    });
   });
 
+  // Reactively update complex properties when they change
   createEffect(() => {
     const table = tableEl as Record<string, unknown> | undefined;
-    if (!table || !mounted()) return;
-
-    if (props.columns?.length) table.columns = props.columns;
-    if (props.data?.length) table.data = props.data;
-    if (props.editable !== undefined) table.editable = props.editable;
+    if (!table) return;
+    setTableProps(table);
   });
 
   return (
-    <Show
-      when={mounted()}
-      fallback={<div class="animate-pulse h-32 bg-muted rounded" />}
-    >
-      <modus-wc-table
-        ref={(el) => (tableEl = el as HTMLElement)}
-        columns={props.columns}
-        data={props.data}
-        currentPage={props.currentPage ?? 1}
-        pageSizeOptions={props.pageSizeOptions ?? [5, 10, 15]}
-        paginated={props.paginated ?? false}
-        showPageSizeSelector={props.showPageSizeSelector ?? true}
-        selectable={props.selectable ?? "none"}
-        selectedRowIds={props.selectedRowIds}
-        sortable={props.sortable ?? true}
-        density={props.density ?? "comfortable"}
-        editable={props.editable ?? false}
-        hover={props.hover ?? true}
-        zebra={props.zebra ?? false}
-        customClass={props.customClass}
-        aria-label={props.ariaLabel}
-      />
-    </Show>
+    <modus-wc-table
+      ref={(el) => (tableEl = el as HTMLElement)}
+      attr:aria-label={props.ariaLabel}
+    />
   );
 };
 

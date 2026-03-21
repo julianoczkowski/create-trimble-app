@@ -105,7 +105,7 @@ npx @julianoczkowski/create-trimble-app@latest --help
 | --------------- | --------------- | -------------------------------------------------------------------------------------------------------- |
 | ⚛️ **React**    | React + Vite    | Modus 2.0 Components, TypeScript, Tailwind CSS, 40+ Cursor Rules, GitHub Templates, Code Quality Scripts |
 | 🅰️ **Angular**  | Angular 20+     | Modus 2.0 Web Components, TypeScript, Tailwind CSS, 11 Cursor Rules, GitHub Workflows, Demo Components   |
-| ▲ **SolidJS**   | SolidJS + Vite  | Modus 2.0 Components, TypeScript, Tailwind CSS, 44 Cursor Rules, Vitest, 46 Demo Pages                  |
+| ▲ **SolidJS**   | SolidJS + Vite  | Modus 2.0 Components, TypeScript, Tailwind CSS, 44 Cursor Rules, Vitest, 44 Demo Pages, MCP Servers     |
 
 ## What's Included in Each Template
 

@@ -1,12 +1,12 @@
 ---
-description: Core React best practices for Modus Design System integration
+description: Core SolidJS best practices for Modus Design System integration
 globs: ["**/*.tsx", "**/*.ts"]
 alwaysApply: true
 ---
 
 # Modus SolidJS Best Practices - Short
 
-Core React best practices for Modus Design System integration.
+Core SolidJS best practices for Modus Design System integration.
 
 ## Key Rules
 
@@ -15,9 +15,9 @@ Core React best practices for Modus Design System integration.
 - **Component composition pattern** - Build complex components from smaller, reusable pieces
 - **Event handling with refs** - Use refs and event listeners for Modus Web Components
 - **Theme-aware components** - Use theme context for conditional styling and content
-- **Performance optimization** - Use memoization and lazy loading where appropriate
+- **Performance optimization** - Use `createMemo` and lazy loading where appropriate
 - **Vite-specific patterns** - Use environment variables, dynamic imports, and asset imports
 
 ## Reference
 
-For detailed component patterns, styling architecture, and advanced React techniques, fetch the full rule: `modus-solidjs-best-practices`
+For detailed component patterns, styling architecture, and advanced SolidJS techniques, fetch the full rule: `modus-solidjs-best-practices`

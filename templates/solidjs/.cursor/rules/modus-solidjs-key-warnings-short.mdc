@@ -20,4 +20,4 @@ Critical SolidJS key prop patterns for Modus Web Components.
 
 ## Reference
 
-For detailed key patterns, common pitfalls, and advanced React techniques, fetch the full rule: `modus-solidjs-key-warnings`
+For detailed key patterns, common pitfalls, and advanced SolidJS techniques, fetch the full rule: `modus-solidjs-key-warnings`

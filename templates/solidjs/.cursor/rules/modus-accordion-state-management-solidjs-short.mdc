@@ -10,7 +10,7 @@ Essential state management patterns for Modus Accordion components in SolidJS.
 
 ## Key Rules
 
-- **Let Modus components manage their own state** - Don't try to control accordion state from React
+- **Let Modus components manage their own state** - Don't try to control accordion state from SolidJS
 - **Use `expanded` for initial state only** - Set initial state, then let component handle changes
 - **Use `onExpandedChange` for tracking** - Monitor state changes without controlling them
 - **Use refs for programmatic control** - Access component methods when needed

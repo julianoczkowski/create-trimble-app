@@ -4,7 +4,7 @@ globs: ["**/components/ModusCheckbox*.tsx", "**/demos/**/page.tsx"]
 alwaysApply: false
 ---
 
-# ModusWcCheckbox Value Inversion Bug in React
+# ModusWcCheckbox Value Inversion Bug in SolidJS
 
 ## 🚨 **CRITICAL BUG: Checkbox Value Inversion**
 
@@ -121,19 +121,19 @@ function CheckboxComponent() {
 interface ModusCheckboxProps {
   value?: boolean;
   onValueChange?: (event: CustomEvent<boolean>) => void;
-  // ... other props
+  children?: JSX.Element;
 }
 
-function ModusCheckbox({ value, onValueChange, ...props }: ModusCheckboxProps) {
-  const checkboxRef = useRef<HTMLModusWcCheckboxElement>(null);
+function ModusCheckbox(props: ModusCheckboxProps) {
+  let checkboxRef: HTMLModusWcCheckboxElement | undefined;
 
-  createEffect(() => {
-    const checkbox = checkboxRef.current;
-    if (!checkbox || !onValueChange) return;
+  onMount(() => {
+    const checkbox = checkboxRef;
+    if (!checkbox) return;
 
     const handleValueChange = (event: Event) => {
       const customEvent = event as CustomEvent<InputEvent>;
-      // 🚨 CRITICAL: Handle the value inversion bug
+      // CRITICAL: Handle the value inversion bug
       const rawValue = (customEvent.target as HTMLModusWcCheckboxElement).value;
       const actualValue = !rawValue; // ✅ CORRECT: Invert the value
 
@@ -144,14 +144,14 @@ function ModusCheckbox({ value, onValueChange, ...props }: ModusCheckboxProps) {
         cancelable: true,
       });
 
-      onValueChange(correctedEvent);
+      props.onValueChange?.(correctedEvent);
     };
 
     checkbox.addEventListener("inputChange", handleValueChange);
-    return () => checkbox.removeEventListener("inputChange", handleValueChange);
-  }, [onValueChange]);
+    onCleanup(() => checkbox.removeEventListener("inputChange", handleValueChange));
+  });
 
-  return <ModusWcCheckbox ref={checkboxRef} value={value} {...props} />;
+  return <ModusWcCheckbox ref={(el) => (checkboxRef = el)} value={props.value}>{props.children}</ModusWcCheckbox>;
 }
 
 // ✅ CORRECT: Use the wrapper component
@@ -197,15 +197,16 @@ function MultipleCheckboxes() {
 
   return (
     <div>
-      {Object.entries(checkboxes).map(([key, isChecked]) => (
-        <ModusWcCheckbox
-          key={key}
-          value={isChecked}
-          onInputChange={handleCheckboxChange(key)}
-        >
-          Option {key}
-        </ModusWcCheckbox>
-      ))}
+      <For each={Object.entries(checkboxes())}>
+        {([key, isChecked]) => (
+          <ModusWcCheckbox
+            value={isChecked}
+            onInputChange={handleCheckboxChange(key)}
+          >
+            Option {key}
+          </ModusWcCheckbox>
+        )}
+      </For>
     </div>
   );
 }
@@ -234,31 +235,31 @@ function FormWithCheckbox() {
       }));
     };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: Event) => {
     e.preventDefault();
-    console.log("Form data:", formData); // ✅ CORRECT: Actual checked states
+    console.log("Form data:", formData()); // ✅ CORRECT: Actual checked states
   };
 
   return (
     <form onSubmit={handleSubmit}>
       <input
         type="text"
-        value={formData.name}
-        onChange={(e) =>
+        value={formData().name}
+        onInput={(e) =>
           setFormData((prev) => ({ ...prev, name: e.target.value }))
         }
         placeholder="Name"
       />
 
       <ModusWcCheckbox
-        value={formData.agreeToTerms}
+        value={formData().agreeToTerms}
         onInputChange={handleCheckboxChange("agreeToTerms")}
       >
         I agree to the terms and conditions
       </ModusWcCheckbox>
 
       <ModusWcCheckbox
-        value={formData.subscribeNewsletter}
+        value={formData().subscribeNewsletter}
         onInputChange={handleCheckboxChange("subscribeNewsletter")}
       >
         Subscribe to newsletter
@@ -348,10 +349,12 @@ function TestCheckboxInversion() {
       </ModusWcCheckbox>
 
       <div>
-        <h3>Test Results:</h3>
-        {testResults.map((result, index) => (
-          <div key={index}>{result}</div>
-        ))}
+        <div class="text-lg font-semibold">Test Results:</div>
+        <For each={testResults()}>
+          {(result) => (
+            <div>{result}</div>
+          )}
+        </For>
       </div>
     </div>
   );
@@ -386,12 +389,12 @@ function DebugCheckboxInversion() {
         Debug Checkbox
       </ModusWcCheckbox>
 
-      {debugInfo && (
+      {debugInfo() && (
         <div class="mt-4 p-4 bg-muted rounded">
-          <h3>Debug Info:</h3>
-          <p>Raw value: {debugInfo.value?.toString()}</p>
-          <p>Actual checked: {debugInfo.actualChecked?.toString()}</p>
-          <p>Timestamp: {debugInfo.timestamp}</p>
+          <div class="text-lg font-semibold">Debug Info:</div>
+          <div>Raw value: {debugInfo()?.value?.toString()}</div>
+          <div>Actual checked: {debugInfo()?.actualChecked?.toString()}</div>
+          <div>Timestamp: {debugInfo()?.timestamp}</div>
         </div>
       )}
     </div>

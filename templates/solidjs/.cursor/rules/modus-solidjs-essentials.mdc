@@ -60,7 +60,7 @@ Comprehensive essential rules for SolidJS + Vite development with Modus Design S
 - **Check all content** - Verify no emojis in comments, strings, or documentation
 - **Use linting to catch violations** - Automated checks for emoji usage
 
-## React Integration Patterns
+## SolidJS Integration Patterns
 
 ### Core Integration
 
@@ -70,19 +70,19 @@ Comprehensive essential rules for SolidJS + Vite development with Modus Design S
 - **CSS import order** - Import Modus CSS before Tailwind CSS
 - **TypeScript integration** - Use proper types for web component props and events
 - **Vite-specific patterns** - Use environment variables and dynamic imports
-- **Performance optimization** - Use memoization and lazy loading
+- **Performance optimization** - Use lazy loading where appropriate
 
-### React Best Practices
+### SolidJS Best Practices
 
 - **Single configurable components** - One component with variants, not multiple specific components
 - **Use design system colors only** - Never use generic Tailwind colors or hardcoded values
 - **Component composition pattern** - Build complex components from smaller, reusable pieces
 - **Event handling with refs** - Use refs and event listeners for Modus Web Components
 - **Theme-aware components** - Use theme context for conditional styling and content
-- **Performance optimization** - Use memoization and lazy loading where appropriate
+- **Performance optimization** - Use lazy loading where appropriate
 - **Vite-specific patterns** - Use environment variables, dynamic imports, and asset imports
 
-### React Key Warnings
+### SolidJS Key Warnings
 
 - **Use composite keys for web components** - `${value}-${index}` pattern for uniqueness
 - **Props over slots for icons** - Use `start-icon={icon}` not `<i slot="start-icon">`
@@ -96,7 +96,7 @@ Comprehensive essential rules for SolidJS + Vite development with Modus Design S
 
 ### Accordion State Management
 
-- **Let Modus components manage their own state** - Don't try to control accordion state from React
+- **Let Modus components manage their own state** - Don't try to control accordion state from SolidJS
 - **Use `expanded` for initial state only** - Set initial state, then let component handle changes
 - **Use `onExpandedChange` for tracking** - Monitor state changes without controlling them
 - **Use refs for programmatic control** - Access component methods when needed
@@ -107,7 +107,7 @@ Comprehensive essential rules for SolidJS + Vite development with Modus Design S
 ### Checkbox Value Inversion
 
 - **Always invert checkbox value property** - `const actualChecked = !value` from `inputChange` event
-- **Use wrapper components** - Create SolidJS wrapper to handle inversion automatically
+- **Use wrapper components** - Create a SolidJS wrapper to handle inversion automatically
 - **Never trust the raw value** - The `value` property is inverted (false when checked, true when unchecked)
 - **Handle in event handlers** - Invert value in `onInputChange` event handler
 - **Use utility functions** - Create helper functions for value inversion
@@ -126,7 +126,7 @@ Comprehensive essential rules for SolidJS + Vite development with Modus Design S
 
 ### Select vs Dropdown Menu
 
-- **Use ModusDropdownMenu, not ModusSelect** - ModusSelect has unreliable event handling in React
+- **Use ModusDropdownMenu, not ModusSelect** - ModusSelect has unreliable event handling in SolidJS
 - **Reliable itemSelect events** - ModusDropdownMenu provides consistent event handling
 - **Proper state management** - Use SolidJS state to track selected values and visibility
 - **Programmatic control** - Use refs to control dropdown visibility

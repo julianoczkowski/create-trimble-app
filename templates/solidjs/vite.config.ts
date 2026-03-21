@@ -14,6 +14,10 @@ export default defineConfig({
           src: "node_modules/@trimble-oss/moduswebcomponents/modus-wc/assets/*",
           dest: "modus-wc/assets",
         },
+        {
+          src: "node_modules/@trimble-oss/moduswebcomponents/modus-wc/assets/*",
+          dest: "assets",
+        },
       ],
     }),
   ],

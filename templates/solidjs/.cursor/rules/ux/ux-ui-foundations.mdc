@@ -70,7 +70,7 @@ colors: {
 
 **REFERENCE**: For more information referance `.cursor/rules/modus-components-reference.mdc`
 
-| Component | React Wrapper      | Props                                       | Usage Rule                                                            |          |                        |        |         |                                                       |
+| Component | SolidJS Wrapper    | Props                                       | Usage Rule                                                            |          |                        |        |         |                                                       |
 | --------- | ------------------ | ------------------------------------------- | --------------------------------------------------------------------- | -------- | ---------------------- | ------ | ------- | ----------------------------------------------------- |
 | Button    | `<ModusButton />`  | `variant="primary                           | secondary                                                             | tertiary | danger"`, `size="small | medium | large"` | One primary action per surface. Destructive uses red. |
 | Card      | `<ModusCard />`    | `elevation`, `padding`, `bordered`          | For grouping or sectioning. Use `bg-card` + `border-border`.          |          |                        |        |         |                                                       |
@@ -95,7 +95,7 @@ colors: {
 
 ### Supported Usage Patterns
 
-#### A) React Wrapper (preferred)
+#### A) SolidJS Wrapper (preferred)
 
 ```tsx
 // Informational icon (announced by SR)

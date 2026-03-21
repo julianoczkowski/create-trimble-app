@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-`create-trimble-app` is an interactive CLI tool that scaffolds Modus 2.0 web component applications for React and Angular. Templates are **bundled directly in the npm package** (not downloaded at runtime) for security, offline support, and consistency.
+`create-trimble-app` is an interactive CLI tool that scaffolds Modus 2.0 web component applications for React, Angular, and SolidJS. Templates are **bundled directly in the npm package** (not downloaded at runtime) for security, offline support, and consistency.
 
 ## Development Commands
 
@@ -38,7 +38,7 @@ bin/create-trimble-app.js (entry point)
 
 ### Key Modules
 
-**src/cli.js**: Parses CLI arguments with Commander.js. Validates framework option (react, angular). Handles all CLI flags (--framework, --current-folder, --dry-run, --verbose, --info, --no-install). Checks for updates non-blocking.
+**src/cli.js**: Parses CLI arguments with Commander.js. Validates framework option (react, angular, solidjs). Handles all CLI flags (--framework, --current-folder, --dry-run, --verbose, --info, --no-install). Checks for updates non-blocking.
 
 **src/scaffold.js**: Orchestrates the scaffolding flow:
 1. Framework selection (interactive or CLI arg)
@@ -64,9 +64,33 @@ bin/create-trimble-app.js (entry point)
 
 ### Templates
 
-Complete working projects in `templates/react/` and `templates/angular/`. Each includes .cursor/, .github/, .husky/, .vscode/, docs/, scripts/, src/, and full package.json.
+Complete working projects in `templates/react/`, `templates/angular/`, and `templates/solidjs/`. Each includes .cursor/, .github/, .husky/, .vscode/, scripts/, src/, and full package.json.
 
 `templates/config.json` defines framework metadata (name, description, badge, note) read by `src/frameworks.js`.
+
+#### SolidJS Template
+
+SolidJS 1.9 + Vite + TypeScript + Tailwind CSS 3 + @solidjs/router. Uses `@trimble-oss/moduswebcomponents` (vanilla web components, no React wrapper).
+
+**Dev Panel Architecture**: Toggle with `Ctrl+Shift+D` or floating button. Only renders when `VITE_DEV_PANEL=true` (dev mode). Contains:
+- 44 component demo pages (`src/demos/`)
+- Reference pages: Color Palette, Icons Gallery (710+ icons), Components Gallery
+- Theme switcher with 6 themes (classic/modern/connect x light/dark)
+
+**Key SolidJS Patterns**:
+- `createSignal` for state, `onMount`/`onCleanup` for lifecycle
+- `on:eventName` for custom web component events
+- Refs with `onMount` for web component event listeners
+- Let Modus components manage their own state (don't control accordion/modal from SolidJS)
+
+**Stencil Web Component Interop** (critical for SolidJS wrapper components):
+- **Complex props** (objects, arrays, functions) must be set as JS properties via `ref` + `onMount`/`createEffect`, never as JSX attributes (they serialize to `[object Object]`)
+- **Named slots** (e.g., `start-icon`) require child elements (`<i class="modus-icons" slot="start-icon">name</i>`), not prop values
+- **Simple string/boolean attrs** use `attr:` prefix (e.g., `attr:label={props.label}`, `attr:disabled={props.disabled ? "" : undefined}`)
+- **Table `customEditorRenderer`** must return vanilla DOM elements (`document.createElement`), not JSX. Use `editor: "custom"`, not `editor: "text"`
+- **Trimble logo assets** require `defineCustomElements(window, { resourcesUrl: origin + "/" })` in `index.tsx` and static copy to both `modus-wc/assets` and `assets` in `vite.config.ts`
+
+**Routes**: `/` (HomePage), `/dev/colors`, `/dev/icons`, `/dev/components`, `/dev/demos/*` (44 demo pages)
 
 ### Testing
 
@@ -91,6 +115,7 @@ Vitest tests in `tests/`:
 ```bash
 node bin/create-trimble-app.js --help
 node bin/create-trimble-app.js my-app --framework react --dry-run
+node bin/create-trimble-app.js my-app --framework solidjs --dry-run
 ```
 
 Use `--dry-run` to preview, `--verbose` for debug output.

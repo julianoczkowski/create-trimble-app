@@ -1,14 +1,14 @@
 ---
-description: Critical implementation patterns for ModusWcModal in React
+description: Critical implementation patterns for ModusWcModal in SolidJS
 globs: ["**/components/ModusModal*.tsx", "**/demos/**/page.tsx"]
 alwaysApply: false
 ---
 
-# ModusWcModal Implementation in React
+# ModusWcModal Implementation in SolidJS
 
 ## 🚨 **CRITICAL: Modal Method Access Issue**
 
-**Problem**: The `ModusWcModal` component's `showModal()` and `close()` methods are not directly available on the component reference in React.
+**Problem**: The `ModusWcModal` component's `showModal()` and `close()` methods are not directly available on the component reference in SolidJS.
 
 **Root Cause**: Modus Web Components use shadow DOM, and the modal methods are on the inner native `<dialog>` element, not the component itself.
 
@@ -21,24 +21,24 @@ alwaysApply: false
 ```tsx
 // ❌ WRONG: Direct method access on component
 function ModalComponent() {
-  const modalRef = useRef<ModusWcModal>(null);
+  let modalRef: ModusWcModal | undefined;
 
   const openModal = () => {
-    if (modalRef.current) {
-      modalRef.current.showModal(); // ❌ This won't work
+    if (modalRef) {
+      modalRef.showModal(); // ❌ This won't work
     }
   };
 
   const closeModal = () => {
-    if (modalRef.current) {
-      modalRef.current.close(); // ❌ This won't work
+    if (modalRef) {
+      modalRef.close(); // ❌ This won't work
     }
   };
 
   return (
     <div>
       <button onClick={openModal}>Open Modal</button>
-      <ModusWcModal ref={modalRef}>
+      <ModusWcModal ref={(el) => (modalRef = el)}>
         <div slot="header">Modal Header</div>
         <div slot="body">Modal Body</div>
         <div slot="footer">
@@ -50,16 +50,16 @@ function ModalComponent() {
 }
 ```
 
-### ❌ **Trying to Control Modal State from React**
+### ❌ **Trying to Control Modal State from SolidJS**
 
 ```tsx
-// ❌ WRONG: Trying to control modal state from React
+// ❌ WRONG: Trying to control modal state from SolidJS
 function ModalComponent() {
   const [isOpen, setIsOpen] = createSignal(false);
 
   return (
     <ModusWcModal
-      open={isOpen} // ❌ This won't work as expected
+      open={isOpen()} // ❌ This won't work as expected
       onClose={() => setIsOpen(false)}
     >
       <div slot="header">Modal Header</div>
@@ -73,14 +73,14 @@ function ModalComponent() {
 
 ```tsx
 // ❌ WRONG: Using createEffect to control modal state
-function ModusModal({ isOpen, onClose, ...props }) {
-  const modalRef = useRef<HTMLModusWcModalElement>(null);
+function ModusModal(props: { isOpen: boolean; onClose?: () => void }) {
+  let modalRef: HTMLModusWcModalElement | undefined;
 
-  // ❌ CRITICAL ANTI-PATTERN: Don't control modal state from React
+  // ❌ CRITICAL ANTI-PATTERN: Don't control modal state from SolidJS
   createEffect(() => {
-    const modal = modalRef.current;
+    const modal = modalRef;
     if (modal) {
-      if (isOpen) {
+      if (props.isOpen) {
         const dialogElement = modal.querySelector("dialog");
         if (dialogElement) {
           dialogElement.showModal();
@@ -92,9 +92,9 @@ function ModusModal({ isOpen, onClose, ...props }) {
         }
       }
     }
-  }, [isOpen]); // ❌ This violates the official pattern
+  }); // ❌ This violates the official pattern
 
-  return <ModusWcModal ref={modalRef} {...props} />;
+  return <ModusWcModal ref={(el) => (modalRef = el)} {...props} />;
 }
 ```
 
@@ -102,123 +102,117 @@ function ModusModal({ isOpen, onClose, ...props }) {
 
 ## ✅ **Correct Patterns**
 
-### ✅ **Recommended: React Wrapper Component with callback ref**
+### ✅ **Recommended: SolidJS Wrapper Component with ref callback**
 
 The most maintainable approach is to create a SolidJS wrapper component that handles the dialog element access internally:
 
 ```tsx
-// ✅ CORRECT: SolidJS wrapper with callback ref
-import { ModusWcModal } from "@trimble-oss/moduswebcomponents-solidjs";
-import { useRef } from "solid-js";
+// ✅ CORRECT: SolidJS wrapper with ref callback
+import { ModusWcModal } from "@trimble-oss/moduswebcomponents";
 
-export interface ModusModalRef {
+export interface ModusModalHandle {
   openModal: () => void;
   closeModal: () => void;
 }
 
-const ModusModal = callback ref<ModusModalRef, ModusModalProps>(
-  (
-    {
-      modalId,
-      ariaLabel,
-      backdrop = "default",
-      position = "center",
-      fullscreen = false,
-      showFullscreenToggle = false,
-      showClose = true,
-      customClass,
-      header,
-      children,
-      footer,
-      onClose,
-      className,
-    },
-    ref
-  ) => {
-    const modalRef = useRef<HTMLModusWcModalElement>(null);
+interface ModusModalProps {
+  modalId?: string;
+  ariaLabel?: string;
+  backdrop?: string;
+  position?: string;
+  fullscreen?: boolean;
+  showFullscreenToggle?: boolean;
+  showClose?: boolean;
+  customClass?: string;
+  header?: JSX.Element;
+  children?: JSX.Element;
+  footer?: JSX.Element;
+  onClose?: () => void;
+  ref?: (handle: ModusModalHandle) => void;
+}
 
-    const openModal = () => {
-      if (modalRef.current) {
-        const dialog = modalRef.current.querySelector(
-          "dialog"
-        ) as HTMLDialogElement;
-        if (dialog) {
-          dialog.showModal();
-        }
-      }
-    };
-
-    const closeModal = () => {
-      if (modalRef.current) {
-        const dialog = modalRef.current.querySelector(
-          "dialog"
-        ) as HTMLDialogElement;
-        if (dialog) {
-          dialog.close();
-        }
-      }
-    };
-
-    expose via callback ref(ref, () => ({
-      openModal,
-      closeModal,
-    }));
-
-    // Handle modal events
-    createEffect(() => {
-      const modal = modalRef.current;
-      if (modal) {
-        const handleClose = () => {
-          onClose?.();
-        };
-
-        const dialogElement = modal.querySelector("dialog");
-        if (dialogElement) {
-          dialogElement.addEventListener("close", handleClose);
-          return () => {
-            dialogElement.removeEventListener("close", handleClose);
-          };
-        }
-      }
-    }, [onClose]);
-
-    return (
-      <ModusWcModal
-        ref={modalRef}
-        modal-id={modalId}
-        aria-label={ariaLabel}
-        backdrop={backdrop}
-        position={position}
-        fullscreen={fullscreen}
-        show-fullscreen-toggle={showFullscreenToggle}
-        show-close={showClose}
-        custom-class={customClass || className}
-      >
-        {header && <div slot="header">{header}</div>}
-        <div slot="content">{children}</div>
-        {footer && <div slot="footer">{footer}</div>}
-      </ModusWcModal>
-    );
-  }
-);
-
-// Usage in parent component
-function ParentComponent() {
-  const modalRef = useRef<ModusModalRef>(null);
+function ModusModal(props: ModusModalProps) {
+  let modalRef: HTMLModusWcModalElement | undefined;
 
   const openModal = () => {
-    modalRef.current?.openModal();
+    if (modalRef) {
+      const dialog = modalRef.querySelector(
+        "dialog"
+      ) as HTMLDialogElement;
+      if (dialog) {
+        dialog.showModal();
+      }
+    }
   };
 
   const closeModal = () => {
-    modalRef.current?.closeModal();
+    if (modalRef) {
+      const dialog = modalRef.querySelector(
+        "dialog"
+      ) as HTMLDialogElement;
+      if (dialog) {
+        dialog.close();
+      }
+    }
+  };
+
+  // Expose methods via ref callback
+  props.ref?.({ openModal, closeModal });
+
+  // Handle modal events
+  onMount(() => {
+    const modal = modalRef;
+    if (modal) {
+      const handleClose = () => {
+        props.onClose?.();
+      };
+
+      const dialogElement = modal.querySelector("dialog");
+      if (dialogElement) {
+        dialogElement.addEventListener("close", handleClose);
+        onCleanup(() => {
+          dialogElement.removeEventListener("close", handleClose);
+        });
+      }
+    }
+  });
+
+  return (
+    <ModusWcModal
+      ref={(el) => (modalRef = el)}
+      modal-id={props.modalId}
+      aria-label={props.ariaLabel}
+      backdrop={props.backdrop ?? "default"}
+      position={props.position ?? "center"}
+      fullscreen={props.fullscreen ?? false}
+      show-fullscreen-toggle={props.showFullscreenToggle ?? false}
+      show-close={props.showClose ?? true}
+      custom-class={props.customClass}
+    >
+      {props.header && <div slot="header">{props.header}</div>}
+      <div slot="content">{props.children}</div>
+      {props.footer && <div slot="footer">{props.footer}</div>}
+    </ModusWcModal>
+  );
+}
+
+// Usage in parent component
+function ParentComponent() {
+  let modalHandle: ModusModalHandle | undefined;
+
+  const openModal = () => {
+    modalHandle?.openModal();
+  };
+
+  const closeModal = () => {
+    modalHandle?.closeModal();
   };
 
   return (
     <div>
       <button onClick={openModal}>Open Modal</button>
       <ModusModal
-        ref={modalRef}
+        ref={(handle) => (modalHandle = handle)}
         modalId="my-modal"
         onClose={() => console.log("Modal closed")}
         header={<div>Modal Title</div>}
@@ -236,12 +230,12 @@ function ParentComponent() {
 ```tsx
 // ✅ CORRECT: Access inner dialog element
 function ModalComponent() {
-  const modalRef = useRef<ModusWcModal>(null);
+  let modalRef: ModusWcModal | undefined;
 
   const openModal = () => {
-    if (modalRef.current) {
+    if (modalRef) {
       // ✅ CORRECT: Access inner dialog element
-      const dialog = modalRef.current.querySelector(
+      const dialog = modalRef.querySelector(
         "dialog"
       ) as HTMLDialogElement;
       if (dialog) {
@@ -251,9 +245,9 @@ function ModalComponent() {
   };
 
   const closeModal = () => {
-    if (modalRef.current) {
+    if (modalRef) {
       // ✅ CORRECT: Access inner dialog element
-      const dialog = modalRef.current.querySelector(
+      const dialog = modalRef.querySelector(
         "dialog"
       ) as HTMLDialogElement;
       if (dialog) {
@@ -265,7 +259,7 @@ function ModalComponent() {
   return (
     <div>
       <button onClick={openModal}>Open Modal</button>
-      <ModusWcModal ref={modalRef}>
+      <ModusWcModal ref={(el) => (modalRef = el)}>
         <div slot="header">Modal Header</div>
         <div slot="body">Modal Body</div>
         <div slot="footer">
@@ -277,16 +271,20 @@ function ModalComponent() {
 }
 ```
 
-### ✅ **Reusable Modal Hook**
+### ✅ **Reusable Modal Helper**
 
 ```tsx
-// ✅ CORRECT: Reusable modal hook
-function useModal() {
-  const modalRef = useRef<ModusWcModal>(null);
+// ✅ CORRECT: Reusable modal helper
+function createModal() {
+  let modalRef: ModusWcModal | undefined;
+
+  const setRef = (el: ModusWcModal) => {
+    modalRef = el;
+  };
 
   const openModal = () => {
-    if (modalRef.current) {
-      const dialog = modalRef.current.querySelector(
+    if (modalRef) {
+      const dialog = modalRef.querySelector(
         "dialog"
       ) as HTMLDialogElement;
       if (dialog) {
@@ -296,8 +294,8 @@ function useModal() {
   };
 
   const closeModal = () => {
-    if (modalRef.current) {
-      const dialog = modalRef.current.querySelector(
+    if (modalRef) {
+      const dialog = modalRef.querySelector(
         "dialog"
       ) as HTMLDialogElement;
       if (dialog) {
@@ -307,20 +305,20 @@ function useModal() {
   };
 
   return {
-    modalRef,
+    setRef,
     openModal,
     closeModal,
   };
 }
 
-// ✅ CORRECT: Use the hook
+// ✅ CORRECT: Use the helper
 function ModalComponent() {
-  const { modalRef, openModal, closeModal } = useModal();
+  const { setRef, openModal, closeModal } = createModal();
 
   return (
     <div>
       <button onClick={openModal}>Open Modal</button>
-      <ModusWcModal ref={modalRef}>
+      <ModusWcModal ref={setRef}>
         <div slot="header">Modal Header</div>
         <div slot="body">Modal Body</div>
         <div slot="footer">
@@ -332,17 +330,17 @@ function ModalComponent() {
 }
 ```
 
-### ✅ **Modal with React State Tracking**
+### ✅ **Modal with SolidJS State Tracking**
 
 ```tsx
 // ✅ CORRECT: Track modal state without controlling it
 function ModalComponent() {
-  const modalRef = useRef<ModusWcModal>(null);
+  let modalRef: ModusWcModal | undefined;
   const [isModalOpen, setIsModalOpen] = createSignal(false);
 
   const openModal = () => {
-    if (modalRef.current) {
-      const dialog = modalRef.current.querySelector(
+    if (modalRef) {
+      const dialog = modalRef.querySelector(
         "dialog"
       ) as HTMLDialogElement;
       if (dialog) {
@@ -353,8 +351,8 @@ function ModalComponent() {
   };
 
   const closeModal = () => {
-    if (modalRef.current) {
-      const dialog = modalRef.current.querySelector(
+    if (modalRef) {
+      const dialog = modalRef.querySelector(
         "dialog"
       ) as HTMLDialogElement;
       if (dialog) {
@@ -372,9 +370,9 @@ function ModalComponent() {
   return (
     <div>
       <button onClick={openModal}>Open Modal</button>
-      {isModalOpen && <div>Modal is open</div>}
+      {isModalOpen() && <div>Modal is open</div>}
 
-      <ModusWcModal ref={modalRef} onClose={handleModalClose}>
+      <ModusWcModal ref={(el) => (modalRef = el)} onClose={handleModalClose}>
         <div slot="header">Modal Header</div>
         <div slot="body">Modal Body</div>
         <div slot="footer">
@@ -393,12 +391,12 @@ function ModalComponent() {
 ```tsx
 // ✅ CORRECT: Modal with form handling
 function FormModal() {
-  const modalRef = useRef<ModusWcModal>(null);
+  let modalRef: ModusWcModal | undefined;
   const [formData, setFormData] = createSignal({ name: "", email: "" });
 
   const openModal = () => {
-    if (modalRef.current) {
-      const dialog = modalRef.current.querySelector(
+    if (modalRef) {
+      const dialog = modalRef.querySelector(
         "dialog"
       ) as HTMLDialogElement;
       if (dialog) {
@@ -408,8 +406,8 @@ function FormModal() {
   };
 
   const closeModal = () => {
-    if (modalRef.current) {
-      const dialog = modalRef.current.querySelector(
+    if (modalRef) {
+      const dialog = modalRef.querySelector(
         "dialog"
       ) as HTMLDialogElement;
       if (dialog) {
@@ -418,9 +416,9 @@ function FormModal() {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: Event) => {
     e.preventDefault();
-    console.log("Form data:", formData);
+    console.log("Form data:", formData());
     closeModal();
   };
 
@@ -428,18 +426,18 @@ function FormModal() {
     <div>
       <button onClick={openModal}>Open Form Modal</button>
 
-      <ModusWcModal ref={modalRef}>
+      <ModusWcModal ref={(el) => (modalRef = el)}>
         <div slot="header">User Form</div>
         <div slot="body">
           <form onSubmit={handleSubmit} class="space-y-4">
             <div>
-              <label class="block text-sm font-medium text-foreground mb-1">
+              <div class="block text-sm font-medium text-foreground mb-1">
                 Name
-              </label>
+              </div>
               <input
                 type="text"
-                value={formData.name}
-                onChange={(e) =>
+                value={formData().name}
+                onInput={(e) =>
                   setFormData((prev) => ({ ...prev, name: e.target.value }))
                 }
                 class="w-full px-3 py-2 border border-input rounded bg-input text-foreground"
@@ -447,13 +445,13 @@ function FormModal() {
               />
             </div>
             <div>
-              <label class="block text-sm font-medium text-foreground mb-1">
+              <div class="block text-sm font-medium text-foreground mb-1">
                 Email
-              </label>
+              </div>
               <input
                 type="email"
-                value={formData.email}
-                onChange={(e) =>
+                value={formData().email}
+                onInput={(e) =>
                   setFormData((prev) => ({ ...prev, email: e.target.value }))
                 }
                 class="w-full px-3 py-2 border border-input rounded bg-input text-foreground"
@@ -488,30 +486,30 @@ function FormModal() {
 
 ```tsx
 // ✅ CORRECT: Confirmation modal
-function ConfirmationModal({
-  isOpen,
-  onConfirm,
-  onCancel,
-  title,
-  message,
-}: ConfirmationModalProps) {
-  const modalRef = useRef<ModusWcModal>(null);
+function ConfirmationModal(props: {
+  isOpen: boolean;
+  onConfirm: () => void;
+  onCancel: () => void;
+  title: string;
+  message: string;
+}) {
+  let modalRef: ModusWcModal | undefined;
 
   createEffect(() => {
-    if (isOpen && modalRef.current) {
-      const dialog = modalRef.current.querySelector(
+    if (props.isOpen && modalRef) {
+      const dialog = modalRef.querySelector(
         "dialog"
       ) as HTMLDialogElement;
       if (dialog) {
         dialog.showModal();
       }
     }
-  }, [isOpen]);
+  });
 
   const handleConfirm = () => {
-    onConfirm();
-    if (modalRef.current) {
-      const dialog = modalRef.current.querySelector(
+    props.onConfirm();
+    if (modalRef) {
+      const dialog = modalRef.querySelector(
         "dialog"
       ) as HTMLDialogElement;
       if (dialog) {
@@ -521,9 +519,9 @@ function ConfirmationModal({
   };
 
   const handleCancel = () => {
-    onCancel();
-    if (modalRef.current) {
-      const dialog = modalRef.current.querySelector(
+    props.onCancel();
+    if (modalRef) {
+      const dialog = modalRef.querySelector(
         "dialog"
       ) as HTMLDialogElement;
       if (dialog) {
@@ -533,9 +531,9 @@ function ConfirmationModal({
   };
 
   return (
-    <ModusWcModal ref={modalRef}>
-      <div slot="header">{title}</div>
-      <div slot="body">{message}</div>
+    <ModusWcModal ref={(el) => (modalRef = el)}>
+      <div slot="header">{props.title}</div>
+      <div slot="body">{props.message}</div>
       <div slot="footer" class="flex justify-end gap-2">
         <button
           onClick={handleCancel}
@@ -560,11 +558,11 @@ function ConfirmationModal({
 ```tsx
 // ✅ CORRECT: Modal with backdrop click handling
 function ModalWithBackdrop() {
-  const modalRef = useRef<ModusWcModal>(null);
+  let modalRef: ModusWcModal | undefined;
 
   const openModal = () => {
-    if (modalRef.current) {
-      const dialog = modalRef.current.querySelector(
+    if (modalRef) {
+      const dialog = modalRef.querySelector(
         "dialog"
       ) as HTMLDialogElement;
       if (dialog) {
@@ -581,8 +579,8 @@ function ModalWithBackdrop() {
   };
 
   const closeModal = () => {
-    if (modalRef.current) {
-      const dialog = modalRef.current.querySelector(
+    if (modalRef) {
+      const dialog = modalRef.querySelector(
         "dialog"
       ) as HTMLDialogElement;
       if (dialog) {
@@ -594,7 +592,7 @@ function ModalWithBackdrop() {
   return (
     <div>
       <button onClick={openModal}>Open Modal</button>
-      <ModusWcModal ref={modalRef}>
+      <ModusWcModal ref={(el) => (modalRef = el)}>
         <div slot="header">Modal Header</div>
         <div slot="body">Click outside to close</div>
         <div slot="footer">
@@ -608,21 +606,21 @@ function ModalWithBackdrop() {
 
 ## 🚫 **What NOT to Do**
 
-### ❌ **Don't Try to Control Modal State from React**
+### ❌ **Don't Try to Control Modal State from SolidJS**
 
 ```tsx
 // ❌ WRONG: Don't try to control modal state
 const [isOpen, setIsOpen] = createSignal(false);
 
-<ModusWcModal open={isOpen}>  // ❌ This won't work
+<ModusWcModal open={isOpen()}>  // ❌ This won't work
 ```
 
 ### ❌ **Don't Use Direct Method Access**
 
 ```tsx
 // ❌ WRONG: Don't use direct method access
-modalRef.current.showModal(); // ❌ This won't work
-modalRef.current.close(); // ❌ This won't work
+modalRef.showModal(); // ❌ This won't work
+modalRef.close(); // ❌ This won't work
 ```
 
 ### ❌ **Don't Ignore the Dialog Element**
@@ -631,7 +629,7 @@ modalRef.current.close(); // ❌ This won't work
 // ❌ WRONG: Don't ignore the dialog element
 const openModal = () => {
   // This won't work
-  modalRef.current.showModal();
+  modalRef.showModal();
 };
 ```
 
@@ -639,11 +637,11 @@ const openModal = () => {
 
 ### **Key Findings from Official Documentation:**
 
-1. **No React State Control**: The official documentation shows modals controlled by direct method calls, not SolidJS state
+1. **No SolidJS State Control**: The official documentation shows modals controlled by direct method calls, not SolidJS state
 2. **Direct Method Access**: Use `element.showModal()` and `element.close()` directly
 3. **Proper Slot Structure**: Use `header`, `content`, and `footer` slots correctly
-4. **Event Handling**: Listen to native dialog events, not React synthetic events
-5. **No Built-in React Integration**: Modus Web Components are framework-agnostic
+4. **Event Handling**: Listen to native dialog events, not framework synthetic events
+5. **No Built-in SolidJS Integration**: Modus Web Components are framework-agnostic
 
 ### **Documentation Quote:**
 
@@ -651,10 +649,10 @@ const openModal = () => {
 
 ## 🎯 **Key Takeaways**
 
-1. **✅ Use callback ref Pattern**: Create SolidJS wrapper components with `callback ref` and `expose via callback ref`
+1. **✅ Use ref callback Pattern**: Create SolidJS wrapper components with ref callbacks
 2. **✅ Access Inner Dialog**: Use `querySelector('dialog')` to access the inner dialog element
 3. **✅ Use Dialog Methods**: Call `showModal()` and `close()` on the dialog element
-4. **❌ Don't Control from React State**: Never use `createEffect` to control modal visibility
+4. **❌ Don't Control from SolidJS State**: Never use `createEffect` to control modal visibility
 5. **✅ Track State Separately**: Use SolidJS state only for UI updates, not modal control
 6. **✅ Handle Events Properly**: Listen to modal events for state synchronization
 7. **✅ Follow Official Pattern**: Align with Modus documentation for best practices
@@ -664,12 +662,12 @@ const openModal = () => {
 ```tsx
 // ✅ CORRECT: Test modal functionality
 function ModalTest() {
-  const modalRef = useRef<ModusWcModal>(null);
+  let modalRef: ModusWcModal | undefined;
   const [testResults, setTestResults] = createSignal<string[]>([]);
 
   const testModal = () => {
-    if (modalRef.current) {
-      const dialog = modalRef.current.querySelector(
+    if (modalRef) {
+      const dialog = modalRef.querySelector(
         "dialog"
       ) as HTMLDialogElement;
       if (dialog) {
@@ -688,18 +686,20 @@ function ModalTest() {
     <div>
       <button onClick={testModal}>Test Modal</button>
       <div>
-        <h3>Test Results:</h3>
-        {testResults.map((result, index) => (
-          <div key={index}>{result}</div>
-        ))}
+        <div class="text-lg font-semibold">Test Results:</div>
+        <For each={testResults()}>
+          {(result) => (
+            <div>{result}</div>
+          )}
+        </For>
       </div>
-      <ModusWcModal ref={modalRef}>
+      <ModusWcModal ref={(el) => (modalRef = el)}>
         <div slot="header">Test Modal</div>
         <div slot="body">This is a test modal</div>
         <div slot="footer">
           <button
             onClick={() => {
-              const dialog = modalRef.current?.querySelector(
+              const dialog = modalRef?.querySelector(
                 "dialog"
               ) as HTMLDialogElement;
               dialog?.close();
@@ -720,91 +720,86 @@ function ModalTest() {
 
 ```tsx
 // ✅ SUCCESSFUL: Our working implementation
-import { ModusWcModal } from "@trimble-oss/moduswebcomponents-solidjs";
-import { useRef } from "solid-js";
+import { ModusWcModal } from "@trimble-oss/moduswebcomponents";
+import { onMount, onCleanup } from "solid-js";
 
-export interface ModusModalRef {
+export interface ModusModalHandle {
   openModal: () => void;
   closeModal: () => void;
 }
 
-const ModusModal = callback ref<ModusModalRef, ModusModalProps>(
-  (
-    {
-      modalId,
-      ariaLabel,
-      backdrop = "default",
-      position = "center",
-      fullscreen = false,
-      showFullscreenToggle = false,
-      showClose = true,
-      customClass,
-      header,
-      children,
-      footer,
-      onClose,
-      className,
-    },
-    ref
-  ) => {
-    const modalRef = useRef<HTMLModusWcModalElement>(null);
+interface ModusModalProps {
+  modalId?: string;
+  ariaLabel?: string;
+  backdrop?: string;
+  position?: string;
+  fullscreen?: boolean;
+  showFullscreenToggle?: boolean;
+  showClose?: boolean;
+  customClass?: string;
+  header?: JSX.Element;
+  children?: JSX.Element;
+  footer?: JSX.Element;
+  onClose?: () => void;
+  ref?: (handle: ModusModalHandle) => void;
+}
 
-    const openModal = () => {
-      if (modalRef.current) {
-        const dialog = modalRef.current.querySelector(
-          "dialog"
-        ) as HTMLDialogElement;
-        if (dialog) {
-          dialog.showModal();
-        }
+function ModusModal(props: ModusModalProps) {
+  let modalRef: HTMLModusWcModalElement | undefined;
+
+  const openModal = () => {
+    if (modalRef) {
+      const dialog = modalRef.querySelector(
+        "dialog"
+      ) as HTMLDialogElement;
+      if (dialog) {
+        dialog.showModal();
       }
-    };
+    }
+  };
 
-    const closeModal = () => {
-      if (modalRef.current) {
-        const dialog = modalRef.current.querySelector(
-          "dialog"
-        ) as HTMLDialogElement;
-        if (dialog) {
-          dialog.close();
-        }
+  const closeModal = () => {
+    if (modalRef) {
+      const dialog = modalRef.querySelector(
+        "dialog"
+      ) as HTMLDialogElement;
+      if (dialog) {
+        dialog.close();
       }
-    };
+    }
+  };
 
-    expose via callback ref(ref, () => ({
-      openModal,
-      closeModal,
-    }));
+  // Expose methods via ref callback
+  props.ref?.({ openModal, closeModal });
 
-    return (
-      <ModusWcModal
-        ref={modalRef}
-        modal-id={modalId}
-        aria-label={ariaLabel}
-        backdrop={backdrop}
-        position={position}
-        fullscreen={fullscreen}
-        show-fullscreen-toggle={showFullscreenToggle}
-        show-close={showClose}
-        custom-class={customClass || className}
-      >
-        {header && <div slot="header">{header}</div>}
-        <div slot="content">{children}</div>
-        {footer && <div slot="footer">{footer}</div>}
-      </ModusWcModal>
-    );
-  }
-);
+  return (
+    <ModusWcModal
+      ref={(el) => (modalRef = el)}
+      modal-id={props.modalId}
+      aria-label={props.ariaLabel}
+      backdrop={props.backdrop ?? "default"}
+      position={props.position ?? "center"}
+      fullscreen={props.fullscreen ?? false}
+      show-fullscreen-toggle={props.showFullscreenToggle ?? false}
+      show-close={props.showClose ?? true}
+      custom-class={props.customClass}
+    >
+      {props.header && <div slot="header">{props.header}</div>}
+      <div slot="content">{props.children}</div>
+      {props.footer && <div slot="footer">{props.footer}</div>}
+    </ModusWcModal>
+  );
+}
 
 // Usage in parent component
 function ParentComponent() {
-  const modalRef = useRef<ModusModalRef>(null);
+  let modalHandle: ModusModalHandle | undefined;
 
   return (
     <div>
-      <button onClick={() => modalRef.current?.openModal()}>Open Modal</button>
+      <button onClick={() => modalHandle?.openModal()}>Open Modal</button>
       <ModusModal
-        ref={modalRef}
+        ref={(handle) => (modalHandle = handle)}
         modalId="my-modal"
         onClose={() => console.log("Modal closed")}
         header={<div>Modal Title</div>}
@@ -820,7 +815,7 @@ function ParentComponent() {
 ### **Benefits of This Pattern:**
 
 - ✅ **Follows Official Documentation**: Aligns with Modus documentation exactly
-- ✅ **No React State Control**: Uses direct method calls as documented
+- ✅ **No SolidJS State Control**: Uses direct method calls as documented
 - ✅ **Type Safety**: Full TypeScript support with proper interfaces
 - ✅ **Reusable**: Can be used across the application consistently
 - ✅ **Performance**: No unnecessary re-renders from state changes

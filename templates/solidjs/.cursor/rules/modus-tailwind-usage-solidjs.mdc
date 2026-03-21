@@ -176,10 +176,10 @@ function Button({
 
 ```tsx
 // ✅ CORRECT: Card with design system colors
-function Card({ children, className, ...props }: CardProps) {
+function Card({ children, class, ...props }: CardProps) {
   return (
     <div
-      class={`bg-card text-card-foreground border border-border rounded-lg ${className}`}
+      class={`bg-card text-card-foreground border border-border rounded-lg ${class}`}
       {...props}
     >
       {children}
@@ -187,18 +187,18 @@ function Card({ children, className, ...props }: CardProps) {
   );
 }
 
-function CardHeader({ children, className, ...props }: CardHeaderProps) {
+function CardHeader({ children, class, ...props }: CardHeaderProps) {
   return (
-    <div class={`flex flex-col space-y-1.5 p-6 ${className}`} {...props}>
+    <div class={`flex flex-col space-y-1.5 p-6 ${class}`} {...props}>
       {children}
     </div>
   );
 }
 
-function CardTitle({ children, className, ...props }: CardTitleProps) {
+function CardTitle({ children, class, ...props }: CardTitleProps) {
   return (
     <div
-      class={`text-2xl font-semibold leading-none tracking-tight ${className}`}
+      class={`text-2xl font-semibold leading-none tracking-tight ${class}`}
       {...props}
     >
       {children}
@@ -206,9 +206,9 @@ function CardTitle({ children, className, ...props }: CardTitleProps) {
   );
 }
 
-function CardContent({ children, className, ...props }: CardContentProps) {
+function CardContent({ children, class, ...props }: CardContentProps) {
   return (
-    <div class={`p-6 pt-0 ${className}`} {...props}>
+    <div class={`p-6 pt-0 ${class}`} {...props}>
       {children}
     </div>
   );
@@ -219,28 +219,28 @@ function CardContent({ children, className, ...props }: CardContentProps) {
 
 ```tsx
 // ✅ CORRECT: Form with design system colors
-function Input({ className, ...props }: InputProps) {
+function Input({ class, ...props }: InputProps) {
   return (
     <input
-      class={`flex h-10 w-full rounded-md border border-input bg-input px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 ${className}`}
+      class={`flex h-10 w-full rounded-md border border-input bg-input px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 ${class}`}
       {...props}
     />
   );
 }
 
-function Label({ className, ...props }: LabelProps) {
+function Label({ class, ...props }: LabelProps) {
   return (
     <div
-      class={`text-sm font-medium leading-none text-foreground peer-disabled:cursor-not-allowed peer-disabled:opacity-70 ${className}`}
+      class={`text-sm font-medium leading-none text-foreground peer-disabled:cursor-not-allowed peer-disabled:opacity-70 ${class}`}
       {...props}
     />
   );
 }
 
-function Textarea({ className, ...props }: TextareaProps) {
+function Textarea({ class, ...props }: TextareaProps) {
   return (
     <textarea
-      class={`flex min-h-[80px] w-full rounded-md border border-input bg-input px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 ${className}`}
+      class={`flex min-h-[80px] w-full rounded-md border border-input bg-input px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 ${class}`}
       {...props}
     />
   );
