@@ -36,11 +36,13 @@ Interactive CLI to scaffold Modus 2.0 web component applications for React, Angu
 
 - 📦 **Bundled Templates** - Templates included in package, no network required
 - 🔒 **Secure** - No runtime external dependencies
-- ⚛️ **React** - React + Vite + Modus 2.0 Components + Cursor Rules
-- 🅰️ **Angular** - Angular + Modus 2.0 Web Components + Cursor Rules
+- ⚛️ **React** - React 19 + Vite + Modus 2.0 Components + Cursor Rules
+- 🅰️ **Angular** - Angular 20 + Modus 2.0 Web Components + Cursor Rules
 - ▲ **SolidJS** - SolidJS + Vite + Modus 2.0 Components + Cursor Rules
 - 🎯 **Interactive** - Premium CLI experience with Trimble branding
 - ⚡ **Fast** - Local file copy, instant setup
+- ✅ **Validated** - Post-scaffold `lint:all` verifies template integrity automatically
+- 🔄 **Update Notifications** - Automatic check for newer CLI versions
 
 ## Usage
 
@@ -103,9 +105,9 @@ npx @julianoczkowski/create-trimble-app@latest --help
 
 | Framework       | Description     | What's Included                                                                                          |
 | --------------- | --------------- | -------------------------------------------------------------------------------------------------------- |
-| ⚛️ **React**    | React + Vite    | Modus 2.0 Components, TypeScript, Tailwind CSS, 40+ Cursor Rules, GitHub Templates, Code Quality Scripts |
-| 🅰️ **Angular**  | Angular 20+     | Modus 2.0 Web Components, TypeScript, Tailwind CSS, 11 Cursor Rules, GitHub Workflows, Demo Components   |
-| ▲ **SolidJS**   | SolidJS + Vite  | Modus 2.0 Components, TypeScript, Tailwind CSS, 44 Cursor Rules, Vitest, 44 Demo Pages, MCP Servers     |
+| ⚛️ **React**    | React 19 + Vite | 47 Modus components, 46 demos, 43 Cursor Rules, 8 lint scripts, Tailwind CSS 3, TypeScript, Husky hooks |
+| 🅰️ **Angular**  | Angular 20      | 48 Modus components, 45 demos, 50 Cursor Rules, 7 lint scripts, Tailwind CSS 4, TypeScript, Husky hooks |
+| ▲ **SolidJS**   | SolidJS + Vite  | 47 Modus components, 46 demos, 45 Cursor Rules, 8 lint scripts, Tailwind CSS 3, MCP Servers, Vitest     |
 
 ## What's Included in Each Template
 
@@ -148,7 +150,8 @@ To use: Open Cursor IDE, press `Cmd+K` (Mac) or `Ctrl+K` (Windows/Linux), and ru
 │  4. Copy bundled template (local file copy)                 │
 │  5. Update package.json with project name                   │
 │  6. Install dependencies silently (optional)                │
-│  7. Show beginner-friendly success message                  │
+│  7. Validate template integrity (lint:all)                  │
+│  8. Show beginner-friendly success message                  │
 └─────────────────────────────────────────────────────────────┘
 ```
 
