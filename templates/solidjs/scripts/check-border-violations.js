@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * Border Violations Linting Script for Vite + React
+ * Border Violations Linting Script for Vite + SolidJS
  *
  * This script checks for usage of incorrect border patterns that violate
  * Tailwind 3 + Modus design system rules.
@@ -176,7 +176,7 @@ const EXCLUDE_PATTERNS = [
 ];
 
 async function findBorderViolations() {
-  console.log("🎨 Checking for border violations in Vite + React app...\n");
+  console.log("🎨 Checking for border violations in Vite + SolidJS app...\n");
 
   let totalViolations = 0;
   const violations = [];

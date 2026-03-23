@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 
 /**
- * Modus Icons Linting Script for Vite + React
+ * Modus Icons Linting Script for Vite + SolidJS
  *
- * This script checks for usage of non-Modus icon patterns in React/Vite files
+ * This script checks for usage of non-Modus icon patterns in SolidJS/Vite files
  * to ensure design system consistency and proper Modus Icons usage.
  *
  * It flags common non-Modus icon patterns and suggests Modus alternatives.
@@ -169,7 +169,7 @@ async function checkFile(filePath) {
 }
 
 async function main() {
-  console.log("🎨 Checking for Modus Icons usage in Vite + React app...\n");
+  console.log("🎨 Checking for Modus Icons usage in Vite + SolidJS app...\n");
 
   let allViolations = [];
   let allModusIcons = [];

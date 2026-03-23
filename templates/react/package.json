@@ -16,7 +16,7 @@
     "lint:borders": "node scripts/check-border-violations.js",
     "lint:opacity": "node scripts/check-opacity-utilities.js",
     "lint:icon-names": "node scripts/check-icon-names.js",
-    "lint:all": "npm run type-check && npm run lint:icons && npm run lint:semantic && npm run lint:colors && npm run lint:styles && npm run lint:borders && npm run lint:opacity && npm run lint:icon-names",
+    "lint:all": "node scripts/run-all-checks.js",
     "prepare": "husky || true"
   },
   "dependencies": {

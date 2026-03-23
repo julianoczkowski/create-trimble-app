@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * Inline Styles Linting Script for Vite + React
+ * Inline Styles Linting Script for Vite + SolidJS
  *
  * This script checks for usage of inline styles that should be replaced with Tailwind classes
  * to ensure design system consistency and proper styling patterns.
@@ -163,7 +163,7 @@ const EXCLUDE_PATTERNS = [
   "**/*.d.ts",
   "scripts/**",
   "src/index.css", // Exclude index.css as it contains the design system definitions
-  "src/pages/ColorPalettePage.tsx", // Exclude color-palette as it demonstrates the color system
+  "src/dev-pages/**", // Exclude dev-pages as they demonstrate the design system with dynamic CSS vars
 ];
 
 function isBorderRelatedStyle(styleContent) {
@@ -275,7 +275,7 @@ async function checkFile(filePath) {
 
 async function main() {
   console.log(
-    "🎨 Checking for inline styles that should use Tailwind classes in Vite + React app...\n"
+    "🎨 Checking for inline styles that should use Tailwind classes in Vite + SolidJS app...\n"
   );
 
   let allViolations = [];
