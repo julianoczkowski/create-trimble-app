@@ -17,6 +17,25 @@ Critical integration patterns for Modus Navbar with Side Navigation in SolidJS.
 - **Contain in fixed-height `overflow-hidden`** - Prevents page layout shifts when side nav expands
 - **Trimble logo assets** - Need `defineCustomElements(window, { resourcesUrl: origin + "/" })` and static copy to both `modus-wc/assets` and `assets`
 
+## ModusNavbar Custom Content Slots
+
+Use `centerContent` and `endContent` slots for custom navbar content:
+
+```tsx
+<ModusNavbar
+  userCard={{ name: "Jane Smith", email: "jane@trimble.com" }}
+  visibility={{ mainMenu: false, notifications: true, apps: true, help: true, user: true }}
+  centerContent={<div class="text-sm font-medium text-foreground">Project Name</div>}
+  endContent={<ModusButton color="primary" size="sm" variant="outlined">Invite</ModusButton>}
+/>
+```
+
+## ModusSideNavigation Limitations
+
+- **Flat items only** - `ModusSideNavigation` accepts a flat `MenuItem[]` array. It does NOT support nested/hierarchical items, expandable sub-sections, or grouped navigation
+- **If you need nested navigation** (expandable sections like "Records > RFIs, Submittals..." or "Financials > Budget, Contracts..."), build a custom sidebar using div elements with `createSignal<boolean>` for expand/collapse state per section
+- **Active state** - Use `@solidjs/router`'s `useLocation()` to detect active path and apply active styling (e.g., `bg-primary-20 text-primary border-l-2 border-primary`)
+
 ## Reference
 
 For detailed patterns, layout structure, and common pitfalls, fetch the full rule: `modus-navbar-side-navigation-solidjs`

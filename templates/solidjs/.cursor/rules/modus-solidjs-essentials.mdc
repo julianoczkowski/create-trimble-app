@@ -106,13 +106,12 @@ Comprehensive essential rules for SolidJS + Vite development with Modus Design S
 
 ### Checkbox Value Inversion
 
-- **Always invert checkbox value property** - `const actualChecked = !value` from `inputChange` event
-- **Use wrapper components** - Create a SolidJS wrapper to handle inversion automatically
-- **Never trust the raw value** - The `value` property is inverted (false when checked, true when unchecked)
-- **Handle in event handlers** - Invert value in `onInputChange` event handler
-- **Use utility functions** - Create helper functions for value inversion
+- **Use the `ModusCheckbox` wrapper** - It handles the inversion bug automatically
+- **The wrapper prop is `value`, NOT `checked`** - `<ModusCheckbox value={isChecked()} />` (using `checked` fails silently)
+- **Use `onValueChange`, NOT `onInputChange`** - The wrapper provides the corrected boolean via `event.detail`
+- **Indeterminate state** - Pass `indeterminate={true}` for partial selection (select-all with some items checked)
+- **Never use raw `modus-wc-checkbox` directly** - The raw web component's `value` property is inverted
 - **Test thoroughly** - Verify checkbox behavior matches expected state
-- **Document the bug** - Make team aware of this critical issue
 
 ### Modal Implementation
 
@@ -133,6 +132,24 @@ Comprehensive essential rules for SolidJS + Vite development with Modus Design S
 - **Event handling patterns** - Handle `itemSelect` events for selection changes
 - **Test thoroughly** - Verify dropdown behavior and event handling
 - **Use established patterns** - Follow ModusDropdownMenu component patterns
+
+### TextInput Prop Gotchas
+
+- **Search icon prop is `includeSearch`** - NOT `includeSearchIcon` (wrong name fails silently)
+- **`onInputChange` gives `CustomEvent<InputEvent>`** - Extract value via `(e.target as HTMLInputElement).value`, NOT from `e.detail`
+- **Clear button prop is `includeClear`** - Adds a clear (x) button to the input
+
+### SideNavigation Limitations
+
+- **Flat items only** - `ModusSideNavigation` accepts `MenuItem[]` with no nesting support
+- **No expandable sub-sections** - Cannot create grouped navigation like "Records > RFIs, Submittals"
+- **For hierarchical navigation** - Build a custom sidebar using div elements, `createSignal<boolean>` per section, CSS `max-height` transitions, and `useLocation()` for active state detection
+
+### Table Limitations
+
+- **Flat data only** - `ModusTable` accepts `columns[]` + `data[]` with no row grouping
+- **No expandable/collapsible row groups** - Cannot create tree-style or grouped table views
+- **For grouped tables** - Build a custom layout using CSS Grid with div elements, `createSignal<Set<string>>` for expanded groups, and nested `<For>` loops for group headers + child rows
 
 ## HTML and Styling
 

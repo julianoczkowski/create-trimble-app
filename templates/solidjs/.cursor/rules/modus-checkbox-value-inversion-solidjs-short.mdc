@@ -10,13 +10,32 @@ Critical bug fix for ModusWcCheckbox value property inversion.
 
 ## Key Rules
 
-- **Always invert checkbox value property** - `const actualChecked = !value` from `inputChange` event
-- **Use wrapper components** - Create SolidJS wrapper to handle inversion automatically
-- **Never trust the raw value** - The `value` property is inverted (false when checked, true when unchecked)
-- **Handle in event handlers** - Invert value in `onInputChange` event handler
-- **Use utility functions** - Create helper functions for value inversion
-- **Test thoroughly** - Verify checkbox behavior matches expected state
-- **Document the bug** - Make team aware of this critical issue
+- **Use the `ModusCheckbox` wrapper** - It handles the value inversion bug automatically
+- **The wrapper prop is `value`, NOT `checked`** - `<ModusCheckbox value={isChecked()} />` (using `checked` will fail silently)
+- **Use `onValueChange` callback** - It provides the corrected boolean via `event.detail` (already inverted by the wrapper)
+- **Never use raw `modus-wc-checkbox` directly** - The raw web component's `value` property is inverted (false when checked, true when unchecked)
+- **Indeterminate state** - Pass `indeterminate={true}` for partial selection (e.g., select-all checkbox when some items are checked)
+
+## DO: Use the wrapper with correct props
+
+```tsx
+<ModusCheckbox
+  value={isSelected()}
+  indeterminate={isSomeSelected()}
+  onValueChange={(e) => setSelected(e.detail)}
+  size="sm"
+/>
+```
+
+## DON'T: Common mistakes
+
+```tsx
+// DON'T: "checked" prop does not exist on the wrapper
+<ModusCheckbox checked={isSelected()} />
+
+// DON'T: Use raw web component without inversion handling
+<modus-wc-checkbox value={isChecked()} />
+```
 
 ## Reference
 

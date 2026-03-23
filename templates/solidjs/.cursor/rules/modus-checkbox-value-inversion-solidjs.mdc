@@ -57,9 +57,29 @@ const handleChange = (event: CustomEvent<InputEvent>) => {
 };
 ```
 
-## ✅ **Solution: Invert the Value**
+## ✅ **Solution: Use the ModusCheckbox Wrapper**
 
-### ✅ **Correct Pattern: Invert the Value**
+### ✅ **Best Practice: Use the Wrapper Component (Already Provided)**
+
+The `ModusCheckbox` wrapper in `src/components/ModusCheckbox.tsx` already handles the value inversion. Use it with these correct props:
+
+```tsx
+// ✅ CORRECT: Use the wrapper with `value` prop (NOT `checked`)
+<ModusCheckbox
+  value={isChecked()}           // NOT "checked" - this prop does not exist
+  indeterminate={isSomeSelected()} // optional: for partial selection states
+  onValueChange={(e) => {       // NOT "onInputChange"
+    const corrected = e.detail; // Already inverted by wrapper
+    setChecked(corrected);
+  }}
+  size="sm"                     // "sm" | "md" | "lg"
+/>
+
+// ❌ WRONG: "checked" prop fails silently
+<ModusCheckbox checked={isChecked()} />
+```
+
+### ✅ **Manual Pattern: Invert the Value**
 
 ```tsx
 // ✅ CORRECT: Always invert the value
