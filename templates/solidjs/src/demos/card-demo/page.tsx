@@ -125,12 +125,12 @@ export default function CardDemoPage() {
             </div>
           }
           title={
-            <div class="text-2xl font-semibold text-white [text-shadow:1px_1px_2px_rgba(0,0,0,0.8)]">
+            <div class="text-2xl font-semibold text-foreground">
               Featured Project
             </div>
           }
           subtitle={
-            <div class="text-base text-white/80 [text-shadow:1px_1px_2px_rgba(0,0,0,0.8)]">
+            <div class="text-base text-foreground-60">
               Launching Q2 2024
             </div>
           }
@@ -140,7 +140,7 @@ export default function CardDemoPage() {
             </ModusButton>
           }
         >
-          <div class="text-base text-white/80 [text-shadow:1px_1px_2px_rgba(0,0,0,0.8)]">
+          <div class="text-base text-foreground-80">
             This project showcases innovative design patterns and modern user
             experiences. Join us for the launch event.
           </div>
@@ -169,16 +169,16 @@ export default function CardDemoPage() {
             </ModusButton>
           }
           footer={
-            <div class="flex items-center justify-between pt-4 border-t border-border">
+            <div class="flex items-center justify-between pt-3 border-top-default">
               <div class="flex gap-2">
-                <div class="px-2 py-1 text-xs rounded bg-muted text-muted-foreground">
+                <div class="px-2 py-0.5 text-xs font-medium rounded bg-muted text-foreground-80">
                   Draft
                 </div>
-                <div class="px-2 py-1 text-xs rounded bg-muted text-muted-foreground">
+                <div class="px-2 py-0.5 text-xs font-medium rounded bg-primary-20 text-primary">
                   Review
                 </div>
               </div>
-              <div class="text-xs text-muted-foreground">3 reviewers</div>
+              <div class="text-xs text-foreground-60">3 reviewers</div>
             </div>
           }
         >
