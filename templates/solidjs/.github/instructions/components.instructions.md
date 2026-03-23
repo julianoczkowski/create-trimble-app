@@ -4,33 +4,35 @@ applyTo: "src/components/**/*.tsx"
 
 # Modus Wrapper Component Patterns
 
-These are wrapper components that wrap `@trimble-oss/moduswebcomponents-react` web components.
+These are wrapper components that wrap `@trimble-oss/moduswebcomponents` web components for SolidJS.
 
 ## Event Handling Pattern
 
-Always use `useRef` + `useEffect` for web component events:
+Use refs with `onMount`/`onCleanup` for web component events:
 
 ```tsx
-const componentRef = useRef<HTMLModusWcButtonElement>(null);
+let componentEl: HTMLElement | undefined;
 
-useEffect(() => {
-  const element = componentRef.current;
-  if (!element) return;
+onMount(() => {
+  if (!componentEl) return;
 
   const handleEvent = (event: Event) => {
     const customEvent = event as CustomEvent<EventDetail>;
     // Handle event
   };
 
-  element.addEventListener('eventName', handleEvent);
-  return () => element.removeEventListener('eventName', handleEvent);
-}, []);
+  componentEl.addEventListener("eventName", handleEvent);
+
+  onCleanup(() => {
+    componentEl?.removeEventListener("eventName", handleEvent);
+  });
+});
 ```
 
 ## State Management
 
 - Let Modus components manage their own internal state
-- Don't control accordion/modal expanded state from React useState
+- Don't control accordion/modal expanded state from SolidJS signals
 - Use refs for programmatic control when needed
 
 ## Props Pattern
@@ -38,44 +40,59 @@ useEffect(() => {
 Use conditional prop spreading to avoid overriding defaults:
 
 ```tsx
-<ModusWcButton
-  {...(color && { color })}
-  {...(variant && { variant })}
-  size={size}
+<modus-wc-button
+  {...(props.color && { color: props.color })}
+  {...(props.variant && { variant: props.variant })}
+  size={props.size ?? "md"}
 >
-  {children}
-</ModusWcButton>
+  {props.children}
+</modus-wc-button>
+```
+
+## Complex Props via Refs
+
+Objects and arrays must be set as JS properties, not JSX attributes:
+
+```tsx
+let navbarEl: HTMLElement | undefined;
+
+createEffect(() => {
+  const navbar = navbarEl as Record<string, unknown> | undefined;
+  if (!navbar) return;
+  navbar.userCard = props.userCard;      // Object - must use ref
+  navbar.visibility = props.visibility;  // Object - must use ref
+});
 ```
 
 ## Modal Implementation
 
-Use `forwardRef` with `useImperativeHandle`:
+Use callback ref pattern with imperative control:
 
 ```tsx
-const ModusModal = forwardRef<ModusModalRef, Props>((props, ref) => {
-  const modalRef = useRef<HTMLModusWcModalElement>(null);
+const openModal = () => {
+  const dialog = modalEl?.querySelector("dialog") as HTMLDialogElement;
+  dialog?.showModal();
+};
 
-  const openModal = () => {
-    const dialog = modalRef.current?.querySelector("dialog");
-    dialog?.showModal();
-  };
-
-  useImperativeHandle(ref, () => ({ openModal, closeModal }));
-  // ...
+onMount(() => {
+  props.ref?.({ openModal, closeModal });
 });
 ```
 
 ## Checkbox Bug
 
-The `value` property is inverted. Always invert:
+The wrapper prop is `value`, NOT `checked`. Use `onValueChange` for the corrected boolean:
 
 ```tsx
-const actualChecked = !event.detail.value;
+<ModusCheckbox
+  value={isChecked()}
+  onValueChange={(e) => setChecked(e.detail)}
+/>
 ```
 
 ## Select Component
 
-Use `ModusDropdownMenu` instead of `ModusSelect` for reliable event handling.
+Use `ModusDropdownMenu` instead of `ModusSelect` for reliable event handling in SolidJS.
 
 ## Button Group
 

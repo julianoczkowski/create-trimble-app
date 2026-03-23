@@ -2,7 +2,7 @@
 applyTo: "**/*.ts,**/*.tsx"
 ---
 
-# TypeScript Patterns for Modus Components
+# TypeScript Patterns for Modus Components in SolidJS
 
 ## Event Type Casting
 
@@ -20,32 +20,30 @@ const handleEvent = (event: Event) => {
 
 ```tsx
 // Button click
-(event: Event) => {
-  const customEvent = event as CustomEvent<MouseEvent | KeyboardEvent>;
-}
+on:buttonClick={() => props.onButtonClick?.()}
 
-// Input change
+// Input change - extract value from target, not detail
 (event: Event) => {
   const customEvent = event as CustomEvent<InputEvent>;
   const value = (customEvent.target as HTMLInputElement).value;
 }
 
-// Checkbox (remember value is inverted!)
-(event: Event) => {
-  const customEvent = event as CustomEvent<InputEvent>;
-  const rawValue = (customEvent.target as HTMLModusWcCheckboxElement).value;
-  const actualChecked = !rawValue; // Invert the value
-}
+// Checkbox (value is inverted - use the wrapper's onValueChange)
+<ModusCheckbox
+  value={isChecked()}
+  onValueChange={(e) => setChecked(e.detail)}  // detail is already corrected
+/>
 ```
 
 ## Component Ref Types
 
 ```tsx
-import type { HTMLModusWcButtonElement } from "@trimble-oss/moduswebcomponents-react";
+let buttonEl: HTMLElement | undefined;
+let modalEl: HTMLElement | undefined;
+let checkboxEl: HTMLModusWcCheckboxElement | undefined;
 
-const buttonRef = useRef<HTMLModusWcButtonElement>(null);
-const modalRef = useRef<HTMLModusWcModalElement>(null);
-const checkboxRef = useRef<HTMLModusWcCheckboxElement>(null);
+// Assign via ref callback
+<modus-wc-button ref={(el) => (buttonEl = el as HTMLElement)} />
 ```
 
 ## Modal Ref Pattern
@@ -56,44 +54,56 @@ interface ModusModalRef {
   closeModal: () => void;
 }
 
-const modalRef = useRef<ModusModalRef>(null);
-modalRef.current?.openModal();
+// Access dialog imperatively
+const openModal = () => {
+  const dialog = modalEl?.querySelector("dialog") as HTMLDialogElement;
+  dialog?.showModal();
+};
 ```
 
 ## Props Interfaces
 
 ```tsx
+import { type Component } from "solid-js";
+import type { JSX } from "solid-js";
+
 interface ComponentProps {
   color?: "primary" | "secondary" | "danger";
   variant?: "filled" | "outlined" | "borderless";
   size?: "sm" | "md" | "lg";
   disabled?: boolean;
-  children?: React.ReactNode;
+  children?: JSX.Element;
 }
+
+const MyComponent: Component<ComponentProps> = (props) => {
+  // ...
+};
 ```
 
 ## Import Patterns
 
 ```tsx
 // Use wrapper components
-import { ModusButton, ModusAlert } from "@/components";
+import ModusButton from "../components/ModusButton";
+import ModusAlert from "../components/ModusAlert";
 
-// Import types from the web components package
-import type { 
-  HTMLModusWcButtonElement,
-  HTMLModusWcModalElement 
-} from "@trimble-oss/moduswebcomponents-react";
+// SolidJS primitives
+import { createSignal, createEffect, onMount, onCleanup, Show, For } from "solid-js";
+import { type Component } from "solid-js";
+
+// Router
+import { useLocation, useNavigate, A } from "@solidjs/router";
 ```
 
 ## Design System Types
 
 ```tsx
-type ThemeName = 
-  | "modus-classic-light" 
+type ThemeName =
+  | "modus-classic-light"
   | "modus-classic-dark"
-  | "modus-modern-light" 
+  | "modus-modern-light"
   | "modus-modern-dark"
-  | "connect-light" 
+  | "connect-light"
   | "connect-dark";
 
 type ButtonColor = "primary" | "secondary" | "danger";

@@ -38,6 +38,27 @@ export async function installDependencies(projectPath) {
   }
 }
 
+export async function runPostScaffoldValidation(projectPath) {
+  const cwd = join(process.cwd(), projectPath);
+
+  try {
+    await execa("npm", ["run", "lint:all"], {
+      cwd,
+      stdio: "pipe",
+      env: {
+        ...process.env,
+        npm_config_loglevel: "error",
+      },
+    });
+    return { success: true, failures: 0 };
+  } catch (error) {
+    const stdout = error.stdout || "";
+    const failMatch = stdout.match(/(\d+) check\(s\) failed/);
+    const failures = failMatch ? parseInt(failMatch[1], 10) : 1;
+    return { success: false, failures };
+  }
+}
+
 function detectPackageManager(projectPath) {
   if (existsSync(join(projectPath, "yarn.lock"))) return "yarn";
   if (existsSync(join(projectPath, "pnpm-lock.yaml"))) return "pnpm";

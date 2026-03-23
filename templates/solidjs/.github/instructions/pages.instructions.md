@@ -9,19 +9,22 @@ Pages are user-facing application screens in `src/pages/`.
 ## Page Structure
 
 ```tsx
-export default function PageName() {
+import { type Component } from "solid-js";
+
+const PageName: Component = () => {
   return (
-    <div className="min-h-screen bg-background">
-      {/* Page content */}
-      <div className="container mx-auto p-6">
-        <div className="text-2xl font-bold text-foreground mb-6">
+    <div class="min-h-screen bg-background">
+      <div class="container mx-auto p-6">
+        <div class="text-2xl font-bold text-foreground mb-6">
           Page Title
         </div>
         {/* Content sections */}
       </div>
     </div>
   );
-}
+};
+
+export default PageName;
 ```
 
 ## Layout Patterns
@@ -29,23 +32,23 @@ export default function PageName() {
 Use Tailwind utilities with design system colors:
 
 ```tsx
-// Card layout
-<div className="bg-card border-default rounded-lg p-6">
+{/* Card layout */}
+<div class="bg-card border-default rounded-lg p-6">
   {/* Card content */}
 </div>
 
-// Grid layout
-<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+{/* Grid layout */}
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
   {/* Grid items */}
 </div>
 ```
 
 ## Navigation
 
-Add routes in `src/App.tsx`:
+Add routes in `src/App.tsx` using `@solidjs/router`:
 
 ```tsx
-<Route path="/your-page" element={<YourPage />} />
+<Route path="/your-page" component={YourPage} />
 ```
 
 ## Styling Rules
@@ -60,7 +63,7 @@ Add routes in `src/App.tsx`:
 Pages automatically adapt to the active theme. Use theme context if needed:
 
 ```tsx
-import { useTheme } from "@/contexts/ThemeContext";
+import { useTheme } from "../contexts/ThemeContext";
 
 const { theme, setTheme } = useTheme();
 ```
@@ -70,7 +73,8 @@ const { theme, setTheme } = useTheme();
 Always use wrapper components from `src/components/`:
 
 ```tsx
-import { ModusButton, ModusAlert, ModusCard } from "@/components";
+import ModusButton from "../components/ModusButton";
+import ModusAlert from "../components/ModusAlert";
 ```
 
-Never import `ModusWc*` components directly.
+Never use `modus-wc-*` web components directly in pages.

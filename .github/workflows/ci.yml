@@ -32,7 +32,8 @@ jobs:
         run: |
           test -f templates/react/package.json || exit 1
           test -f templates/angular/package.json || exit 1
-          echo "✓ Bundled templates verified"
+          test -f templates/solidjs/package.json || exit 1
+          echo "✓ Bundled templates verified (react, angular, solidjs)"
 
       - name: Test CLI commands
         run: |

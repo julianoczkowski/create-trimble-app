@@ -5,7 +5,10 @@ import {
   validateProjectName,
   getCurrentFolderName,
 } from "./utils/file.js";
-import { installDependencies } from "./utils/install.js";
+import {
+  installDependencies,
+  runPostScaffoldValidation,
+} from "./utils/install.js";
 import { copyTemplate, getDetailedErrorMessage } from "./utils/git.js";
 import { logger } from "./utils/logger.js";
 import { colors } from "./utils/colors.js";
@@ -189,7 +192,30 @@ export async function scaffold(options = {}) {
     }
   }
 
-  // 7. Success outro
+  // 7. Post-scaffold validation (only if deps were installed)
+  if (install) {
+    const validateSpinner = p.spinner();
+    validateSpinner.start("Validating template integrity");
+
+    try {
+      const result = await runPostScaffoldValidation(projectPath);
+      if (result.success) {
+        validateSpinner.stop(
+          `${colors.success("\u2713")} Template validation passed`
+        );
+      } else {
+        validateSpinner.stop(
+          `${colors.warning("\u26A0")} Template validation: ${result.failures} check(s) need attention`
+        );
+      }
+    } catch {
+      validateSpinner.stop(
+        `${colors.success("\u2713")} Template created (validation skipped)`
+      );
+    }
+  }
+
+  // 8. Success outro
   p.outro(colors.success("Done! Configuration updated."));
 
   // 8. Detailed next steps

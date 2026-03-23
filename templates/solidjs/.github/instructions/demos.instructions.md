@@ -9,21 +9,23 @@ Demo pages showcase Modus components with interactive examples.
 ## Page Structure
 
 ```tsx
-export default function ComponentDemo() {
+import DemoPage from "../../components/DemoPage";
+import DemoExample from "../../components/DemoExample";
+
+export default function ComponentDemoPage() {
   return (
-    <div className="space-y-8 p-6">
-      <div className="text-2xl font-bold text-foreground">Component Name</div>
-      <div className="text-foreground-60">Description of the component.</div>
-
-      {/* Demo sections */}
-      <DemoSection title="Basic Usage">
+    <DemoPage
+      title="Component Name"
+      description="Description of the component."
+    >
+      <DemoExample title="Basic Usage" description="Simple examples.">
         {/* Examples */}
-      </DemoSection>
+      </DemoExample>
 
-      <DemoSection title="Variants">
+      <DemoExample title="Variants" description="Different styles.">
         {/* Variant examples */}
-      </DemoSection>
-    </div>
+      </DemoExample>
+    </DemoPage>
   );
 }
 ```
@@ -31,9 +33,9 @@ export default function ComponentDemo() {
 ## Demo Section Pattern
 
 ```tsx
-<div className="space-y-4">
-  <div className="text-lg font-semibold text-foreground">Section Title</div>
-  <div className="flex flex-wrap gap-4">
+<div class="space-y-4">
+  <div class="text-lg font-semibold text-foreground">Section Title</div>
+  <div class="flex flex-wrap gap-4">
     {/* Component examples */}
   </div>
 </div>
@@ -51,7 +53,7 @@ export default function ComponentDemo() {
 Show multiple states and variants:
 
 ```tsx
-<div className="flex flex-wrap gap-4">
+<div class="flex flex-wrap gap-4">
   <ModusButton color="primary">Primary</ModusButton>
   <ModusButton color="secondary">Secondary</ModusButton>
   <ModusButton color="danger">Danger</ModusButton>
@@ -60,23 +62,23 @@ Show multiple states and variants:
 
 ## Event Handling Demos
 
-Demonstrate event handling with visible feedback:
+Demonstrate event handling with visible feedback using SolidJS signals:
 
 ```tsx
-const [lastAction, setLastAction] = useState<string>("");
+const [lastAction, setLastAction] = createSignal("");
 
-<ModusButton onClick={() => setLastAction("Button clicked")}>
+<ModusButton onButtonClick={() => setLastAction("Button clicked")}>
   Click Me
 </ModusButton>
-<div className="text-foreground-60">Last action: {lastAction}</div>
+<div class="text-foreground-60">Last action: {lastAction()}</div>
 ```
 
 ## Icons in Demos
 
-Use Modus icons only with underscore naming:
+Use Modus icons only:
 
 ```tsx
-<i className="modus-icons">check_circle</i>
-<i className="modus-icons">warning</i>
-<i className="modus-icons">info</i>
+<i class="modus-icons">check_circle</i>
+<i class="modus-icons">warning</i>
+<i class="modus-icons">info</i>
 ```
