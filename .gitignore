@@ -98,6 +98,9 @@ pids
 *.swp
 *.swo
 
+# Nx cache
+.nx/
+
 # OS generated files
 .DS_Store
 .DS_Store?

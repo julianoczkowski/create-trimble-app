@@ -73,32 +73,6 @@ jobs:
         working-directory: test-solidjs-app
         run: npm run build
 
-  update-health-report:
-    name: Update Health Report
-    runs-on: ubuntu-latest
-    needs: [validate-react, validate-solidjs, validate-angular]
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-    permissions:
-      contents: write
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "20"
-
-      - name: Generate health report
-        run: node scripts/generate-template-health.js
-
-      - name: Commit health report
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add TEMPLATE-HEALTH.md
-          git diff --cached --quiet || git commit -m "docs: update template health report [skip ci]"
-          git push
-
   validate-angular:
     name: Angular Template
     runs-on: ubuntu-latest
