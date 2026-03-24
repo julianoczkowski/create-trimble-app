@@ -142,8 +142,11 @@ All templates include AI-powered Cursor commands for rapid scaffolding:
 | Command              | Description                                                       |
 | -------------------- | ----------------------------------------------------------------- |
 | `scaffold-shell-app` | Create a complete app shell with navbar, side navigation, routing |
+| `trimble-id`         | Add Trimble Identity (TID) authentication with OAuth 2.0 / OIDC  |
 
-To use: Open Cursor IDE, press `Cmd+K` (Mac) or `Ctrl+K` (Windows/Linux), and run the command. The AI will guide you through a conversational setup flow to customize your navigation items.
+To use: Open Cursor IDE, press `Cmd+K` (Mac) or `Ctrl+K` (Windows/Linux), and run the command. The AI will guide you through a conversational setup flow.
+
+The `trimble-id` command scaffolds a complete TID integration tailored to each framework: React uses `@trimble-oss/trimble-id-react`, SolidJS wraps the core `TIDClient` in a SolidJS context, and Angular uses `@trimble-oss/trimble-id` with a signals-based `AuthService`, functional route guard, and HTTP interceptor.
 
 ## Architecture
 

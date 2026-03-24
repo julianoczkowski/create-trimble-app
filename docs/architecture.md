@@ -242,7 +242,7 @@ Templates are complete, working projects bundled in the npm package.
 templates/
 ├── config.json           # Framework metadata
 ├── react/
-│   ├── .cursor/          # Cursor IDE rules
+│   ├── .cursor/          # Cursor IDE rules + TID auth command
 │   ├── .github/          # GitHub templates & workflows
 │   ├── .husky/           # Git hooks
 │   ├── .vscode/          # VS Code settings
@@ -252,7 +252,7 @@ templates/
 │   ├── package.json      # Dependencies
 │   └── ...               # Config files
 ├── angular/
-│   ├── .cursor/          # Cursor IDE rules
+│   ├── .cursor/          # Cursor IDE rules + TID auth command
 │   ├── .github/          # GitHub templates & workflows
 │   ├── .husky/           # Git hooks
 │   ├── .vscode/          # VS Code settings
@@ -262,7 +262,7 @@ templates/
 │   ├── package.json      # Dependencies
 │   └── ...               # Config files
 └── solidjs/
-    ├── .cursor/          # Cursor IDE rules (44 rules, 10 skills)
+    ├── .cursor/          # Cursor IDE rules (44 rules, 10 skills) + TID auth command
     ├── .github/          # GitHub templates & workflows
     ├── .husky/           # Git hooks
     ├── scripts/          # Code quality scripts

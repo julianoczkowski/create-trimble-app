@@ -16,7 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Post-scaffold validation** - CLI now runs `lint:all` after dependency installation to verify template integrity before the developer starts coding
 - **Template health report** - `TEMPLATE-HEALTH.md` auto-generated dashboard showing versions, component counts, lint script coverage, and status across all 3 templates. Run `node scripts/generate-template-health.js` to regenerate
 - **Template validation CI** - New `template-validation.yml` workflow that scaffolds, installs, lints, and builds all 3 templates on every PR touching `templates/` or `src/`
-- **Trimble Identity auth rules** - Cursor rules for adding TID authentication to React (`@trimble-oss/trimble-id-react`) and SolidJS (embedded wrapper around `TIDClient`) templates
+- **Trimble Identity auth rules** - Cursor rules and commands for adding TID authentication to all 3 templates: React (`@trimble-oss/trimble-id-react`), SolidJS (embedded wrapper around `TIDClient`), and Angular (`@trimble-oss/trimble-id` core SDK with signals-based `AuthService`, functional guard, and HTTP interceptor)
 - **SolidJS Template** - New SolidJS + Vite + Modus 2.0 Components template
   - SolidJS 1.9.5 with `@solidjs/router` for client-side routing
   - Direct Modus web component integration (no wrapper library needed)

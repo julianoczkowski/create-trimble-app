@@ -73,6 +73,8 @@ Complete working projects in `templates/react/`, `templates/angular/`, and `temp
 
 `templates/config.json` defines framework metadata (name, description, badge, note) read by `src/frameworks.js`.
 
+All three templates include Trimble Identity (TID) authentication Cursor commands (`.cursor/commands/trimble-id.md`) and rules (`.cursor/rules/add-trimble-identity-auth.mdc`). React uses `@trimble-oss/trimble-id-react`, SolidJS wraps `TIDClient` in a SolidJS context, Angular uses `@trimble-oss/trimble-id` core SDK with signals-based `AuthService`, functional guard, and HTTP interceptor.
+
 #### SolidJS Template
 
 SolidJS 1.9 + Vite + TypeScript + Tailwind CSS 3 + @solidjs/router. Uses `@trimble-oss/moduswebcomponents` (vanilla web components, no React wrapper).
