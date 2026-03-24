@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Prerequisites check** - CLI now verifies Git, Node.js (>= 18), and npm are available before scaffolding begins. Shows platform-specific install instructions (macOS: brew/Xcode CLT, Windows: winget, Linux: apt/dnf/pacman) if tools are missing
+- **GitHub account prompt** - Asks beginners if they have a GitHub account; if not, displays a guided signup panel with link and steps, then waits for confirmation before continuing. Automatically skipped in CI/non-TTY environments
+- **`--skip-checks` flag** - New CLI option to bypass prerequisite environment checks for experienced users
+- **Prerequisites test suite** - 18 new tests covering platform detection, version checks, install instruction generators, and GitHub signup info
 - **Post-scaffold validation** - CLI now runs `lint:all` after dependency installation to verify template integrity before the developer starts coding
 - **Template health report** - `TEMPLATE-HEALTH.md` auto-generated dashboard showing versions, component counts, lint script coverage, and status across all 3 templates. Run `node scripts/generate-template-health.js` to regenerate
 - **Template validation CI** - New `template-validation.yml` workflow that scaffolds, installs, lints, and builds all 3 templates on every PR touching `templates/` or `src/`
@@ -45,6 +49,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- CLI scaffold flow now starts with environment prerequisites before framework selection
 - CLI now supports three frameworks: React, Angular, and SolidJS
 - Framework validation updated to accept `solidjs` as a valid option
 - Updated CLI security notice and help text to list all three templates

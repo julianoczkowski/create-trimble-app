@@ -51,6 +51,7 @@ program
   .option("--dry-run", "Preview what would be created without making changes")
   .option("--verbose", "Enable verbose output for debugging")
   .option("--info", "Show information about this CLI")
+  .option("--skip-checks", "Skip prerequisite environment checks")
   .addHelpText("after", () => {
     const helpContent = [
       colors.brandBold("Quick Start"),
@@ -74,6 +75,9 @@ program
       "",
       `  ${colors.dim("#")} Preview without creating files`,
       "  npx @julianoczkowski/create-trimble-app@latest my-app --dry-run",
+      "",
+      `  ${colors.dim("#")} Skip prerequisite checks`,
+      "  npx @julianoczkowski/create-trimble-app@latest my-app --skip-checks",
       "",
       colors.brandBold("Frameworks"),
       `  ${colors.brand("react")}     React + Vite + Modus 2.0 Components`,
@@ -113,6 +117,7 @@ program
         dryRun: options.dryRun,
         verbose: options.verbose,
         showInfo: options.info,
+        skipChecks: options.skipChecks,
       });
     } catch (error) {
       console.error(colors.error("Error:"), error.message);

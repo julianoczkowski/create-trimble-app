@@ -42,6 +42,7 @@ Interactive CLI to scaffold Modus 2.0 web component applications for React, Angu
 - 🎯 **Interactive** - Premium CLI experience with Trimble branding
 - ⚡ **Fast** - Local file copy, instant setup
 - ✅ **Validated** - Post-scaffold `lint:all` verifies template integrity automatically
+- 🔍 **Prerequisites Check** - Detects Git, Node.js, npm with platform-specific install guides
 - 🔄 **Update Notifications** - Automatic check for newer CLI versions
 
 ## Usage
@@ -54,10 +55,12 @@ npx @julianoczkowski/create-trimble-app@latest
 
 This will guide you through:
 
-1. Framework selection (React, Angular, or SolidJS)
-2. Installation location choice
-3. Project name input
-4. Optional dependency installation
+1. Environment check (Git, Node.js, npm)
+2. GitHub account setup (with guided signup if needed)
+3. Framework selection (React, Angular, or SolidJS)
+4. Installation location choice
+5. Project name input
+6. Optional dependency installation
 
 ### Command Line Options
 
@@ -83,6 +86,9 @@ npx @julianoczkowski/create-trimble-app@latest --info
 # Skip dependency installation
 npx @julianoczkowski/create-trimble-app@latest my-app --no-install
 
+# Skip prerequisite environment checks
+npx @julianoczkowski/create-trimble-app@latest my-app --skip-checks
+
 # Show help
 npx @julianoczkowski/create-trimble-app@latest --help
 ```
@@ -98,6 +104,7 @@ npx @julianoczkowski/create-trimble-app@latest --help
 | `--verbose`              | Enable verbose output for debugging    |
 | `--info`                 | Show information about this CLI        |
 | `--no-install`           | Skip automatic dependency installation |
+| `--skip-checks`          | Skip prerequisite environment checks   |
 | `-v, --version`          | Display version number                 |
 | `-h, --help`             | Display help                           |
 
@@ -146,12 +153,14 @@ To use: Open Cursor IDE, press `Cmd+K` (Mac) or `Ctrl+K` (Windows/Linux), and ru
 ├─────────────────────────────────────────────────────────────┤
 │  1. Parse CLI arguments (Commander.js)                      │
 │  2. Show branded welcome header (boxen + Trimble Blue)      │
-│  3. Interactive prompts with threaded UI (@clack/prompts)   │
-│  4. Copy bundled template (local file copy)                 │
-│  5. Update package.json with project name                   │
-│  6. Install dependencies silently (optional)                │
-│  7. Validate template integrity (lint:all)                  │
-│  8. Show beginner-friendly success message                  │
+│  3. Check prerequisites (Git, Node.js 18+, npm)            │
+│  4. GitHub account prompt (with guided signup)              │
+│  5. Interactive prompts with threaded UI (@clack/prompts)   │
+│  6. Copy bundled template (local file copy)                 │
+│  7. Update package.json with project name                   │
+│  8. Install dependencies silently (optional)                │
+│  9. Validate template integrity (lint:all)                  │
+│ 10. Show beginner-friendly success message                  │
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -174,8 +183,9 @@ Unlike other scaffolding tools that download templates from GitHub at runtime, t
 
 ## Requirements
 
-- Node.js 18 or higher
-- npm, yarn, or pnpm
+- **Git** - The CLI checks for Git and provides platform-specific install instructions if missing
+- **Node.js 18** or higher - Version is validated at startup with upgrade guidance
+- **npm**, yarn, or pnpm
 
 ## Development
 
