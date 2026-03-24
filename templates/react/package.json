@@ -22,7 +22,7 @@
   "dependencies": {
     "@trimble-oss/modus-icons": "^1.18.1",
     "@trimble-oss/moduswebcomponents-react": "^1.0.6-react19",
-    "autoprefixer": "^10.4.21",
+    "autoprefixer": "^10.4.27",
     "postcss": "^8.5.6",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
