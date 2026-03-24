@@ -25,7 +25,7 @@
     "@trimble-oss/moduswebcomponents": "^1.0.7",
     "@trimble-oss/modus-icons": "^1.18.1",
     "solid-js": "^1.9.11",
-    "@solidjs/router": "^0.15.4",
+    "@solidjs/router": "^0.16.1",
     "autoprefixer": "^10.4.21",
     "postcss": "^8.5.6",
     "tailwindcss": "^3.4.18"
