@@ -39,7 +39,7 @@
     "@testing-library/jest-dom": "^6.6.3",
     "eslint": "^9.36.0",
     "eslint-plugin-solid": "^0.14.0",
-    "glob": "^11.0.3",
+    "glob": "^13.0.6",
     "globals": "^16.4.0",
     "husky": "^9.1.7",
     "jsdom": "^25.0.0",
