@@ -34,7 +34,7 @@
     "babel-preset-solid": "1.9.5"
   },
   "devDependencies": {
-    "@eslint/js": "^9.36.0",
+    "@eslint/js": "^10.0.1",
     "@solidjs/testing-library": "^0.8.10",
     "@testing-library/jest-dom": "^6.6.3",
     "eslint": "^9.36.0",
