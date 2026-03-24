@@ -23,7 +23,7 @@
   },
   "dependencies": {
     "@trimble-oss/moduswebcomponents": "^1.0.7",
-    "@trimble-oss/modus-icons": "^1.18.1",
+    "@trimble-oss/modus-icons": "^1.21.0",
     "solid-js": "^1.9.11",
     "@solidjs/router": "^0.15.4",
     "autoprefixer": "^10.4.21",
