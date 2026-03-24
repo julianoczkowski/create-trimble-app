@@ -38,7 +38,7 @@
     "@angular/forms": "^20.3.0",
     "@angular/platform-browser": "^20.3.0",
     "@angular/router": "^20.3.0",
-    "@tailwindcss/postcss": "^4.1.16",
+    "@tailwindcss/postcss": "^4.2.2",
     "@trimble-oss/modus-icons": "^1.18.0",
     "@trimble-oss/moduswebcomponents": "^1.0.6",
     "@trimble-oss/moduswebcomponents-angular": "^1.0.6-ng19",
