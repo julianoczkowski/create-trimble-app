@@ -91,6 +91,13 @@ jobs:
           fi
           echo "✓ Angular bundled template exists"
 
+          # Check SolidJS template
+          if [ ! -f "templates/solidjs/package.json" ]; then
+            echo "Error: SolidJS bundled template not found"
+            exit 1
+          fi
+          echo "✓ SolidJS bundled template exists"
+
       - name: Run security audit
         run: npm audit --audit-level=high
 
@@ -136,9 +143,11 @@ jobs:
             - 🔒 No supply chain risks
 
             ### Features
+            - 🔍 **Prerequisites Check** - Verifies Git, Node.js 18+, npm with platform-specific install guides
             - 🎯 **Interactive CLI** - Beautiful interface with framework selection
             - ⚛️ **React** - React + Vite + Modus 2.0 Components
             - 🅰️ **Angular** - Angular + Modus 2.0 Web Components
+            - ▲ **SolidJS** - SolidJS + Vite + Modus 2.0 Components
             - 📦 **Smart Installation** - Package manager detection
             - 🔐 **Secure** - Published with npm provenance
 
@@ -162,11 +171,12 @@ jobs:
             ### CLI Options
             | Option | Description |
             |--------|-------------|
-            | `--framework <name>` | Specify framework (react, angular) |
+            | `--framework <name>` | Specify framework (react, angular, solidjs) |
             | `--current-folder` | Install in current directory |
             | `--dry-run` | Preview without making changes |
             | `--verbose` | Enable verbose output |
             | `--info` | Show CLI information |
             | `--no-install` | Skip dependency installation |
+            | `--skip-checks` | Skip prerequisite environment checks |
           draft: false
           prerelease: false
