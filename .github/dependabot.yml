@@ -10,6 +10,10 @@ updates:
     labels:
       - "dependencies"
     open-pull-requests-limit: 10
+    groups:
+      all-dependencies:
+        patterns:
+          - "*"
 
   # React template dependencies
   - package-ecosystem: "npm"
@@ -22,6 +26,10 @@ updates:
       - "dependencies"
       - "react"
     open-pull-requests-limit: 10
+    groups:
+      all-dependencies:
+        patterns:
+          - "*"
 
   # Angular template dependencies
   - package-ecosystem: "npm"
@@ -34,6 +42,10 @@ updates:
       - "dependencies"
       - "angular"
     open-pull-requests-limit: 10
+    groups:
+      all-dependencies:
+        patterns:
+          - "*"
 
   # SolidJS template dependencies
   - package-ecosystem: "npm"
@@ -46,6 +58,10 @@ updates:
       - "dependencies"
       - "solidjs"
     open-pull-requests-limit: 10
+    groups:
+      all-dependencies:
+        patterns:
+          - "*"
 
   # GitHub Actions
   - package-ecosystem: "github-actions"
@@ -58,3 +74,7 @@ updates:
       - "dependencies"
       - "ci"
     open-pull-requests-limit: 5
+    groups:
+      all-actions:
+        patterns:
+          - "*"
