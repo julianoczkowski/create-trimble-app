@@ -23,31 +23,31 @@
   },
   "dependencies": {
     "@trimble-oss/moduswebcomponents": "^1.0.7",
-    "@trimble-oss/modus-icons": "^1.18.1",
-    "solid-js": "^1.9.11",
-    "@solidjs/router": "^0.15.4",
+    "@trimble-oss/modus-icons": "^1.21.0",
+    "solid-js": "^1.9.12",
+    "@solidjs/router": "^0.16.1",
     "autoprefixer": "^10.4.21",
     "postcss": "^8.5.6",
-    "tailwindcss": "^3.4.18"
+    "tailwindcss": "^4.2.2"
   },
   "overrides": {
     "babel-preset-solid": "1.9.5"
   },
   "devDependencies": {
-    "@eslint/js": "^9.36.0",
+    "@eslint/js": "^10.0.1",
     "@solidjs/testing-library": "^0.8.10",
     "@testing-library/jest-dom": "^6.6.3",
-    "eslint": "^9.36.0",
+    "eslint": "^10.1.0",
     "eslint-plugin-solid": "^0.14.0",
-    "glob": "^11.0.3",
-    "globals": "^16.4.0",
+    "glob": "^13.0.6",
+    "globals": "^17.4.0",
     "husky": "^9.1.7",
-    "jsdom": "^25.0.0",
-    "typescript": "~5.9.3",
-    "typescript-eslint": "^8.45.0",
-    "vite": "^7.1.7",
+    "jsdom": "^29.0.1",
+    "typescript": "~6.0.2",
+    "typescript-eslint": "^8.57.2",
+    "vite": "^8.0.2",
     "vite-plugin-solid": "^2.11.10",
-    "vite-plugin-static-copy": "^3.2.0",
-    "vitest": "^3.0.8"
+    "vite-plugin-static-copy": "^4.0.0",
+    "vitest": "^4.1.1"
   }
 }
