@@ -52,6 +52,11 @@ program
   .option("--verbose", "Enable verbose output for debugging")
   .option("--info", "Show information about this CLI")
   .option("--skip-checks", "Skip prerequisite environment checks")
+  .option(
+    "--cursor-scope <scope>",
+    "Where to install Cursor config: project or global (default: prompt)",
+    validateCursorScope,
+  )
   .addHelpText("after", () => {
     const helpContent = [
       colors.brandBold("Quick Start"),
@@ -118,6 +123,7 @@ program
         verbose: options.verbose,
         showInfo: options.info,
         skipChecks: options.skipChecks,
+        installScope: options.cursorScope,
       });
     } catch (error) {
       console.error(colors.error("Error:"), error.message);
@@ -140,6 +146,24 @@ function validateFramework(value) {
   if (!validFrameworks.includes(lowercaseValue)) {
     throw new Error(
       `Invalid framework "${value}". Valid options: ${validFrameworks.join(", ")}`,
+    );
+  }
+
+  return lowercaseValue;
+}
+
+/**
+ * Validate cursor-scope option
+ * @param {string} value - Scope name
+ * @returns {string} - Validated scope name
+ */
+function validateCursorScope(value) {
+  const validScopes = ["project", "global"];
+  const lowercaseValue = value.toLowerCase();
+
+  if (!validScopes.includes(lowercaseValue)) {
+    throw new Error(
+      `Invalid cursor scope "${value}". Valid options: ${validScopes.join(", ")}`,
     );
   }
 

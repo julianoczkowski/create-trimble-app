@@ -22,12 +22,15 @@ const SKIP_FILES = new Set([
 ]);
 
 /**
- * Copy bundled template to target directory
+ * Copy bundled template to target directory.
+ * When cursorScope is "global", the .cursor/ folder is written to ~/.cursor/
+ * instead of the project directory.
  * @param {string} templateName - Name of the template (react, angular, solidjs)
  * @param {string} targetPath - Target directory path
+ * @param {{ cursorScope?: "project" | "global" }} options
  * @returns {Promise<boolean>}
  */
-export async function copyTemplate(templateName, targetPath) {
+export async function copyTemplate(templateName, targetPath, { cursorScope = "project" } = {}) {
   const fs = await import("fs/promises");
   const path = await import("path");
 
@@ -50,7 +53,20 @@ export async function copyTemplate(templateName, targetPath) {
     );
   }
 
-  await copyDirectory(bundledPath, targetPath);
+  if (cursorScope === "global") {
+    // Copy project files, skipping .cursor/ (it goes to ~/.cursor/ instead)
+    const projectSkipDirs = new Set([...SKIP_DIRECTORIES, ".cursor"]);
+    await copyDirectory(bundledPath, targetPath, projectSkipDirs);
+
+    // Copy .cursor/ contents into ~/.cursor/
+    const { homedir } = await import("os");
+    const cursorSrc = path.join(bundledPath, ".cursor");
+    const globalCursorPath = path.join(homedir(), ".cursor");
+    await copyDirectory(cursorSrc, globalCursorPath);
+  } else {
+    await copyDirectory(bundledPath, targetPath);
+  }
+
   return true;
 }
 
@@ -58,8 +74,9 @@ export async function copyTemplate(templateName, targetPath) {
  * Copy directory recursively
  * @param {string} src - Source directory
  * @param {string} dest - Destination directory
+ * @param {Set<string>} skipDirs - Directory names to skip (defaults to SKIP_DIRECTORIES)
  */
-async function copyDirectory(src, dest) {
+async function copyDirectory(src, dest, skipDirs = SKIP_DIRECTORIES) {
   const fs = await import("fs/promises");
   const path = await import("path");
 
@@ -69,7 +86,7 @@ async function copyDirectory(src, dest) {
 
   for (const entry of entries) {
     // Skip excluded directories (node_modules, dist, .angular, etc.)
-    if (entry.isDirectory() && SKIP_DIRECTORIES.has(entry.name)) {
+    if (entry.isDirectory() && skipDirs.has(entry.name)) {
       continue;
     }
 
@@ -86,7 +103,7 @@ async function copyDirectory(src, dest) {
     const destPath = path.join(dest, destName);
 
     if (entry.isDirectory()) {
-      await copyDirectory(srcPath, destPath);
+      await copyDirectory(srcPath, destPath, skipDirs);
     } else {
       await fs.copyFile(srcPath, destPath);
     }

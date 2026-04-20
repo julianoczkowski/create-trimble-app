@@ -72,7 +72,33 @@ export async function scaffold(options = {}) {
     process.exit(1);
   }
 
-  // 2. Installation Location Choice
+  // 2. Cursor Config Scope
+  let installScope = options.installScope;
+
+  if (!installScope) {
+    installScope = await p.select({
+      message: "Where should Cursor config (MCP, Rules, Skills) be installed?",
+      options: [
+        {
+          label: "Project  (.cursor/ in project folder)",
+          value: "project",
+          hint: "Only active for this project",
+        },
+        {
+          label: "Global   (~/.cursor/)",
+          value: "global",
+          hint: "Active across all your Cursor projects",
+        },
+      ],
+    });
+
+    if (p.isCancel(installScope)) {
+      p.cancel("Operation cancelled");
+      process.exit(0);
+    }
+  }
+
+  // 4. Installation Location Choice
   let installInCurrentFolder = options.currentFolder;
   let projectName = options.projectName;
 
@@ -103,7 +129,7 @@ export async function scaffold(options = {}) {
     installInCurrentFolder = location === "current";
   }
 
-  // 3. Project Name
+  // 5. Project Name
   if (installInCurrentFolder) {
     projectName = getCurrentFolderName();
     p.log.info(`Using current folder: ${colors.brand(projectName)}`);
@@ -141,16 +167,19 @@ export async function scaffold(options = {}) {
     p.log.message(
       `Location: ${installInCurrentFolder ? "Current directory" : projectName}`,
     );
+    p.log.message(
+      `Cursor config: ${installScope === "global" ? "~/.cursor/ (global)" : ".cursor/ (project)"}`,
+    );
     p.outro("Preview complete");
     process.exit(0);
   }
 
-  // 4. Copy Template with spinner
+  // 6. Copy Template with spinner
   const copySpinner = p.spinner();
   copySpinner.start(`Creating ${config.name} project`);
 
   try {
-    await copyTemplate(framework, projectPath);
+    await copyTemplate(framework, projectPath, { cursorScope: installScope });
     copySpinner.stop(`${colors.success("\u2713")} Project created`);
 
     // 5. Update package.json with project name
@@ -170,7 +199,7 @@ export async function scaffold(options = {}) {
     process.exit(1);
   }
 
-  // 6. Install Dependencies (optional)
+  // 7. Install Dependencies (optional)
   let install = options.install;
 
   if (install === undefined) {
@@ -198,7 +227,7 @@ export async function scaffold(options = {}) {
     }
   }
 
-  // 7. Post-scaffold validation (only if deps were installed)
+  // 8. Post-scaffold validation (only if deps were installed)
   if (install) {
     const validateSpinner = p.spinner();
     validateSpinner.start("Validating template integrity");
@@ -221,9 +250,9 @@ export async function scaffold(options = {}) {
     }
   }
 
-  // 8. Success outro
+  // 9. Success outro
   p.outro(colors.success("Done! Configuration updated."));
 
-  // 8. Detailed next steps
-  logger.nextSteps(projectName, config.name, install, installInCurrentFolder);
+  // 9. Detailed next steps
+  logger.nextSteps(projectName, config.name, install, installInCurrentFolder, installScope);
 }
