@@ -36,11 +36,14 @@ Interactive CLI to scaffold Modus 2.0 web component applications for React, Angu
 
 - 📦 **Bundled Templates** - Templates included in package, no network required
 - 🔒 **Secure** - No runtime external dependencies
-- ⚛️ **React** - React + Vite + Modus 2.0 Components + Cursor Rules
-- 🅰️ **Angular** - Angular + Modus 2.0 Web Components + Cursor Rules
+- ⚛️ **React** - React 19 + Vite + Modus 2.0 Components + Cursor Rules
+- 🅰️ **Angular** - Angular 20 + Modus 2.0 Web Components + Cursor Rules
 - ▲ **SolidJS** - SolidJS + Vite + Modus 2.0 Components + Cursor Rules
 - 🎯 **Interactive** - Premium CLI experience with Trimble branding
 - ⚡ **Fast** - Local file copy, instant setup
+- ✅ **Validated** - Post-scaffold `lint:all` verifies template integrity automatically
+- 🔍 **Prerequisites Check** - Detects Git, Node.js, npm with platform-specific install guides
+- 🔄 **Update Notifications** - Automatic check for newer CLI versions
 
 ## Usage
 
@@ -52,10 +55,12 @@ npx @julianoczkowski/create-trimble-app@latest
 
 This will guide you through:
 
-1. Framework selection (React, Angular, or SolidJS)
-2. Installation location choice
-3. Project name input
-4. Optional dependency installation
+1. Environment check (Git, Node.js, npm)
+2. GitHub account setup (with guided signup if needed)
+3. Framework selection (React, Angular, or SolidJS)
+4. Installation location choice
+5. Project name input
+6. Optional dependency installation
 
 ### Command Line Options
 
@@ -81,6 +86,9 @@ npx @julianoczkowski/create-trimble-app@latest --info
 # Skip dependency installation
 npx @julianoczkowski/create-trimble-app@latest my-app --no-install
 
+# Skip prerequisite environment checks
+npx @julianoczkowski/create-trimble-app@latest my-app --skip-checks
+
 # Show help
 npx @julianoczkowski/create-trimble-app@latest --help
 ```
@@ -96,6 +104,7 @@ npx @julianoczkowski/create-trimble-app@latest --help
 | `--verbose`              | Enable verbose output for debugging    |
 | `--info`                 | Show information about this CLI        |
 | `--no-install`           | Skip automatic dependency installation |
+| `--skip-checks`          | Skip prerequisite environment checks   |
 | `-v, --version`          | Display version number                 |
 | `-h, --help`             | Display help                           |
 
@@ -103,9 +112,9 @@ npx @julianoczkowski/create-trimble-app@latest --help
 
 | Framework       | Description     | What's Included                                                                                          |
 | --------------- | --------------- | -------------------------------------------------------------------------------------------------------- |
-| ⚛️ **React**    | React + Vite    | Modus 2.0 Components, TypeScript, Tailwind CSS, 40+ Cursor Rules, GitHub Templates, Code Quality Scripts |
-| 🅰️ **Angular**  | Angular 20+     | Modus 2.0 Web Components, TypeScript, Tailwind CSS, 11 Cursor Rules, GitHub Workflows, Demo Components   |
-| ▲ **SolidJS**   | SolidJS + Vite  | Modus 2.0 Components, TypeScript, Tailwind CSS, 44 Cursor Rules, Vitest, 44 Demo Pages, MCP Servers     |
+| ⚛️ **React**    | React 19 + Vite | 47 Modus components, 46 demos, 43 Cursor Rules, 8 lint scripts, Tailwind CSS 3, TypeScript, Husky hooks |
+| 🅰️ **Angular**  | Angular 20      | 48 Modus components, 45 demos, 50 Cursor Rules, 7 lint scripts, Tailwind CSS 4, TypeScript, Husky hooks |
+| ▲ **SolidJS**   | SolidJS + Vite  | 47 Modus components, 46 demos, 45 Cursor Rules, 8 lint scripts, Tailwind CSS 3, MCP Servers, Vitest     |
 
 ## What's Included in Each Template
 
@@ -133,8 +142,11 @@ All templates include AI-powered Cursor commands for rapid scaffolding:
 | Command              | Description                                                       |
 | -------------------- | ----------------------------------------------------------------- |
 | `scaffold-shell-app` | Create a complete app shell with navbar, side navigation, routing |
+| `trimble-id`         | Add Trimble Identity (TID) authentication with OAuth 2.0 / OIDC  |
 
-To use: Open Cursor IDE, press `Cmd+K` (Mac) or `Ctrl+K` (Windows/Linux), and run the command. The AI will guide you through a conversational setup flow to customize your navigation items.
+To use: Open Cursor IDE, press `Cmd+K` (Mac) or `Ctrl+K` (Windows/Linux), and run the command. The AI will guide you through a conversational setup flow.
+
+The `trimble-id` command scaffolds a complete TID integration tailored to each framework: React uses `@trimble-oss/trimble-id-react`, SolidJS wraps the core `TIDClient` in a SolidJS context, and Angular uses `@trimble-oss/trimble-id` with a signals-based `AuthService`, functional route guard, and HTTP interceptor.
 
 ## Architecture
 
@@ -144,11 +156,14 @@ To use: Open Cursor IDE, press `Cmd+K` (Mac) or `Ctrl+K` (Windows/Linux), and ru
 ├─────────────────────────────────────────────────────────────┤
 │  1. Parse CLI arguments (Commander.js)                      │
 │  2. Show branded welcome header (boxen + Trimble Blue)      │
-│  3. Interactive prompts with threaded UI (@clack/prompts)   │
-│  4. Copy bundled template (local file copy)                 │
-│  5. Update package.json with project name                   │
-│  6. Install dependencies silently (optional)                │
-│  7. Show beginner-friendly success message                  │
+│  3. Check prerequisites (Git, Node.js 18+, npm)            │
+│  4. GitHub account prompt (with guided signup)              │
+│  5. Interactive prompts with threaded UI (@clack/prompts)   │
+│  6. Copy bundled template (local file copy)                 │
+│  7. Update package.json with project name                   │
+│  8. Install dependencies silently (optional)                │
+│  9. Validate template integrity (lint:all)                  │
+│ 10. Show beginner-friendly success message                  │
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -171,8 +186,9 @@ Unlike other scaffolding tools that download templates from GitHub at runtime, t
 
 ## Requirements
 
-- Node.js 18 or higher
-- npm, yarn, or pnpm
+- **Git** - The CLI checks for Git and provides platform-specific install instructions if missing
+- **Node.js 18** or higher - Version is validated at startup with upgrade guidance
+- **npm**, yarn, or pnpm
 
 ## Development
 

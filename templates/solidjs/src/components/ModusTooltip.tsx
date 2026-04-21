@@ -37,7 +37,7 @@ const ModusTooltip: Component<ModusTooltipProps> = (props) => {
     const arr = Array.isArray(c) ? c : [c];
     if (arr.length === 0) return null;
     if (arr.length === 1) return arr[0] as JSX.Element;
-    return <span class="inline-flex items-center gap-1">{arr as JSX.Element[]}</span>;
+    return <div class="inline-flex items-center gap-1">{arr as JSX.Element[]}</div>;
   };
 
   const combinedClass = () =>

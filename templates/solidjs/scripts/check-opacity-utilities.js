@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * Modus Opacity Utilities Linting Script for Vite + React
+ * Modus Opacity Utilities Linting Script for Vite + SolidJS
  *
  * This script checks for usage of Tailwind opacity syntax (e.g., /80) with design system colors
  * and suggests using our custom opacity utilities instead.

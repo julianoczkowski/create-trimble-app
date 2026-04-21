@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * Semantic HTML Linting Script for Vite + React
+ * Semantic HTML Linting Script for Vite + SolidJS
  *
  * This script checks for usage of semantic HTML elements that should be replaced with div elements
  * and Tailwind classes to ensure consistent styling and avoid browser default style conflicts.
@@ -111,58 +111,58 @@ const EXCLUDE_PATTERNS = [
 // Tailwind alternatives for common semantic elements
 const TAILWIND_ALTERNATIVES = {
   // Headings
-  "<h1": '<div className="text-4xl font-bold',
-  "<h2": '<div className="text-3xl font-semibold',
-  "<h3": '<div className="text-2xl font-semibold',
-  "<h4": '<div className="text-xl font-semibold',
-  "<h5": '<div className="text-lg font-semibold',
-  "<h6": '<div className="text-base font-semibold',
+  "<h1": '<div class="text-4xl font-bold',
+  "<h2": '<div class="text-3xl font-semibold',
+  "<h3": '<div class="text-2xl font-semibold',
+  "<h4": '<div class="text-xl font-semibold',
+  "<h5": '<div class="text-lg font-semibold',
+  "<h6": '<div class="text-base font-semibold',
 
   // Sections
-  "<section": '<div className="',
-  "<header": '<div className="',
-  "<footer": '<div className="',
-  "<main": '<div className="',
-  "<article": '<div className="',
-  "<aside": '<div className="',
-  "<nav": '<div className="',
+  "<section": '<div class="',
+  "<header": '<div class="',
+  "<footer": '<div class="',
+  "<main": '<div class="',
+  "<article": '<div class="',
+  "<aside": '<div class="',
+  "<nav": '<div class="',
 
   // Text elements
-  "<p": '<div className="text-base',
-  "<span": '<div className="',
+  "<p": '<div class="text-base',
+  "<span": '<div class="',
 
   // Lists
-  "<ul": '<div className="list-none',
-  "<ol": '<div className="list-none',
-  "<li": '<div className="',
+  "<ul": '<div class="list-none',
+  "<ol": '<div class="list-none',
+  "<li": '<div class="',
 
   // Other elements
   "<button": '<ModusWcButton color="primary"',
-  "<blockquote": '<div className="border-l-4 pl-4 italic border-left-default',
-  "<cite": '<div className="text-sm text-muted-foreground italic',
-  "<address": '<div className="text-sm not-italic',
-  "<time": '<div className="text-sm',
-  "<mark": '<div className="bg-yellow-200 dark:bg-yellow-800',
-  "<small": '<div className="text-sm',
-  "<strong": '<div className="font-bold',
-  "<em": '<div className="italic',
-  "<b": '<div className="font-bold',
-  "<i": '<div className="italic',
-  "<u": '<div className="underline',
-  "<s": '<div className="line-through',
-  "<del": '<div className="line-through',
-  "<ins": '<div className="underline',
-  "<sub": '<div className="text-xs align-sub',
-  "<sup": '<div className="text-xs align-super',
+  "<blockquote": '<div class="border-l-4 pl-4 italic border-left-default',
+  "<cite": '<div class="text-sm text-muted-foreground italic',
+  "<address": '<div class="text-sm not-italic',
+  "<time": '<div class="text-sm',
+  "<mark": '<div class="bg-yellow-200 dark:bg-yellow-800',
+  "<small": '<div class="text-sm',
+  "<strong": '<div class="font-bold',
+  "<em": '<div class="italic',
+  "<b": '<div class="font-bold',
+  "<i": '<div class="italic',
+  "<u": '<div class="underline',
+  "<s": '<div class="line-through',
+  "<del": '<div class="line-through',
+  "<ins": '<div class="underline',
+  "<sub": '<div class="text-xs align-sub',
+  "<sup": '<div class="text-xs align-super',
   "<pre":
-    '<div className="bg-muted p-4 rounded text-sm font-mono overflow-x-auto',
-  "<kbd": '<div className="bg-muted px-2 py-1 rounded text-sm font-mono border',
-  "<samp": '<div className="bg-muted px-1 py-0.5 rounded text-sm font-mono',
-  "<var": '<div className="italic',
-  "<dfn": '<div className="italic',
-  "<abbr": '<div className="underline decoration-dotted',
-  "<acronym": '<div className="underline decoration-dotted',
-  "<q": '<div className="italic',
+    '<div class="bg-muted p-4 rounded text-sm font-mono overflow-x-auto',
+  "<kbd": '<div class="bg-muted px-2 py-1 rounded text-sm font-mono border',
+  "<samp": '<div class="bg-muted px-1 py-0.5 rounded text-sm font-mono',
+  "<var": '<div class="italic',
+  "<dfn": '<div class="italic',
+  "<abbr": '<div class="underline decoration-dotted',
+  "<acronym": '<div class="underline decoration-dotted',
+  "<q": '<div class="italic',
 };
 
 function getTailwindSuggestion(element) {
@@ -177,29 +177,29 @@ function getTailwindSuggestion(element) {
 
   // Generic suggestions based on common patterns
   if (element.includes("<h")) {
-    return '<div className="text-lg font-semibold';
+    return '<div class="text-lg font-semibold';
   }
   if (
     element.includes("<section") ||
     element.includes("<header") ||
     element.includes("<footer")
   ) {
-    return '<div className="';
+    return '<div class="';
   }
   if (element.includes("<p")) {
-    return '<div className="text-base';
+    return '<div class="text-base';
   }
   if (element.includes("<ul") || element.includes("<ol")) {
-    return '<div className="list-none';
+    return '<div class="list-none';
   }
   if (element.includes("<strong") || element.includes("<b")) {
-    return '<div className="font-bold';
+    return '<div class="font-bold';
   }
   if (element.includes("<em") || element.includes("<i")) {
-    return '<div className="italic';
+    return '<div class="italic';
   }
 
-  return '<div className="';
+  return '<div class="';
 }
 
 function isAllowedSemanticElement(element, content, matchIndex) {
@@ -277,7 +277,7 @@ function isAllowedSemanticElement(element, content, matchIndex) {
   const lastQuote = Math.max(singleQuoteStart, doubleQuoteStart, backtickStart);
 
   if (lastQuote > Math.max(commentStart, commentEnd)) {
-    // Check if this quote is part of a JSX attribute (className="...", style="...", etc.)
+    // Check if this quote is part of a JSX attribute (class="...", style="...", etc.)
     // or if it's actually a string literal
     const beforeQuote = content.substring(0, lastQuote);
 
@@ -384,7 +384,7 @@ async function checkFile(filePath) {
 
 async function main() {
   console.log(
-    "🎨 Checking for semantic HTML elements that should use div + Tailwind classes in Vite + React app...\n"
+    "🎨 Checking for semantic HTML elements that should use div + Tailwind classes in Vite + SolidJS app...\n"
   );
 
   let allViolations = [];

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * Modus Icon Names Validation Script for Vite + React
+ * Modus Icon Names Validation Script for Vite + SolidJS
  *
  * This script validates that all Modus icon names used in the codebase
  * are correct and exist in the official Modus Icons list.

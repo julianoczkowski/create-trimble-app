@@ -105,6 +105,7 @@ create-trimble-app my-app --framework react
 | `--verbose` | Enable verbose output |
 | `--info` | Show CLI information |
 | `--no-install` | Skip dependency installation |
+| `--skip-checks` | Skip prerequisite environment checks |
 | `-v, --version` | Display version number |
 | `-h, --help` | Display help |
 

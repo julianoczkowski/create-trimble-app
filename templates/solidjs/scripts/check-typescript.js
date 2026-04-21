@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * TypeScript Type Checking Script for Vite + React
+ * TypeScript Type Checking Script for Vite + SolidJS
  *
  * This script runs TypeScript type checking with enhanced developer experience,
  * providing clear success/failure messages and helpful error formatting.
@@ -92,7 +92,7 @@ function runTypeCheck() {
 }
 
 function main() {
-  console.log("🔍 TypeScript Type Check for Vite + React App\n");
+  console.log("🔍 TypeScript Type Check for Vite + SolidJS App\n");
 
   const result = runTypeCheck();
 

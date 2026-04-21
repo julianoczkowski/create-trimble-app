@@ -32,29 +32,34 @@ npm run prepublishOnly
 bin/create-trimble-app.js (entry point)
   └→ src/cli.js (Commander.js argument parsing)
       └→ src/scaffold.js (main orchestration)
+          ├→ src/utils/prerequisites.js (environment checks)
           ├→ src/frameworks.js (loads templates/config.json)
           └→ src/utils/* (file, git, install, logger)
 ```
 
 ### Key Modules
 
-**src/cli.js**: Parses CLI arguments with Commander.js. Validates framework option (react, angular, solidjs). Handles all CLI flags (--framework, --current-folder, --dry-run, --verbose, --info, --no-install). Checks for updates non-blocking.
+**src/cli.js**: Parses CLI arguments with Commander.js. Validates framework option (react, angular, solidjs). Handles all CLI flags (--framework, --current-folder, --dry-run, --verbose, --info, --no-install, --skip-checks). Checks for updates non-blocking.
 
 **src/scaffold.js**: Orchestrates the scaffolding flow:
-1. Framework selection (interactive or CLI arg)
-2. Installation location (current folder or new directory)
-3. Project name validation
-4. Dry-run preview (if enabled)
-5. Template copying
-6. package.json name update
-7. Dependency installation (optional)
-8. Success message
+1. Prerequisites check (Git, Node.js >= 18, npm — skippable with `--skip-checks`)
+2. GitHub account prompt (interactive only, skipped in CI/non-TTY)
+3. Framework selection (interactive or CLI arg)
+4. Installation location (current folder or new directory)
+5. Project name validation
+6. Dry-run preview (if enabled)
+7. Template copying
+8. package.json name update
+9. Dependency installation (optional)
+10. Success message
 
 **src/frameworks.js**: Loads `templates/config.json` and returns enabled frameworks. Filters out any with `disabled: true`. Provides `getFrameworkById()` lookup.
 
 **src/utils/file.js**: `validateProjectName()`, `updatePackageJson()`, `getCurrentFolderName()`
 
 **src/utils/git.js**: `copyTemplate()` copies from bundled `templates/` directory to target (local file copy, no git operations despite the filename). Skips `node_modules`, `dist`, `.angular`, `.git`, `coverage`, `.nyc_output` directories and lock files during copy. Renames `dot-npmrc` → `.npmrc` and `gitignore` → `.gitignore` (npm strips these during publish). `getDetailedErrorMessage()` transforms errors (EACCES, ENOSPC, etc.) into user-friendly messages.
+
+**src/utils/prerequisites.js**: `runPrerequisites()` checks the development environment before scaffolding: verifies Git is installed (with platform-specific install guide if missing for macOS/Windows/Linux), validates Node.js >= 18 (with nvm/fnm/nodejs.org upgrade instructions), confirms npm is available, and prompts about GitHub account (shows signup guide with boxen if needed). Skipped in CI/non-TTY mode for the GitHub prompt. All checks use `execa` with hardcoded arguments (no user input in commands). Exports individual check functions for testing.
 
 **src/utils/install.js**: Auto-detects package manager from lock files, runs install using execa.
 
@@ -67,6 +72,8 @@ bin/create-trimble-app.js (entry point)
 Complete working projects in `templates/react/`, `templates/angular/`, and `templates/solidjs/`. Each includes .cursor/, .github/, .husky/, .vscode/, scripts/, src/, and full package.json.
 
 `templates/config.json` defines framework metadata (name, description, badge, note) read by `src/frameworks.js`.
+
+All three templates include Trimble Identity (TID) authentication Cursor commands (`.cursor/commands/trimble-id.md`) and rules (`.cursor/rules/add-trimble-identity-auth.mdc`). React uses `@trimble-oss/trimble-id-react`, SolidJS wraps `TIDClient` in a SolidJS context, Angular uses `@trimble-oss/trimble-id` core SDK with signals-based `AuthService`, functional guard, and HTTP interceptor.
 
 #### SolidJS Template
 
@@ -99,6 +106,7 @@ Vitest tests in `tests/`:
 - frameworks.test.js
 - utils/file.test.js
 - utils/git.test.js
+- utils/prerequisites.test.js
 
 30s timeout for integration tests. Coverage excludes src/cli.js.
 

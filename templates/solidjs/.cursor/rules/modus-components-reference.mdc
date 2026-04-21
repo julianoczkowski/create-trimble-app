@@ -39,6 +39,7 @@ Comprehensive reference guide for all Modus Design System components available i
 - **Purpose**: Collapsible sidebar navigation menu
 - **Key Features**: Expandable/collapsible, auto-collapse on select, custom width, menu integration
 - **Usage**: Main application navigation, sidebar menus, mobile navigation
+- **Limitation**: Only supports flat `MenuItem[]` array. Does NOT support nested/hierarchical items or expandable sub-sections. If you need expandable groups (e.g., "Records > RFIs, Submittals"), build a custom sidebar with div elements and `createSignal<boolean>` per section
 
 #### ModusTabs
 
@@ -76,6 +77,7 @@ Comprehensive reference guide for all Modus Design System components available i
 - **Purpose**: Checkbox input with label and validation support
 - **Key Features**: Indeterminate state, size variants, value inversion bug handling
 - **Usage**: Form checkboxes, agreement toggles, multi-select lists
+- **Critical**: The prop for checked state is `value`, NOT `checked`. Using `checked` fails silently. Use `onValueChange` (not `onInputChange`) - the wrapper provides the corrected (inverted) boolean via `event.detail`
 
 #### ModusDate
 
@@ -139,6 +141,7 @@ Comprehensive reference guide for all Modus Design System components available i
 - **Purpose**: Single-line text input with various types and features
 - **Key Features**: Multiple input types, clear/search buttons, validation, mobile optimization
 - **Usage**: Username, email, search, general text input
+- **Critical**: The search icon prop is `includeSearch`, NOT `includeSearchIcon`. The `onInputChange` callback receives `CustomEvent<InputEvent>` - extract the value via `(e.target as HTMLInputElement).value`, NOT from `e.detail`
 
 #### ModusTimeInput
 
@@ -241,6 +244,7 @@ Comprehensive reference guide for all Modus Design System components available i
 - **Purpose**: Data table with sorting, pagination, and editing capabilities
 - **Key Features**: Column configuration, row selection, inline editing, pagination
 - **Usage**: Data display, data management, admin interfaces
+- **Limitation**: Only supports flat tabular data (`columns[]` + `data[]`). Does NOT support grouped rows, expandable/collapsible row groups, tree-style hierarchies, or row nesting. If you need grouped/expandable rows (e.g., specifications grouped by Division), build a custom table layout using CSS Grid with div elements, `createSignal<Set<string>>` for tracking expanded groups, and nested `<For>` loops
 
 #### ModusPagination
 

@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 
 /**
- * Modus Color Linting Script for Vite + React
+ * Modus Color Linting Script for Vite + SolidJS
  *
- * This script checks for usage of non-Modus color patterns in React/Vite files,
+ * This script checks for usage of non-Modus color patterns in SolidJS/Vite files,
  * CSS files, and TypeScript files to ensure design system consistency.
  *
  * It flags common Tailwind color patterns and suggests Modus alternatives.
@@ -161,7 +161,7 @@ function extractColorFromHex(hex) {
 
 async function main() {
   console.log(
-    "🎨 Checking for design system color compliance in Vite + React app...\n",
+    "🎨 Checking for design system color compliance in Vite + SolidJS app...\n",
   );
 
   let allViolations = [];

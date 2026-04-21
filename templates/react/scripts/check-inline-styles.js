@@ -163,7 +163,7 @@ const EXCLUDE_PATTERNS = [
   "**/*.d.ts",
   "scripts/**",
   "src/index.css", // Exclude index.css as it contains the design system definitions
-  "src/pages/ColorPalettePage.tsx", // Exclude color-palette as it demonstrates the color system
+  "src/dev-pages/**", // Exclude dev-pages as they demonstrate the design system with dynamic CSS vars
 ];
 
 function isBorderRelatedStyle(styleContent) {

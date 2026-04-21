@@ -69,7 +69,7 @@ const ModusTooltip = forwardRef<HTMLModusWcTooltipElement, ModusTooltipProps>(
         return childArray[0];
       }
       return (
-        <span className="inline-flex items-center gap-1">{childArray}</span>
+        <div className="inline-flex items-center gap-1">{childArray}</div>
       );
     }, [children]);
 

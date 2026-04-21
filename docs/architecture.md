@@ -35,7 +35,8 @@ create-trimble-app/
 │       ├── file.js            # File operations, validation
 │       ├── git.js             # Template copying
 │       ├── install.js         # Silent dependency installation
-│       └── logger.js          # Branded output (boxen, picocolors)
+│       ├── logger.js          # Branded output (boxen, picocolors)
+│       └── prerequisites.js   # Environment checks (Git, Node, npm, GitHub)
 ├── templates/
 │   ├── config.json            # Framework metadata
 │   ├── react/                 # Complete React template
@@ -69,6 +70,9 @@ User runs: npx @julianoczkowski/create-trimble-app my-app --framework react
     ┌──────────────────┐
     │  src/scaffold.js │  ← Main orchestration
     └──────┬───────────┘
+           │
+           ├─── runPrerequisites() ──→ checks Git, Node.js 18+, npm
+           │    └── GitHub account prompt (interactive only)
            │
            ├─── loadFrameworks() ──→ reads templates/config.json
            │
@@ -120,6 +124,7 @@ Handles command-line argument parsing using Commander.js.
 | `--dry-run` | flag | Preview mode |
 | `--verbose` | flag | Debug output |
 | `--no-install` | flag | Skip npm install |
+| `--skip-checks` | flag | Skip prerequisite environment checks |
 
 ### 3. `src/scaffold.js`
 
@@ -129,14 +134,16 @@ Main orchestration module. Coordinates the entire scaffolding process.
 
 1. Show welcome banner
 2. Handle `--info` flag if present
-3. Framework selection (prompt or CLI arg)
-4. Location selection (current folder or new)
-5. Project name input/validation
-6. Dry-run output (if enabled)
-7. Copy template files
-8. Update package.json
-9. Install dependencies (if enabled)
-10. Show success message with next steps
+3. Prerequisites check — Git, Node.js >= 18, npm (skippable with `--skip-checks`)
+4. GitHub account prompt — guided signup if needed (interactive/TTY only)
+5. Framework selection (prompt or CLI arg)
+6. Location selection (current folder or new)
+7. Project name input/validation
+8. Dry-run output (if enabled)
+9. Copy template files
+10. Update package.json
+11. Install dependencies (if enabled)
+12. Show success message with next steps
 
 ### 4. `src/frameworks.js`
 
@@ -182,7 +189,28 @@ Dependency installation.
 - `installDependencies(projectPath)` - Run npm/yarn/pnpm install
 - `detectPackageManager(projectPath)` - Auto-detect package manager
 
-### 8. `src/utils/colors.js`
+### 8. `src/utils/prerequisites.js`
+
+Environment prerequisite checks that run before scaffolding.
+
+**Functions:**
+
+- `runPrerequisites(options)` - Orchestrates all checks; exits with guidance if any fail
+- `checkGit()` - Verifies Git is installed via `execa("git", ["--version"])`
+- `checkNodeVersion()` - Validates `process.version` >= 18
+- `checkNpm()` - Verifies npm is available via `execa("npm", ["--version"])`
+- `getPlatform()` - Returns `"macos"`, `"windows"`, or `"linux"` from `process.platform`
+- `getGitInstallInstructions(platform)` - Platform-specific Git install guide (brew/winget/apt/dnf/pacman)
+- `getNodeUpgradeInstructions()` - Node.js upgrade guide (nvm/fnm/nodejs.org)
+- `getGitHubSignupInfo()` - GitHub account creation guide with signup link
+
+**Behavior:**
+- Checks are non-interactive (version detection via execa with hardcoded args)
+- GitHub prompt uses `p.select()` and only runs when `process.stdout.isTTY && !process.env.CI`
+- On failure: shows a `boxen` panel with install instructions and exits with code 1
+- Skippable via `--skip-checks` CLI flag
+
+### 9. `src/utils/colors.js`
 
 Trimble brand color utilities with true color (24-bit) terminal support.
 
@@ -193,7 +221,7 @@ Trimble brand color utilities with true color (24-bit) terminal support.
 - `colors.dimBlue()` - Dimmed blue for secondary text
 - True color detection via COLORTERM environment variable
 
-### 9. `src/utils/logger.js`
+### 10. `src/utils/logger.js`
 
 Branded console output using boxen and picocolors.
 
@@ -214,7 +242,7 @@ Templates are complete, working projects bundled in the npm package.
 templates/
 ├── config.json           # Framework metadata
 ├── react/
-│   ├── .cursor/          # Cursor IDE rules
+│   ├── .cursor/          # Cursor IDE rules + TID auth command
 │   ├── .github/          # GitHub templates & workflows
 │   ├── .husky/           # Git hooks
 │   ├── .vscode/          # VS Code settings
@@ -224,7 +252,7 @@ templates/
 │   ├── package.json      # Dependencies
 │   └── ...               # Config files
 ├── angular/
-│   ├── .cursor/          # Cursor IDE rules
+│   ├── .cursor/          # Cursor IDE rules + TID auth command
 │   ├── .github/          # GitHub templates & workflows
 │   ├── .husky/           # Git hooks
 │   ├── .vscode/          # VS Code settings
@@ -234,7 +262,7 @@ templates/
 │   ├── package.json      # Dependencies
 │   └── ...               # Config files
 └── solidjs/
-    ├── .cursor/          # Cursor IDE rules (44 rules, 10 skills)
+    ├── .cursor/          # Cursor IDE rules (44 rules, 10 skills) + TID auth command
     ├── .github/          # GitHub templates & workflows
     ├── .husky/           # Git hooks
     ├── scripts/          # Code quality scripts
@@ -333,6 +361,7 @@ npm run test:coverage # Coverage report
 - `tests/frameworks.test.js` - Framework loading
 - `tests/utils/file.test.js` - File utilities
 - `tests/utils/git.test.js` - Template copying
+- `tests/utils/prerequisites.test.js` - Environment checks & install instructions
 
 ## Publishing
 

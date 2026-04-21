@@ -18,6 +18,15 @@ Essential integration patterns for Modus Web Components with SolidJS + Vite.
 - **Vite-specific patterns** - Use environment variables and dynamic imports
 - **Performance optimization** - Use memoization and lazy loading
 
+## Common Wrapper Prop Gotchas
+
+These are verified prop names for the wrapper components in `src/components/`. Using wrong names fails silently:
+
+- **ModusCheckbox**: Use `value` (not `checked`) for the checked state. Use `onValueChange` (not `onInputChange`) for the corrected boolean via `event.detail`
+- **ModusTextInput**: Use `includeSearch` (not `includeSearchIcon`) for the search icon. `onInputChange` provides `CustomEvent<InputEvent>` - extract value via `(e.target as HTMLInputElement).value`, not `e.detail`
+- **ModusSideNavigation**: Only supports flat `MenuItem[]` - no nested/hierarchical items. Build custom sidebar for expandable sections
+- **ModusTable**: Only supports flat `columns[]` + `data[]` - no grouped/expandable rows. Build custom div-based table for tree/grouped layouts
+
 ## Reference
 
 For detailed integration patterns, event handling, and advanced SolidJS techniques, fetch the full rule: `modus-solidjs-integration`

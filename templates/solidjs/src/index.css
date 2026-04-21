@@ -179,9 +179,12 @@
     font-size: 14px;
   }
 
-  html {
+  html,
+  body,
+  #root {
     font-size: 14px;
     font-family: "Open Sans", sans-serif;
+    min-height: 100vh;
   }
 }
 

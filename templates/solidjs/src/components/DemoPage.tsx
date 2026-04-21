@@ -29,7 +29,8 @@ const DemoPage: Component<DemoPageProps> = (props) => {
   };
 
   return (
-    <div class="max-w-6xl mx-auto p-8 bg-background">
+    <div class="min-h-screen bg-background">
+    <div class="max-w-6xl mx-auto p-8 pb-16">
       {props.showBackButton !== false && (
         <div class="flex items-center gap-4 mb-6">
           <ModusButton
@@ -62,6 +63,7 @@ const DemoPage: Component<DemoPageProps> = (props) => {
           Created by Julian Oczkowski
         </div>
       </div>
+    </div>
     </div>
   );
 };

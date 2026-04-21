@@ -1,6 +1,6 @@
-# Modus Design System Linting Scripts for Vite + React
+# Modus Design System Linting Scripts for Vite + SolidJS
 
-This directory contains comprehensive linting scripts for enforcing Modus Design System compliance in the Vite + React codebase. These scripts ensure consistent styling, proper component usage, and adherence to design system standards.
+This directory contains comprehensive linting scripts for enforcing Modus Design System compliance in the Vite + SolidJS codebase. These scripts ensure consistent styling, proper component usage, and adherence to design system standards.
 
 ## Available Linting Scripts
 

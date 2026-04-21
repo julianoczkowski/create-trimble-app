@@ -101,7 +101,6 @@ export default function ChipDemoPage() {
             </div>
             <div class="flex flex-wrap gap-3">
               <ModusChip label="Default" variant="filled" />
-              <ModusChip label="Active" variant="filled" active />
               <ModusChip label="Removable" variant="filled" showRemove />
             </div>
           </div>
@@ -128,9 +127,9 @@ export default function ChipDemoPage() {
           <ModusChip label="Large" size="lg" />
         </div>
         <div class="flex flex-wrap items-center gap-4 mt-4">
-          <ModusChip label="Small" size="sm" variant="outline" active />
-          <ModusChip label="Medium" size="md" variant="outline" active />
-          <ModusChip label="Large" size="lg" variant="outline" active />
+          <ModusChip label="Small" size="sm" variant="outline" />
+          <ModusChip label="Medium" size="md" variant="outline" />
+          <ModusChip label="Large" size="lg" variant="outline" />
         </div>
       </DemoExample>
 
@@ -144,7 +143,7 @@ export default function ChipDemoPage() {
               Active State
             </div>
             <div class="flex flex-wrap gap-3">
-              <ModusChip label="Selected" active />
+              <ModusChip label="Selected" active variant="outline" />
               <ModusChip label="Pressed" active variant="outline" />
             </div>
           </div>

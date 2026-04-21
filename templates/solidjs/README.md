@@ -137,19 +137,21 @@ Toggle with <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>D</kbd> (or <kbd>Cmd</kbd>+<kb
 
 | Command                   | Description                  |
 | ------------------------- | ---------------------------- |
-| `npm run lint:all`        | Run all design system checks |
-| `npm run type-check`      | TypeScript validation        |
-| `npm run lint:colors`     | Check color compliance       |
-| `npm run lint:styles`     | Check for inline styles      |
-| `npm run lint:borders`    | Check border patterns        |
-| `npm run lint:opacity`    | Check opacity utilities      |
-| `npm run lint:icons`      | Check icon library usage     |
-| `npm run lint:icon-names` | Validate icon names (700+)   |
-| `npm run lint:semantic`   | Check semantic HTML usage    |
+| `npm run lint:all`        | Run all 8 checks with summary table |
+| `npm run type-check`      | TypeScript validation               |
+| `npm run lint:colors`     | Check color compliance              |
+| `npm run lint:styles`     | Check for inline styles             |
+| `npm run lint:borders`    | Check border patterns               |
+| `npm run lint:opacity`    | Check opacity utilities             |
+| `npm run lint:icons`      | Check icon library usage            |
+| `npm run lint:icon-names` | Validate icon names (710+)          |
+| `npm run lint:semantic`   | Check semantic HTML usage           |
+
+`lint:all` runs every check even if some fail, then shows a pass/fail summary.
 
 ### Pre-commit Hooks
 
-All lint commands run automatically on `git commit` via Husky. Commits are blocked if any check fails.
+All 8 lint checks run automatically on `git commit` via Husky. Commits are blocked if any check fails.
 
 ---
 

@@ -152,6 +152,41 @@ Without both, logos render as broken images on deep routes like `/dev/demos/side
 
 ---
 
+## ModusNavbar Custom Content Slots
+
+The navbar supports `centerContent` and `endContent` slots for injecting custom elements (project name, action buttons, etc.):
+
+```tsx
+<ModusNavbar
+  userCard={{ name: "Jane Smith", email: "jane@trimble.com" }}
+  visibility={{ mainMenu: false, notifications: true, apps: true, help: true, user: true }}
+  centerContent={<div class="text-sm font-medium text-foreground">Project Name</div>}
+  endContent={<ModusButton color="primary" size="sm" variant="outlined">Invite members</ModusButton>}
+/>
+```
+
+Set `visibility.mainMenu: false` when using a custom sidebar instead of the built-in hamburger menu.
+
+---
+
+## ModusSideNavigation Limitations
+
+`ModusSideNavigation` only supports a **flat `MenuItem[]`** array. It does NOT support:
+- Nested or hierarchical menu items
+- Expandable sub-sections (e.g., "Records" expanding to show "RFIs", "Submittals", etc.)
+- Grouped navigation with section headers
+- Custom active state styling (it uses its own internal styling)
+
+**If you need nested/hierarchical navigation**, build a custom sidebar using:
+- `div` elements for items with `<i class="modus-icons">` for icons
+- `createSignal<boolean>` per expandable section for open/close state
+- CSS `max-height` transition with `overflow-hidden` for expand/collapse animation
+- `@solidjs/router`'s `useLocation()` to detect active path
+- Active styling: `bg-primary-20 text-primary border-l-2 border-primary`
+- Design system colors only (`text-foreground-80`, `hover:bg-muted`, `border-bottom-default`)
+
+---
+
 ## Common Pitfalls
 
 1. **Menu item icons not showing** - Use `<i class="modus-icons" slot="start-icon">name</i>` child element, not the `startIcon` property
@@ -159,6 +194,7 @@ Without both, logos render as broken images on deep routes like `/dev/demos/side
 3. **Two demo sections interfere** - Use separate components with independent signal state
 4. **Side nav expands the page width** - Wrap in `overflow-hidden` container with fixed height
 5. **Events not firing** - Use `addEventListener` in `onMount` for web component custom events
+6. **Need nested navigation** - ModusSideNavigation only supports flat items; build a custom sidebar for hierarchical menus
 
 ---
 
