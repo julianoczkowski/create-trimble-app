@@ -146,18 +146,20 @@ describe("git utilities", () => {
       }
     });
 
-    it("global scope: writes .cursor/ contents to ~/.cursor/", async () => {
-      const { homedir } = await import("os");
-      const globalCursorPath = join(homedir(), ".cursor");
+    it("global scope: writes mcp.json to injected globalCursorPath", async () => {
+      const fakeHome = join(tmpdir(), "cta-fake-home-" + Date.now());
       const projectDir = join(tmpdir(), "cta-global-write-" + Date.now());
 
       try {
-        await copyTemplate("react", projectDir, { cursorScope: "global" });
+        await copyTemplate("react", projectDir, {
+          cursorScope: "global",
+          globalCursorPath: join(fakeHome, ".cursor"),
+        });
 
-        // ~/.cursor/ should now contain mcp.json from the template
-        expect(existsSync(join(globalCursorPath, "mcp.json"))).toBe(true);
+        expect(existsSync(join(fakeHome, ".cursor", "mcp.json"))).toBe(true);
       } finally {
         rmSync(projectDir, { recursive: true, force: true });
+        try { rmSync(fakeHome, { recursive: true, force: true }); } catch { /* ok */ }
       }
     });
   });
