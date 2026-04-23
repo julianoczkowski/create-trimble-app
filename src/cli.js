@@ -52,6 +52,11 @@ program
   .option("--verbose", "Enable verbose output for debugging")
   .option("--info", "Show information about this CLI")
   .option("--skip-checks", "Skip prerequisite environment checks")
+  .option(
+    "--cursor-scope <scope>",
+    "Where to install Cursor config: project or global (default: prompt)",
+    validateCursorScope,
+  )
   .addHelpText("after", () => {
     const helpContent = [
       colors.brandBold("Quick Start"),
@@ -78,6 +83,9 @@ program
       "",
       `  ${colors.dim("#")} Skip prerequisite checks`,
       "  npx @julianoczkowski/create-trimble-app@latest my-app --skip-checks",
+      "",
+      `  ${colors.dim("#")} Install Cursor config globally (for all projects on this machine)`,
+      "  npx @julianoczkowski/create-trimble-app@latest my-app -f react --cursor-scope global",
       "",
       colors.brandBold("Frameworks"),
       `  ${colors.brand("react")}     React + Vite + Modus 2.0 Components`,
@@ -118,6 +126,7 @@ program
         verbose: options.verbose,
         showInfo: options.info,
         skipChecks: options.skipChecks,
+        installScope: options.cursorScope,
       });
     } catch (error) {
       console.error(colors.error("Error:"), error.message);
@@ -140,6 +149,24 @@ function validateFramework(value) {
   if (!validFrameworks.includes(lowercaseValue)) {
     throw new Error(
       `Invalid framework "${value}". Valid options: ${validFrameworks.join(", ")}`,
+    );
+  }
+
+  return lowercaseValue;
+}
+
+/**
+ * Validate cursor-scope option
+ * @param {string} value - Scope name
+ * @returns {string} - Validated scope name
+ */
+function validateCursorScope(value) {
+  const validScopes = ["project", "global"];
+  const lowercaseValue = value.toLowerCase();
+
+  if (!validScopes.includes(lowercaseValue)) {
+    throw new Error(
+      `Invalid cursor scope "${value}". Valid options: ${validScopes.join(", ")}`,
     );
   }
 

@@ -101,5 +101,66 @@ describe("git utilities", () => {
         rmSync(angularTestDir, { recursive: true, force: true });
       }
     });
+
+    it("project scope: copies .cursor/ into the project folder", async () => {
+      const projectDir = testDir + "-project-scope";
+
+      try {
+        await copyTemplate("react", projectDir, { cursorScope: "project" });
+
+        expect(existsSync(join(projectDir, "package.json"))).toBe(true);
+        expect(existsSync(join(projectDir, ".cursor"))).toBe(true);
+        expect(existsSync(join(projectDir, ".cursor", "mcp.json"))).toBe(true);
+      } finally {
+        rmSync(projectDir, { recursive: true, force: true });
+      }
+    });
+
+    it("global scope: omits .cursor/ from project folder", async () => {
+      const projectDir = join(tmpdir(), "cta-global-project-" + Date.now());
+      const globalCursorDir = join(tmpdir(), "cta-global-cursor-" + Date.now());
+
+      // Temporarily redirect homedir by copying to a known temp path and
+      // verifying the project folder has no .cursor/
+      try {
+        await copyTemplate("react", projectDir, { cursorScope: "project" });
+        // Re-run with global scope into a separate project dir to verify exclusion
+        const projectDirGlobal = projectDir + "-global";
+        try {
+          // We can't easily override homedir, so we verify the branching
+          // logic by checking that project scope includes .cursor and
+          // confirming the global path is the real ~/.cursor target.
+          // Instead, verify that passing cursorScope="global" skips .cursor/
+          // in the project output:
+          await copyTemplate("react", projectDirGlobal, { cursorScope: "global" });
+
+          expect(existsSync(join(projectDirGlobal, "package.json"))).toBe(true);
+          // .cursor/ must NOT be in the project folder for global scope
+          expect(existsSync(join(projectDirGlobal, ".cursor"))).toBe(false);
+        } finally {
+          rmSync(projectDirGlobal, { recursive: true, force: true });
+        }
+      } finally {
+        rmSync(projectDir, { recursive: true, force: true });
+        try { rmSync(globalCursorDir, { recursive: true, force: true }); } catch { /* ok */ }
+      }
+    });
+
+    it("global scope: writes mcp.json to injected globalCursorPath", async () => {
+      const fakeHome = join(tmpdir(), "cta-fake-home-" + Date.now());
+      const projectDir = join(tmpdir(), "cta-global-write-" + Date.now());
+
+      try {
+        await copyTemplate("react", projectDir, {
+          cursorScope: "global",
+          globalCursorPath: join(fakeHome, ".cursor"),
+        });
+
+        expect(existsSync(join(fakeHome, ".cursor", "mcp.json"))).toBe(true);
+      } finally {
+        rmSync(projectDir, { recursive: true, force: true });
+        try { rmSync(fakeHome, { recursive: true, force: true }); } catch { /* ok */ }
+      }
+    });
   });
 });

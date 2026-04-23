@@ -72,7 +72,41 @@ export async function scaffold(options = {}) {
     process.exit(1);
   }
 
-  // 2. Installation Location Choice
+  // 2. Cursor Config Scope
+  let installScope = options.installScope;
+
+  if (!installScope) {
+    installScope = await p.select({
+      message: "Where should Cursor config (MCP, Rules, Skills) be installed?",
+      options: [
+        {
+          label: "Project  (.cursor/ in project folder)",
+          value: "project",
+          hint: "Only active for this project",
+        },
+        {
+          label: "Global   (~/.cursor/)",
+          value: "global",
+          hint: "Installs global MCP config (~/.cursor/mcp.json)",
+        },
+      ],
+    });
+
+    if (p.isCancel(installScope)) {
+      p.cancel("Operation cancelled");
+      process.exit(0);
+    }
+  }
+
+  if (installScope === "global") {
+    p.log.warn(
+      "Global scope installs mcp.json and skills/ to ~/.cursor/.\n" +
+      "  If you scaffold multiple frameworks globally, all their rule sets\n" +
+      "  will be active on every project on this machine."
+    );
+  }
+
+  // 3. Installation Location Choice
   let installInCurrentFolder = options.currentFolder;
   let projectName = options.projectName;
 
@@ -103,7 +137,7 @@ export async function scaffold(options = {}) {
     installInCurrentFolder = location === "current";
   }
 
-  // 3. Project Name
+  // 4. Project Name
   if (installInCurrentFolder) {
     projectName = getCurrentFolderName();
     p.log.info(`Using current folder: ${colors.brand(projectName)}`);
@@ -141,19 +175,22 @@ export async function scaffold(options = {}) {
     p.log.message(
       `Location: ${installInCurrentFolder ? "Current directory" : projectName}`,
     );
+    p.log.message(
+      `Cursor config: ${installScope === "global" ? "~/.cursor/mcp.json (global)" : ".cursor/ (project)"}`,
+    );
     p.outro("Preview complete");
     process.exit(0);
   }
 
-  // 4. Copy Template with spinner
+  // 5. Copy Template with spinner
   const copySpinner = p.spinner();
   copySpinner.start(`Creating ${config.name} project`);
 
   try {
-    await copyTemplate(framework, projectPath);
+    await copyTemplate(framework, projectPath, { cursorScope: installScope });
     copySpinner.stop(`${colors.success("\u2713")} Project created`);
 
-    // 5. Update package.json with project name
+    // 6. Update package.json with project name
     try {
       await updatePackageJson(projectPath, {
         name: projectName,
@@ -170,7 +207,7 @@ export async function scaffold(options = {}) {
     process.exit(1);
   }
 
-  // 6. Install Dependencies (optional)
+  // 7. Install Dependencies
   let install = options.install;
 
   if (install === undefined) {
@@ -198,7 +235,7 @@ export async function scaffold(options = {}) {
     }
   }
 
-  // 7. Post-scaffold validation (only if deps were installed)
+  // 8. Post-scaffold validation
   if (install) {
     const validateSpinner = p.spinner();
     validateSpinner.start("Validating template integrity");
@@ -221,9 +258,8 @@ export async function scaffold(options = {}) {
     }
   }
 
-  // 8. Success outro
+  // 9. Success outro
   p.outro(colors.success("Done! Configuration updated."));
 
-  // 8. Detailed next steps
-  logger.nextSteps(projectName, config.name, install, installInCurrentFolder);
+  logger.nextSteps(projectName, config.name, install, installInCurrentFolder, installScope);
 }

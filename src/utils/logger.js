@@ -128,6 +128,7 @@ export const logger = {
     framework,
     shouldInstall,
     isCurrentFolder = false,
+    installScope = "project",
   ) => {
     // Match the width of the header box (logo width = 55)
     const boxWidth = 55;
@@ -137,6 +138,11 @@ export const logger = {
     const runCommand = framework.toLowerCase().includes("angular")
       ? "npm run start"
       : "npm run dev";
+
+    const cursorLocation =
+      installScope === "global"
+        ? "~/.cursor/ (global — active for all projects)"
+        : ".cursor/ (project-level)";
 
     // Build numbered steps with beginner-friendly descriptions
     const steps = [];
@@ -174,7 +180,8 @@ export const logger = {
     const content = [
       colors.success("\u2713") + " " + colors.bold("Success!") + " Your app is ready.",
       "",
-      colors.dim("Location: ") + colors.brand(projectPath),
+      colors.dim("Location:      ") + colors.brand(projectPath),
+      colors.dim("Cursor config: ") + colors.brand(cursorLocation),
       "",
       colors.dim("Next steps:"),
       ...steps.map((s) => "  " + s),

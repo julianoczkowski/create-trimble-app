@@ -22,12 +22,19 @@ const SKIP_FILES = new Set([
 ]);
 
 /**
- * Copy bundled template to target directory
+ * Copy bundled template to target directory.
+ * When cursorScope is "global", only mcp.json and skills/ from .cursor/ are
+ * written to ~/.cursor/ (or globalCursorPath) instead of the project directory.
  * @param {string} templateName - Name of the template (react, angular, solidjs)
  * @param {string} targetPath - Target directory path
+ * @param {{ cursorScope?: "project" | "global", globalCursorPath?: string }} options
  * @returns {Promise<boolean>}
  */
-export async function copyTemplate(templateName, targetPath) {
+export async function copyTemplate(
+  templateName,
+  targetPath,
+  { cursorScope = "project", globalCursorPath } = {}
+) {
   const fs = await import("fs/promises");
   const path = await import("path");
 
@@ -50,16 +57,98 @@ export async function copyTemplate(templateName, targetPath) {
     );
   }
 
-  await copyDirectory(bundledPath, targetPath);
+  if (cursorScope === "global") {
+    // Global scope: template's .cursor/ is redirected to ~/.cursor/ below,
+    // so we don't also want it inside the project folder.
+    const projectSkipDirs = new Set([...SKIP_DIRECTORIES, ".cursor"]);
+    await copyDirectory(bundledPath, targetPath, projectSkipDirs);
+
+    // Copy only mcp.json and skills/ to the global cursor directory
+    const { homedir } = await import("os");
+    const cursorSrc = path.join(bundledPath, ".cursor");
+    const target = globalCursorPath ?? path.join(homedir(), ".cursor");
+    await copyGlobalCursor(cursorSrc, target);
+  } else {
+    await copyDirectory(bundledPath, targetPath);
+  }
+
   return true;
+}
+
+/**
+ * Copy only mcp.json (with backup) and skills/ (skip-if-exists) to global cursor dir.
+ * @param {string} src - Source .cursor/ directory from template
+ * @param {string} dest - Destination ~/.cursor/ directory
+ */
+async function copyGlobalCursor(src, dest) {
+  const fs = await import("fs/promises");
+  const path = await import("path");
+
+  await fs.mkdir(dest, { recursive: true });
+
+  // Copy mcp.json, backing up any existing file first
+  const srcMcp = path.join(src, "mcp.json");
+  const destMcp = path.join(dest, "mcp.json");
+  try {
+    await fs.access(srcMcp);
+    try {
+      await fs.access(destMcp);
+      const ts = new Date().toISOString().replace(/[:.]/g, "-");
+      await fs.copyFile(destMcp, path.join(dest, `mcp.json.bak-${ts}`));
+    } catch {
+      // No existing mcp.json to back up
+    }
+    await fs.copyFile(srcMcp, destMcp);
+  } catch {
+    // No mcp.json in template
+  }
+
+  // Copy skills/ with skip-if-exists per file
+  const srcSkills = path.join(src, "skills");
+  const destSkills = path.join(dest, "skills");
+  try {
+    await fs.access(srcSkills);
+    await copyDirectorySkipExisting(srcSkills, destSkills);
+  } catch {
+    // No skills/ in template
+  }
+}
+
+/**
+ * Copy directory recursively, skipping files that already exist at the destination.
+ * @param {string} src - Source directory
+ * @param {string} dest - Destination directory
+ */
+async function copyDirectorySkipExisting(src, dest) {
+  const fs = await import("fs/promises");
+  const path = await import("path");
+
+  await fs.mkdir(dest, { recursive: true });
+  const entries = await fs.readdir(src, { withFileTypes: true });
+
+  for (const entry of entries) {
+    const srcPath = path.join(src, entry.name);
+    const destPath = path.join(dest, entry.name);
+    if (entry.isDirectory()) {
+      await copyDirectorySkipExisting(srcPath, destPath);
+    } else {
+      try {
+        await fs.access(destPath);
+        // File already exists — skip
+      } catch {
+        await fs.copyFile(srcPath, destPath);
+      }
+    }
+  }
 }
 
 /**
  * Copy directory recursively
  * @param {string} src - Source directory
  * @param {string} dest - Destination directory
+ * @param {Set<string>} skipDirs - Directory names to skip (defaults to SKIP_DIRECTORIES)
  */
-async function copyDirectory(src, dest) {
+async function copyDirectory(src, dest, skipDirs = SKIP_DIRECTORIES) {
   const fs = await import("fs/promises");
   const path = await import("path");
 
@@ -69,7 +158,7 @@ async function copyDirectory(src, dest) {
 
   for (const entry of entries) {
     // Skip excluded directories (node_modules, dist, .angular, etc.)
-    if (entry.isDirectory() && SKIP_DIRECTORIES.has(entry.name)) {
+    if (entry.isDirectory() && skipDirs.has(entry.name)) {
       continue;
     }
 
@@ -86,7 +175,7 @@ async function copyDirectory(src, dest) {
     const destPath = path.join(dest, destName);
 
     if (entry.isDirectory()) {
-      await copyDirectory(srcPath, destPath);
+      await copyDirectory(srcPath, destPath, skipDirs);
     } else {
       await fs.copyFile(srcPath, destPath);
     }
